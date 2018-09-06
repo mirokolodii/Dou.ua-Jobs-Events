@@ -5,10 +5,10 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import com.unagit.douuajobsevents.helpers.Constants
 
-public class FragmentsAdapter(val fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+class FragmentsAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
-        return Fragment()
+        return ListFragment()
     }
 
     override fun getCount(): Int {
