@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         setupTabs()
     }
 
-    fun setupTabs() {
+    private fun setupTabs() {
         val viewPager: ViewPager = findViewById(R.id.container_list)
         viewPager.adapter = FragmentsAdapter(supportFragmentManager)
 
