@@ -3,13 +3,14 @@ package com.unagit.douuajobsevents.views
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.data.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), ListPresenter.ListView {
+class MainActivity : AppCompatActivity(), ListPresenter.ListView, ItemAdapter.Listener {
 
     private val presenter = ListPresenter()
 
@@ -41,8 +42,19 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView {
     }
 
     private fun setupItemList(items: List<Item>) {
-
+//        recyclerView.layoutManager = LinearLayoutManager(this)
+//        recyclerView.adapter = ItemAdapter(items)
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = ItemAdapter(items, this@MainActivity)
+        }
     }
+
+
+
+
+
     // To simplify development we use single activity w/o fragments.
     // Will add fragments later on, if needed.
 //    private fun setupTabs() {
