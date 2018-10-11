@@ -30,6 +30,7 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
             itemView.item_title.text = item.title
             itemView.item_link.text = item.link
 
+
         }
     }
     interface Listener {
