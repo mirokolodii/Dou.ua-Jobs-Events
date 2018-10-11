@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.data.Item
 import kotlinx.android.synthetic.main.list_item.view.*
@@ -29,7 +30,12 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
         fun bind(item: Item) {
             itemView.item_title.text = item.title
             itemView.item_link.text = item.link
-
+            Picasso
+                    .get()
+                    .load(item.imgUrl)
+                    .resize(50, 50)
+                    .centerCrop()
+                    .into(itemView.imageView)
 
         }
     }
