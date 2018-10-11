@@ -1,9 +1,9 @@
 package com.unagit.douuajobsevents.presenters
 
+import android.os.Handler
 import com.unagit.douuajobsevents.data.Item
 import com.unagit.douuajobsevents.helpers.ItemType
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class ListPresenter {
     private var view: ListPresenter.ListView? = null
@@ -18,9 +18,17 @@ class ListPresenter {
 
     fun getItems() {
         view?.showLoading()
-        TimeUnit.SECONDS.sleep(5)
-        val items = getTestItems()
-        view?.showItems(items)
+
+        // Simulate network delay
+        val handler = Handler()
+        val runnable = Runnable {
+            val items = getTestItems()
+            view?.showItems(items)
+        }
+
+        handler.postDelayed(runnable, 5 * 1000)
+
+
 
     }
 

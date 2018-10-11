@@ -17,13 +17,8 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView, ItemAdapter.Li
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         presenter.attach(this)
-
-//        setupTabs()
-
         presenter.getItems()
-
     }
 
     override fun onDestroy() {
