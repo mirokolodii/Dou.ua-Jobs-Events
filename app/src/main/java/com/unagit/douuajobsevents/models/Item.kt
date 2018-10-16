@@ -1,4 +1,4 @@
-package com.unagit.douuajobsevents.data
+package com.unagit.douuajobsevents.models
 
 import com.unagit.douuajobsevents.helpers.ItemType
 import java.util.*

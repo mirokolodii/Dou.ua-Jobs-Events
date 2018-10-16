@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.data.Item
+import com.unagit.douuajobsevents.models.Item
 import kotlinx.android.synthetic.main.list_item.view.*
 
 class ItemAdapter(private var items: List<Item>, private val listener: Listener)

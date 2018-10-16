@@ -1,7 +1,7 @@
 package com.unagit.douuajobsevents.presenters
 
 import android.os.Handler
-import com.unagit.douuajobsevents.data.Item
+import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.helpers.ItemType
 import java.util.*
 
@@ -25,11 +25,7 @@ class ListPresenter {
             val items = getTestItems()
             view?.showItems(items)
         }
-
         handler.postDelayed(runnable, 5 * 1000)
-
-
-
     }
 
     private fun getTestItems(): List<Item> {

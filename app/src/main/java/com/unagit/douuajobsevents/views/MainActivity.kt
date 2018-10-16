@@ -1,12 +1,11 @@
 package com.unagit.douuajobsevents.views
 
-import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.data.Item
+import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 
