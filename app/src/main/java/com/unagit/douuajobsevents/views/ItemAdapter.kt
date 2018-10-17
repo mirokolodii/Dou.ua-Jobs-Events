@@ -1,6 +1,6 @@
 package com.unagit.douuajobsevents.views
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items.get(position)
+        val item = items[position]
         holder.bind(item)
     }
 
@@ -29,13 +29,12 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Item) {
             itemView.item_title.text = item.title
-            itemView.item_link.text = item.link
-            Picasso
-                    .get()
-                    .load(item.imgUrl)
-                    .resize(50, 50)
-                    .centerCrop()
-                    .into(itemView.imageView)
+//            Picasso
+//                    .get()
+//                    .load(item.imgUrl)
+//                    .resize(100, 100)
+//                    .centerInside()
+//                    .into(itemView.imageView)
 
         }
     }

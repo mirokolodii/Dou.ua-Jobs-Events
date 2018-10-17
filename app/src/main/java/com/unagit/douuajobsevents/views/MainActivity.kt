@@ -1,8 +1,8 @@
 package com.unagit.douuajobsevents.views
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView, ItemAdapter.Li
 //        recyclerView.layoutManager = LinearLayoutManager(this)
 //        recyclerView.adapter = ItemAdapter(items)
         recyclerView.apply {
-            setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = ItemAdapter(items, this@MainActivity)
         }
