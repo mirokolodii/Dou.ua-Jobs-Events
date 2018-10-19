@@ -29,12 +29,12 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Item) {
             itemView.item_title.text = item.title
-//            Picasso
-//                    .get()
-//                    .load(item.imgUrl)
-//                    .resize(100, 100)
-//                    .centerInside()
-//                    .into(itemView.imageView)
+            Picasso
+                    .get()
+                    .load(item.imgUrl)
+                    .resize(200, 150)
+                    .centerInside()
+                    .into(itemView.imageView)
 
         }
     }
