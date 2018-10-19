@@ -4,12 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), ListPresenter.ListView, ItemAdapter.Listener {
+class MainActivity : AppCompatActivity(), ListPresenter.ListView {
 
     private val presenter = ListPresenter()
 
@@ -38,9 +39,22 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView, ItemAdapter.Li
     private fun setupItemList(items: List<Item>) {
 //        recyclerView.layoutManager = LinearLayoutManager(this)
 //        recyclerView.adapter = ItemAdapter(items)
+
+
+        // Listener for an item click in a list of items
+        val listener = object: ItemAdapter.Listener {
+            override fun onItemClicked(item: Item) {
+                Snackbar.make(activityMainLayout, item.title, Snackbar.LENGTH_SHORT)
+                        .show()
+            }
+
+        }
+
+
+
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(items, this@MainActivity)
+            adapter = ItemAdapter(items, listener)
         }
     }
 

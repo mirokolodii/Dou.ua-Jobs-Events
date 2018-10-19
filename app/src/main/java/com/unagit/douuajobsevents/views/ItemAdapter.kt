@@ -19,7 +19,7 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.bind(item)
+        holder.bind(item, listener)
     }
 
     override fun getItemCount(): Int {
@@ -27,18 +27,19 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: Item) {
-            itemView.item_title.text = item.title
+        fun bind(item: Item, listener: Listener) {
+            itemView.itemTitle.text = item.title
             Picasso
                     .get()
                     .load(item.imgUrl)
                     .resize(200, 150)
                     .centerInside()
                     .into(itemView.imageView)
+            itemView.setOnClickListener {listener.onItemClicked(item)}
 
         }
     }
     interface Listener {
-
+        fun onItemClicked(item: Item)
     }
 }
