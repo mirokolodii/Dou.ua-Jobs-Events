@@ -34,14 +34,10 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView {
 
     override fun showItems(items: List<Item>) {
         progressBar.visibility = View.GONE
-        setupItemList(items)
+        showItemsInList(items)
     }
 
-    private fun setupItemList(items: List<Item>) {
-//        recyclerView.layoutManager = LinearLayoutManager(this)
-//        recyclerView.adapter = ItemAdapter(items)
-
-
+    private fun showItemsInList(items: List<Item>) {
         // Listener for an item click in a list of items
         val listener = object: ItemAdapter.Listener {
             override fun onItemClicked(item: Item) {
@@ -50,10 +46,7 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView {
                 val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
                 startActivity(detailsIntent)
             }
-
         }
-
-
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
