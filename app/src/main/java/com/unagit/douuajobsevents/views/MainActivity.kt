@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.views
 
+import android.app.ActivityOptions
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -40,11 +41,17 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView {
     private fun showItemsInList(items: List<Item>) {
         // Listener for an item click in a list of items
         val listener = object: ItemAdapter.Listener {
-            override fun onItemClicked(item: Item) {
+            override fun onItemClicked(item: Item, imgView: View) {
                 Snackbar.make(activityMainLayout, item.title, Snackbar.LENGTH_SHORT)
                         .show()
+
                 val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
-                startActivity(detailsIntent)
+                val sharedView = imgView
+//                val transitionName = resources.getString(R.string.transition_img_name)
+                val transitionName = getString(R.string.transition_img_name)
+                val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(this@MainActivity, sharedView, transitionName)
+                startActivity(detailsIntent, transitionActivityOptions.toBundle())
+
             }
         }
 
