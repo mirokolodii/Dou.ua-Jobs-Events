@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.views
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,6 +47,8 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView {
             override fun onItemClicked(item: Item) {
                 Snackbar.make(activityMainLayout, item.title, Snackbar.LENGTH_SHORT)
                         .show()
+                val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
+                startActivity(detailsIntent)
             }
 
         }
