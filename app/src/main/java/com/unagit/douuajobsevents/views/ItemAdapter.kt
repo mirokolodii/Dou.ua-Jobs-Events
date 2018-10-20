@@ -35,11 +35,15 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
                     .resize(200, 150)
                     .centerInside()
                     .into(itemView.imageView)
-            itemView.setOnClickListener {listener.onItemClicked(item, itemView.imageView)}
+
+            itemView.setOnClickListener {listener.onItemClicked(item,
+                    itemView.imageView,
+                    itemView.itemTitle
+            )}
 
         }
     }
     interface Listener {
-        fun onItemClicked(item: Item, imgView: View)
+        fun onItemClicked(item: Item, imgView: View, titleView: View)
     }
 }

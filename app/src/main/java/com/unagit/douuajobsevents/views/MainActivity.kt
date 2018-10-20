@@ -11,6 +11,7 @@ import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
+import android.util.Pair as AndroidPair
 
 class MainActivity : AppCompatActivity(), ListPresenter.ListView {
 
@@ -41,15 +42,20 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView {
     private fun showItemsInList(items: List<Item>) {
         // Listener for an item click in a list of items
         val listener = object: ItemAdapter.Listener {
-            override fun onItemClicked(item: Item, imgView: View) {
-                Snackbar.make(activityMainLayout, item.title, Snackbar.LENGTH_SHORT)
-                        .show()
-
+            override fun onItemClicked(item: Item, sharedImgView: View, sharedTitleView: View) {
+//                Snackbar.make(activityMainLayout, item.title, Snackbar.LENGTH_SHORT)
+//                        .show()
+//
                 val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
-                val sharedView = imgView
-//                val transitionName = resources.getString(R.string.transition_img_name)
-                val transitionName = getString(R.string.transition_img_name)
-                val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(this@MainActivity, sharedView, transitionName)
+                val transImgName = getString(R.string.transition_img_name)
+                val transTitleName = getString(R.string.transition_title_name)
+                val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
+                        this@MainActivity,
+
+                        AndroidPair.create(sharedImgView, transImgName),
+                        AndroidPair.create(sharedTitleView, transTitleName)
+                )
+
                 startActivity(detailsIntent, transitionActivityOptions.toBundle())
 
             }
