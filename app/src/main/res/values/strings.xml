@@ -3,4 +3,5 @@
     <string name="item_img">item image</string>
     <string name="transition_img_name">transitionItemImage</string>
     <string name="transition_title_name">transitionTitleName</string>
+    <string name="transition_container_name">transition_container</string>
 </resources>

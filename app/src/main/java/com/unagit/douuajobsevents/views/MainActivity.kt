@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
-import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
@@ -42,18 +41,20 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView {
     private fun showItemsInList(items: List<Item>) {
         // Listener for an item click in a list of items
         val listener = object: ItemAdapter.Listener {
-            override fun onItemClicked(item: Item, sharedImgView: View, sharedTitleView: View) {
+            override fun onItemClicked(item: Item, imgView: View, titleView: View, containerView: View) {
 //                Snackbar.make(activityMainLayout, item.title, Snackbar.LENGTH_SHORT)
 //                        .show()
 //
                 val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
                 val transImgName = getString(R.string.transition_img_name)
                 val transTitleName = getString(R.string.transition_title_name)
+                val transContainerName = getString(R.string.transition_container_name)
                 val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
                         this@MainActivity,
 
-                        AndroidPair.create(sharedImgView, transImgName),
-                        AndroidPair.create(sharedTitleView, transTitleName)
+                        AndroidPair.create(imgView, transImgName),
+                        AndroidPair.create(titleView, transTitleName),
+                        AndroidPair.create(containerView, transContainerName)
                 )
 
                 startActivity(detailsIntent, transitionActivityOptions.toBundle())
