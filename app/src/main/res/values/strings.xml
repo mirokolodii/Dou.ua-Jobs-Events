@@ -4,6 +4,7 @@
     <string name="transition_img_name">transitionItemImage</string>
     <string name="transition_title_name">transitionTitleName</string>
     <string name="transition_container_name">transition_container</string>
+    <string name="toolbar_title">toolbar title</string>
 
     <string name="test_string">
         US national security adviser John Bolton is in Moscow for talks after Russia gave a frosty reception to news the US was dropping a nuclear treaty.
