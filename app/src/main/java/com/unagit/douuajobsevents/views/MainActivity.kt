@@ -42,19 +42,24 @@ class MainActivity : AppCompatActivity(), ListPresenter.ListView {
     private fun showItemsInList(items: List<Item>) {
         // Listener for an item click in a list of items
         val listener = object: ItemAdapter.Listener {
-            override fun onItemClicked(item: Item, sharedImgView: View, sharedTitleView: View) {
-//                Snackbar.make(activityMainLayout, item.title, Snackbar.LENGTH_SHORT)
+            override fun onItemClicked(item: Item, imgView: View, titleView: View, containerView: View) {
+//                Snackbar.make(activityMainLayout, item.guid, Snackbar.LENGTH_SHORT)
 //                        .show()
-//
+
                 val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
+                detailsIntent.putExtra(getString(R.string.extra_guid_id), item.guid)
                 val transImgName = getString(R.string.transition_img_name)
                 val transTitleName = getString(R.string.transition_title_name)
+                val transContainerName = getString(R.string.transition_container_name)
                 val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
                         this@MainActivity,
 
-                        AndroidPair.create(sharedImgView, transImgName),
-                        AndroidPair.create(sharedTitleView, transTitleName)
+                        AndroidPair.create(imgView, transImgName),
+                        AndroidPair.create(titleView, transTitleName),
+                        AndroidPair.create(containerView, transContainerName)
                 )
+
+
 
                 startActivity(detailsIntent, transitionActivityOptions.toBundle())
 

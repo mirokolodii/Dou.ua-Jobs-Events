@@ -3,4 +3,34 @@
     <string name="item_img">item image</string>
     <string name="transition_img_name">transitionItemImage</string>
     <string name="transition_title_name">transitionTitleName</string>
+    <string name="transition_container_name">transition_container</string>
+    <string name="toolbar_title">toolbar title</string>
+
+    <string name="test_string">
+        US national security adviser John Bolton is in Moscow for talks after Russia gave a frosty reception to news the US was dropping a nuclear treaty.
+
+President Donald Trump said Russia had violated the Intermediate-Range Nuclear Forces (INF) treaty and the US planned to withdraw as a result.
+
+The treaty, which was signed in 1987, restricted US and Russian short- and medium-range nuclear missiles.
+
+Mr Bolton is reported to have been a key voice pushing for the withdrawal.
+
+He is due to meet senior officials during his pre-planned visit but may now meet President Vladimir Putin too.
+
+As Mr Bolton began his visit on Monday, the Kremlin warned it would take steps to maintain the balance of nuclear power.
+
+"We need to hear the American sides explanation on this issue," spokesman Dmitry Peskov said. "Scrapping the treaty forces Russia to take steps for its own security."
+
+What did the treaty do?
+The INF treaty was signed by US President Ronald Reagan and Mikhail Gorbachev, the last Soviet leader, in the final years of the Cold War.
+
+It banned ground-launched medium-range missiles, with a range of between 500 and 5,500km (310-3,400 miles) - both nuclear and conventional - effectively reducing the perceived threat to European nations from Soviet missiles.
+
+It has stayed in effect for three decades but on Saturday President Trump said Russia had not adhered to the deal.
+
+Trump and the nuclear codes
+Mikhail Gorbachev: The man who lost an empire
+Tensions rise as US threatens to take out Russian missiles
+    </string>
+    <string name="extra_guid_id">extra_guid_id</string>
 </resources>

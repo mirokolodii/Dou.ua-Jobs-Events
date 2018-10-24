@@ -38,12 +38,13 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
 
             itemView.setOnClickListener {listener.onItemClicked(item,
                     itemView.imageView,
-                    itemView.itemTitle
+                    itemView.itemTitle,
+                    itemView
             )}
 
         }
     }
     interface Listener {
-        fun onItemClicked(item: Item, imgView: View, titleView: View)
+        fun onItemClicked(item: Item, imgView: View, titleView: View, containerView: View)
     }
 }

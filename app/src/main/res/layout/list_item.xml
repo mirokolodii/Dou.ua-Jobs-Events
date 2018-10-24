@@ -10,6 +10,7 @@
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     android:minHeight="48dp"
+    android:transitionName="@string/transition_container_name"
     tools:showIn="@id/recyclerView">
     <LinearLayout
         android:layout_width="match_parent"
