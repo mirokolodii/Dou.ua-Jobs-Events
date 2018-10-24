@@ -11,6 +11,7 @@ import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.DataInjector
 import kotlinx.android.synthetic.main.activity_details.*
+import org.jsoup.Jsoup
 
 class DetailsActivity : AppCompatActivity() {
 
@@ -36,7 +37,8 @@ class DetailsActivity : AppCompatActivity() {
 
         itemTitle.text = item.title
         val description = decodeHtml(item.description)
-        itemDetails.text = description
+        val description2 = cleanupHtml(description.toString())
+        itemDetails.text = description2
 
         itemTitle.setOnClickListener { _ ->
             Snackbar.make(activityDetailsLayout, item.title, Snackbar.LENGTH_SHORT).show()
@@ -51,5 +53,9 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         return result
+    }
+
+    private fun cleanupHtml(str: String) : String {
+        Jsoup.parse(str)
     }
 }
