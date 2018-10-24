@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.text.HtmlCompat
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.DataInjector
 import kotlinx.android.synthetic.main.activity_details.*
@@ -24,6 +25,14 @@ class DetailsActivity : AppCompatActivity() {
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
         val item = DataInjector.getItemById(guid)
+
+        //Load img into ImgView
+        Picasso
+                .get()
+                .load(item.imgUrl)
+//                .resize(200, 150)
+//                .centerInside()
+                .into(itemImg)
 
         itemTitle.text = item.title
         val description = decodeHtml(item.description)
