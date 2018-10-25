@@ -1,23 +1,24 @@
 package com.unagit.douuajobsevents.presenters
 
 import android.os.Handler
+import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.Item
-import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.DataInjector
 import java.util.*
 
-class ListPresenter {
-    private var view: ListPresenter.ListView? = null
+class ListPresenter : ListContract.ListPresenter {
+    private var view: ListContract.ListView? = null
 
-    fun attach(view: ListView) {
+    override fun attach(view: ListContract.ListView) {
         this.view = view
     }
 
-    fun detach() {
+    override fun detach() {
         this.view = null
     }
 
-    fun getItems() {
+
+    override fun getItems() {
         view?.showLoading()
 
         // Simulate network delay
@@ -33,9 +34,6 @@ class ListPresenter {
         return DataInjector.getItems()
     }
 
-    interface ListView {
-        fun showLoading()
-        fun showItems(items: List<Item>)
-    }
+
 
 }

@@ -8,14 +8,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
+import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Pair as AndroidPair
 
-class MainActivity : AppCompatActivity(), ListPresenter.ListView {
+class MainActivity : AppCompatActivity(), ListContract.ListView {
 
-    private val presenter = ListPresenter()
+    private val presenter: ListContract.ListPresenter = ListPresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
