@@ -1,7 +1,6 @@
 package com.unagit.douuajobsevents.views
 
 import android.os.Bundle
-import android.text.Html
 import android.text.Spanned
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -33,14 +32,14 @@ class DetailsActivity : AppCompatActivity() {
                 .load(item.imgUrl)
 //                .resize(200, 150)
 //                .centerInside()
-                .into(itemImg)
+                .into(detailedItemImg)
 
-        itemTitle.text = item.title
+        detailedItemTitle.text = item.title
         val description = decodeHtml(item.description)
         val description2 = cleanupHtml(description.toString())
-        itemDetails.text = description2
+        detailedItemDetails.text = description2
 
-        itemTitle.setOnClickListener { _ ->
+        detailedItemTitle.setOnClickListener { _ ->
             Snackbar.make(activityDetailsLayout, item.title, Snackbar.LENGTH_SHORT).show()
         }
     }
@@ -57,5 +56,7 @@ class DetailsActivity : AppCompatActivity() {
 
     private fun cleanupHtml(str: String) : String {
         Jsoup.parse(str)
+        return ""
     }
 }
+
