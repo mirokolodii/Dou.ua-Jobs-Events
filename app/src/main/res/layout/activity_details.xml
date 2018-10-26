@@ -23,7 +23,7 @@
             >
 
             <ImageView
-                android:id="@+id/itemImg"
+                android:id="@+id/detailedItemImg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:src="@drawable/hrevent"
@@ -61,7 +61,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/itemTitle"
+                android:id="@+id/detailedItemTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -75,7 +75,7 @@
 
 
             <TextView
-                android:id="@+id/itemDetails"
+                android:id="@+id/detailedItemDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Description"

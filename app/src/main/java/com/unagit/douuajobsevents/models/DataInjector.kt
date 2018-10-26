@@ -46,5 +46,9 @@ class DataInjector {
             }
             throw IllegalArgumentException("Not able to find id in items.")
         }
+
+        fun getItemInPosition(position: Int): Item {
+            return items[position]
+        }
     }
 }

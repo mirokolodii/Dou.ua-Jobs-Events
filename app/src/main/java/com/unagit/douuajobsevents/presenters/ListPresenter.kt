@@ -34,6 +34,9 @@ class ListPresenter : ListContract.ListPresenter {
         return DataInjector.getItems()
     }
 
-
-
+    override fun itemClicked(position: Int) {
+        view?.showDetails(
+                position,
+                DataInjector.getItemInPosition(position))
+    }
 }

@@ -8,11 +8,11 @@ interface ListContract {
     interface ListView {
         fun showLoading()
         fun showItems(items: List<Item>)
-        fun showDetails()
+        fun showDetails(position: Int, item: Item)
     }
 
     interface ListPresenter : BasePresenter<ListView> {
         fun getItems()
-        fun itemClicked()
+        fun itemClicked(position: Int)
     }
 }

@@ -29,7 +29,7 @@
             android:transitionName="@string/transition_title_name"
             />
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/itemImg"
             android:layout_weight="3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
