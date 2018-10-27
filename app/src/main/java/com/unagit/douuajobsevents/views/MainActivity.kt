@@ -9,6 +9,7 @@ import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.contracts.ListContract
+import com.unagit.douuajobsevents.models.DataInjector
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,8 +23,9 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter.attach(this)
-        presenter.getItems()
+//        presenter.attach(this)
+//        presenter.getItems()
+        DataInjector.printTestHtmlEl()
     }
 
     override fun onDestroy() {
