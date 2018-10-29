@@ -90,14 +90,21 @@ class DataInjector {
                 val doc: Document = Jsoup.parseBodyFragment(htmlStr.toString())
 
 
-                Log.d(tag, "Final--------------: \n $doc")
+//                Log.d(tag, "Final--------------: \n $doc")
 //                println("testJsoup: ${doc.body().html()}")
 
                 val imgUrl = doc.body().selectFirst("p").selectFirst("img").attr("src")
-                val itemDesc = doc.select("body > :gt(1)")
+                val itemDesc = doc.select("body > :gt(1)").html()
 //                Log.d(tag, "Img Url--------------: \n $imgUrl")
-                Log.d(tag, "P > 2--------------: \n $itemDesc \n")
+//                Log.d(tag, "P > 2--------------: \n $itemDesc \n")
 
+                items.add(Item(
+                        it.title,
+                        it.guid,
+                        it.type,
+                        imgUrl,
+                        itemDesc
+                ))
             }
 
         }
