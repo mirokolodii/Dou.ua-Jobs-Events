@@ -2,6 +2,8 @@ package com.unagit.douuajobsevents.views
 
 import android.os.Bundle
 import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.text.HtmlCompat
@@ -22,41 +24,36 @@ class DetailsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) //remove title
 
+
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
         val item = DataInjector.getItemById(guid)
+        Log.d("detailsTag", "${item.title}, ${item.imgUrl}")
 
-        //Load img into ImgView
-        Picasso
-                .get()
-                .load(item.imgUrl)
-//                .resize(200, 150)
-//                .centerInside()
-                .into(detailedItemImg)
-
+//
+//        //Load img into ImgView
+//        Picasso
+//                .get()
+//                .load(item.imgUrl)
+////                .resize(200, 150)
+////                .centerInside()
+//                .into(detailedItemImg)
+//
         detailedItemTitle.text = item.title
-        val description = decodeHtml(item.description)
-        val description2 = cleanupHtml(description.toString())
-        detailedItemDetails.text = description2
+        detailedItemDetails.text = item.description
 
-        detailedItemTitle.setOnClickListener { _ ->
-            Snackbar.make(activityDetailsLayout, item.title, Snackbar.LENGTH_SHORT).show()
-        }
+
+//        detailedItemTitle.setOnClickListener { _ ->
+//            Snackbar.make(activityDetailsLayout, item.title, Snackbar.LENGTH_SHORT).show()
+//        }
+//
+//        detailedItemDetails.setOnClickListener { _ ->
+//            Snackbar.make(activityDetailsLayout, "Details clicked ${detailedItemDetails.linksClickable}", Snackbar.LENGTH_SHORT).show()
+//        }
+
+//        detailedItemDetails.setMovementMethod(LinkMovementMethod.getInstance())
+
     }
 
-    private fun decodeHtml(str: String): Spanned {
-        var result = HtmlCompat.fromHtml(str, HtmlCompat.FROM_HTML_MODE_COMPACT)
-
-        while(result.toString() != str) {
-            result = HtmlCompat.fromHtml(str, HtmlCompat.FROM_HTML_MODE_COMPACT)
-        }
-
-        return result
-    }
-
-    private fun cleanupHtml(str: String) : String {
-        Jsoup.parse(str)
-        return ""
-    }
 }
 

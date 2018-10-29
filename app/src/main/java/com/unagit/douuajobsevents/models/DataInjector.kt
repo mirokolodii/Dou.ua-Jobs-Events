@@ -8,14 +8,16 @@ import org.jsoup.nodes.Document
 import java.lang.IllegalArgumentException
 
 class DataInjector {
+
+    private class RawItem(val title: String, val guid: String, val desc: String)
+
     companion object {
 
     private val rawitems = listOf(
-            Item(
+            RawItem(
                     "HR event «Требования современного IT рынка. Как искать и найти работу в IT», 25 октября, Одесса",
                     "https://dou.ua/calendar/23759/",
-                    ItemType.EVENT,
-                    "https://s.dou.ua/CACHE/images/img/events/700%D1%85450/9c59ac3883b39a74909457823f949800.png",
+                    "https://s.dou.ua/CACHE/images/img/events/700%D1%85450/9c59ac3883b39a74909457823f949800.png" +
                     "&lt;p&gt;&lt;a href=\"https://dou.ua/calendar/23925/\" target=\"_blank\"&gt;&lt;img src=\"https://s.dou.ua/CACHE/images/img/events/Sitecore_logo_horizontal_with_tagline_RedBlack_A4/58aa526901033b5e87f4233e048be80e.png\" style=\"float: right; padding-left: 4px;\"&gt;&lt;/a&gt;&lt;strong&gt;Дата:&lt;/strong&gt; 14 ноября (среда)&lt;br&gt;&lt;strong&gt;Место:&lt;/strong&gt; Днепр&lt;/p&gt;\n" +
                             "\n" +
                             "&lt;p&gt;Компания Sitecore объявляет набор на бесплатный курс по .Net с возможностью дальнейшего трудоустройства на позицию Junior Software Engineer в компанию Sitecore. &lt;/p&gt;\n" +
@@ -50,11 +52,10 @@ class DataInjector {
                             "\n" +
                             "&lt;p&gt;&lt;strong&gt;Sitecore Ukraine&lt;/strong&gt; — часть международной компании Sitecore A/S, которая разрабатывает собственную платформу упрампании находится в Дании, Копенгаген. Sitecore A/S существует с 2001 года. Офис в Днепре был основан в 2004 году. Работа компании охватывает полный цикл работы над собственным продуктом: замысел, создание и помощь.&lt;/p&gt;"
             ),
-            Item(
+            RawItem(
                     "IT-квіз ГлуздоГерць, 1 листопада, Дніпро",
                     "https://dou.ua/calendar/23757/",
-                    ItemType.EVENT,
-                    "https://s.dou.ua/CACHE/images/img/events/%D0%93%D0%BB%D1%83%D0%B7%D0%B4%D0%BE%D0%B3%D0%B5%D1%80%D1%86%D1%8C-03/3f21738b350137d20cb59a8c3a7da9d9.png",
+                    "https://s.dou.ua/CACHE/images/img/events/%D0%93%D0%BB%D1%83%D0%B7%D0%B4%D0%BE%D0%B3%D0%B5%D1%80%D1%86%D1%8C-03/3f21738b350137d20cb59a8c3a7da9d9.png" +
                     "&lt;p&gt;&lt;a href=\"https://dou.ua/calendar/23759/\" target=\"_blank\"&gt;&lt;img src=\"https://s.dou.ua/CACHE/images/img/events/700%D1%85450/9c59ac3883b39a74909457823f949800.png\" style=\"float: right; padding-left: 4px;\"&gt;&lt;/a&gt;&lt;strong&gt;Дата:&lt;/strong&gt; 25 октября (четверг)&lt;br&gt;&lt;strong&gt;Начало:&lt;/strong&gt; 18:30&lt;br&gt;&lt;strong&gt;Место:&lt;/strong&gt; Одесса, ул. Садовая 3, Компьютерная Академия «Шаг», &lt;nobr&gt;2-й&lt;/nobr&gt; этаж, Конференц-зал № 32&lt;/p&gt;\n" +
                             "\n" +
                             "&lt;p&gt;Ищете работу в сфере IT? Интересуют требования работодателей к IT-cпециалистам?&lt;/p&gt;\n" +
@@ -74,39 +75,29 @@ class DataInjector {
 
 
         fun getItems(): List<Item> {
-
-            return items
-        }
-
-        fun printTestHtmlEl() {
             val tag = "testJsoup"
             rawitems.forEach {
-                //                Log.d(tag, "Before-------------: \n ${it.description}")
-                // Convert html codes into html tags
-                val htmlStr = HtmlCompat.fromHtml(it.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
-//                Log.d(tag, "After fromHtml-------------: \n ${htmlStr.toString().length}")
-//                Log.d(tag, "After toString-------------: \n ${htmlStr.toString()}")
-                // Parse html
+                // Convert HTML codes into HTML tags
+                val htmlStr = HtmlCompat.fromHtml(it.desc, HtmlCompat.FROM_HTML_MODE_COMPACT)
+
+                // Parse HTML code
                 val doc: Document = Jsoup.parseBodyFragment(htmlStr.toString())
-
-
-//                Log.d(tag, "Final--------------: \n $doc")
-//                println("testJsoup: ${doc.body().html()}")
-
                 val imgUrl = doc.body().selectFirst("p").selectFirst("img").attr("src")
+                // Get HTML paragraphs counting from 2nd
                 val itemDesc = doc.select("body > :gt(1)").html()
-//                Log.d(tag, "Img Url--------------: \n $imgUrl")
-//                Log.d(tag, "P > 2--------------: \n $itemDesc \n")
+
+                // Get Spanned from String
+                val spannedDesc = HtmlCompat.fromHtml(itemDesc, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
                 items.add(Item(
                         it.title,
                         it.guid,
-                        it.type,
+                        ItemType.EVENT,
                         imgUrl,
-                        itemDesc
+                        spannedDesc
                 ))
             }
-
+            return items
         }
 
         fun getItemById(id: String): Item {

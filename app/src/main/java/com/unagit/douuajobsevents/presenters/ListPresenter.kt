@@ -1,6 +1,7 @@
 package com.unagit.douuajobsevents.presenters
 
 import android.os.Handler
+import android.util.Log
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.models.DataInjector
@@ -35,8 +36,10 @@ class ListPresenter : ListContract.ListPresenter {
     }
 
     override fun itemClicked(position: Int) {
-        view?.showDetails(
+        view?.showItemDetails(
                 position,
                 DataInjector.getItemInPosition(position))
+//        val tag = "PresenterDebugging"
+//        Log.d(tag, "Position is $position, item is ${DataInjector.getItemInPosition(position)}")
     }
 }

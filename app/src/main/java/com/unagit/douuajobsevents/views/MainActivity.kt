@@ -4,6 +4,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
@@ -23,10 +24,12 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        presenter.attach(this)
-//        presenter.getItems()
-        DataInjector.printTestHtmlEl()
+        presenter.attach(this)
+        presenter.getItems()
     }
+
+
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -61,27 +64,27 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
         }
     }
 
-    override fun showDetails(position: Int, item: Item) {
-        val itemView = recyclerView.layoutManager?.getChildAt(position)
-        val imgView = itemView?.findViewById<View>(R.id.itemImg)
-        val titleView = itemView?.findViewById<View>(R.id.itemTitle)
-
+    override fun showItemDetails(position: Int, item: Item) {
+//        val itemView = recyclerView.layoutManager?.getChildAt(position)
+//        val imgView = itemView?.findViewById<View>(R.id.itemImg)
+//        val titleView = itemView?.findViewById<View>(R.id.itemTitle)
+//
         val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
         detailsIntent.putExtra(getString(R.string.extra_guid_id), item.guid)
-        val transImgName = getString(R.string.transition_img_name)
-        val transTitleName = getString(R.string.transition_title_name)
-        val transContainerName = getString(R.string.transition_container_name)
-        val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
-                this@MainActivity,
-
-                AndroidPair.create(imgView, transImgName),
-                AndroidPair.create(titleView, transTitleName),
-                AndroidPair.create(itemView, transContainerName)
-        )
-
-
-
-        startActivity(detailsIntent, transitionActivityOptions.toBundle())
+//        val transImgName = getString(R.string.transition_img_name)
+//        val transTitleName = getString(R.string.transition_title_name)
+//        val transContainerName = getString(R.string.transition_container_name)
+//        val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
+//                this@MainActivity,
+//
+//                AndroidPair.create(imgView, transImgName),
+//                AndroidPair.create(titleView, transTitleName),
+//                AndroidPair.create(itemView, transContainerName)
+//        )
+//
+//
+//
+        startActivity(detailsIntent) //, transitionActivityOptions.toBundle())
 
     }
 
