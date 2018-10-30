@@ -7,7 +7,7 @@ import org.simpleframework.xml.Root;
 import java.util.List;
 
 @Root(name="rss", strict = false)
-class ItemDataWrapper {
+public class ItemDataWrapper {
 
     @Element(name="title")
     @Path("channel")

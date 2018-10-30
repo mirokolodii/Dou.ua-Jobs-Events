@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.DataInjector
+import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,7 +26,10 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter.attach(this)
-        presenter.getItems()
+//        presenter.getItems()
+
+        val dataProvider = DataProvider()
+        dataProvider.getItems()
     }
 
 
@@ -88,19 +92,4 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
     }
 
-    // To simplify development we use single activity w/o fragments.
-    // Will add fragments later on, if needed.
-//    private fun setupTabs() {
-////        val viewPager: ViewPager = findViewById(R.id.container_list)
-////        viewPager.adapter = FragmentsAdapter(supportFragmentManager)
-//        container_list.adapter = FragmentsAdapter(supportFragmentManager)
-//
-////        val tabLayout: TabLayout = findViewById(R.id.tab_layout)
-////        tabLayout.setupWithViewPager(viewPager)
-//        tab_layout.setupWithViewPager(container_list)
-//        // Set tab titles
-//        for(pos in 0 until tab_layout.tabCount) {
-//            tab_layout.getTabAt(pos)?.text = "title $pos"
-//        }
-//    }
 }
