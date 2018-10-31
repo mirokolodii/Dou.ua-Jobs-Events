@@ -22,7 +22,7 @@ interface DouAPIService {
         fun create(): DouAPIService {
             val retrofit = Retrofit.Builder()
                     .baseUrl(RetrofitConstants.DOU_UA_BASE_API_URL)
-//                    .addConverterFactory(SimpleXmlConverterFactory.create())
+                    .addConverterFactory(SimpleXmlConverterFactory.create())
                     .build()
             return retrofit.create(DouAPIService::class.java)
         }
