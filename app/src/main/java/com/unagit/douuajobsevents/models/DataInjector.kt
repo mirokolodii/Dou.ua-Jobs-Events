@@ -92,9 +92,9 @@ class DataInjector {
                 items.add(Item(
                         it.title,
                         it.guid,
-                        ItemType.EVENT,
+//                        ItemType.EVENT,
                         imgUrl,
-                        spannedDesc
+                        itemDesc
                 ))
             }
             return items

@@ -10,6 +10,7 @@ import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.contracts.ListContract
+import com.unagit.douuajobsevents.models.AppDatabase
 import com.unagit.douuajobsevents.models.DataInjector
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
@@ -28,8 +29,10 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
         presenter.attach(this)
 //        presenter.getItems()
 
-        val dataProvider = DataProvider()
+        val dataProvider = DataProvider(application)
         dataProvider.getItems()
+
+//        val dbInstance = AppDatabase.getInstance(this)
     }
 
 

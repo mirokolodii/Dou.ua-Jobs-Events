@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [Item::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun ItemDao(): ItemDao
+    abstract fun itemDao(): ItemDao
 
     companion object {
         var INSTANCE: AppDatabase? = null
@@ -16,11 +16,12 @@ abstract class AppDatabase : RoomDatabase() {
         fun getInstance(context: Context): AppDatabase? {
             if(INSTANCE == null) {
                 synchronized(AppDatabase::class) {
-                    INSTANCE = Room.databaseBuilder(context, AppDatabase::class.java, "appDB")
+                    INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "appDB")
                             .build()
                 }
             }
             return INSTANCE
         }
+
     }
 }
