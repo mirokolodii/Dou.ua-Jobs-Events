@@ -10,10 +10,9 @@ import com.unagit.douuajobsevents.helpers.ItemType
 data class Item(
         @PrimaryKey
         @NonNull
-        var guid: String,
-
-        var title: String,
-        var type: ItemType,
-        var imgUrl: String,
-        var description: Spanned
+        val guid: String,
+        val title: String,
+        val type: ItemType,
+        val imgUrl: String,
+        val description: Spanned
 )
