@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
         val dataProvider = DataProvider(application)
         dataProvider.getItems()
+        dataProvider.readFromDB()
 
 //        val dbInstance = AppDatabase.getInstance(this)
     }

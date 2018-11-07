@@ -26,9 +26,18 @@ class DataProvider(application: Application) : Callback<ItemDataWrapper> {
             }
         }
 
-        class GetItemsAsyncTask: AsyncTask<Void, Void, List<Item>>() {
+        class GetItemsAsyncTask: AsyncTask<Void, Void, List<Item>?>() {
+
             override fun doInBackground(vararg params: Void?): List<Item>? {
                 return DB_INSTANCE?.itemDao()?.getItems()
+            }
+
+            override fun onPostExecute(result: List<Item>?) {
+//                super.onPostExecute(result)
+                result?.forEach {
+                    Log.d("DBTest", it.title)
+                }
+
             }
         }
     }
@@ -43,6 +52,11 @@ class DataProvider(application: Application) : Callback<ItemDataWrapper> {
         val call = douApiService.getEvents()
         call.enqueue(this)
     }
+
+    fun readFromDB() {
+        GetItemsAsyncTask().execute()
+    }
+
     override fun onFailure(call: Call<ItemDataWrapper>, t: Throwable) {
         Log.d(logTag, "Failed to get data: ${t.message}")
     }
