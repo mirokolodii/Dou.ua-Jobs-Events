@@ -8,7 +8,7 @@ interface ListContract {
     interface ListView {
         fun showLoading(show: Boolean)
         fun showItems(items: List<Item>)
-        fun showItemDetails(position: Int, item: Item)
+        fun showItemDetails(position: Int, guid: String)
     }
 
     interface ListPresenter : BasePresenter<ListView> {

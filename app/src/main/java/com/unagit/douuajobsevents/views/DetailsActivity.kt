@@ -26,9 +26,12 @@ class DetailsActivity : AppCompatActivity() {
 
 
         // Get Item from guid
+
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
-        val item = DataInjector.getItemById(guid)
-        Log.d("detailsTag", "${item.title}, ${item.imgUrl}")
+
+                    Snackbar.make(activityDetailsLayout, guid, Snackbar.LENGTH_SHORT).show()
+//        val item = DataInjector.getItemById(guid)
+//        Log.d("detailsTag", "${item.title}, ${item.imgUrl}")
 
 //
 //        //Load img into ImgView
@@ -39,8 +42,8 @@ class DetailsActivity : AppCompatActivity() {
 ////                .centerInside()
 //                .into(detailedItemImg)
 //
-        detailedItemTitle.text = item.title
-        detailedItemDetails.text = item.description
+//        detailedItemTitle.text = item.title
+//        detailedItemDetails.text = item.description
 
 
 //        detailedItemTitle.setOnClickListener { _ ->

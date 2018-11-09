@@ -33,9 +33,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
             override fun onItemClicked(position: Int) {
 //                Snackbar.make(activityMainLayout, item.guid, Snackbar.LENGTH_SHORT)
 //                        .show()
-
                 presenter.itemClicked(position)
-
             }
         }
 
@@ -43,9 +41,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = ItemAdapter(null, listener)
         }
-
-
-
     }
 
 
@@ -72,16 +67,14 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
     }
 
-    override fun showItemDetails(position: Int, item: Item) {
+    override fun showItemDetails(position: Int, guid: String) {
 //        val itemView =
-//
-//
 // recyclerView.layoutManager?.getChildAt(position)
 //        val imgView = itemView?.findViewById<View>(R.id.itemImg)
 //        val titleView = itemView?.findViewById<View>(R.id.itemTitle)
 //
         val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
-        detailsIntent.putExtra(getString(R.string.extra_guid_id), item.guid)
+        detailsIntent.putExtra(getString(R.string.extra_guid_id), guid)
 //        val transImgName = getString(R.string.transition_img_name)
 //        val transTitleName = getString(R.string.transition_title_name)
 //        val transContainerName = getString(R.string.transition_container_name)

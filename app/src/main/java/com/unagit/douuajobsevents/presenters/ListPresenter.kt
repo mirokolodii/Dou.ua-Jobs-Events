@@ -1,18 +1,15 @@
 package com.unagit.douuajobsevents.presenters
 
 import android.app.Application
-import android.os.Handler
 import android.util.Log
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.models.DataInjector
 import com.unagit.douuajobsevents.models.DataProvider
-import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class ListPresenter : ListContract.ListPresenter {
@@ -63,9 +60,17 @@ class ListPresenter : ListContract.ListPresenter {
     }
 
     override fun itemClicked(position: Int) {
-        view?.showItemDetails(
-                position,
-                DataInjector.getItemInPosition(position))
+        val guid = dataProvider?.getGuidForItemIn(position)
+
+        if(guid != null) {
+        view?.showItemDetails(position, guid)
+
+        } else {
+            Log.e(this.javaClass.simpleName, "No items")
+        }
+
+
+
 //        val tag = "PresenterDebugging"
 //        Log.d(tag, "Position is $position, item is ${DataInjector.getItemInPosition(position)}")
     }

@@ -2,17 +2,11 @@ package com.unagit.douuajobsevents.models
 
 import android.app.Application
 import android.os.AsyncTask
-import android.text.Html
 import android.util.Log
-import androidx.core.text.HtmlCompat
-import com.unagit.douuajobsevents.helpers.ItemType
 import io.reactivex.Observable
-import io.reactivex.ObservableOnSubscribe
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.TimeUnit
-
 
 class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
 
@@ -68,6 +62,10 @@ class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
             emitter.onComplete()
         }
 
+    }
+
+    fun getGuidForItemIn(position: Int): String? {
+        return if(items != null) items!![position].guid else null
     }
 
     // Retrofit callback
