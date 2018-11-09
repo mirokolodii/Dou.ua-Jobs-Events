@@ -26,14 +26,10 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter.attach(this)
-//        presenter.getItems()
+        presenter.attach(this, application)
+        presenter.getItems()
 
-        val dataProvider = DataProvider(application)
-        dataProvider.getItems()
-        dataProvider.readFromDB()
 
-//        val dbInstance = AppDatabase.getInstance(this)
     }
 
 
@@ -51,10 +47,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
     override fun showItems(items: List<Item>) {
         progressBar.visibility = View.GONE
-        showItemsInList(items)
-    }
 
-    private fun showItemsInList(items: List<Item>) {
         // Listener for an item click in a list of items
         val listener = object: ItemAdapter.Listener {
             override fun onItemClicked(position: Int) {

@@ -6,11 +6,14 @@ import android.text.Html
 import android.util.Log
 import androidx.core.text.HtmlCompat
 import com.unagit.douuajobsevents.helpers.ItemType
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DataProvider(application: Application) : Callback<ItemDataWrapper> {
+
+class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
 
     private val douApiService = DouAPIService.create()
     private val logTag = "RetrofitDataProvider"
@@ -43,24 +46,38 @@ class DataProvider(application: Application) : Callback<ItemDataWrapper> {
     }
 
     init {
-        DB_INSTANCE = AppDatabase.getInstance(application)
+        DB_INSTANCE = AppDatabase.getInstance(application!!)
     }
 
-    fun getItems() {
-//        DB_INSTANCE = AppDatabase.getInstance(application)
-
-        val call = douApiService.getEvents()
-        call.enqueue(this)
+    fun detach() {
+        this.application = null
     }
+
+
+    fun getItemsObservable(): Observable<List<Item>> {
+
+        val observable = Observable.create<List<Item>> { emitter ->
+            emitter.onNext(DB_INSTANCE!!.itemDao().getItems())
+        }
+
+        // Refresh data from network
+        douApiService.getEvents().enqueue(this)
+
+        return observable
+
+    }
+
 
     fun readFromDB() {
         GetItemsAsyncTask().execute()
     }
 
+    // Retrofit callback
     override fun onFailure(call: Call<ItemDataWrapper>, t: Throwable) {
         Log.d(logTag, "Failed to get data: ${t.message}")
     }
 
+    // Retrofit callback
     override fun onResponse(call: Call<ItemDataWrapper>, response: Response<ItemDataWrapper>) {
 //        Log.d(logTag, "${call.request().url()}")
 //        Log.d(logTag, "Received response from retrofit + ${response.isSuccessful}")
