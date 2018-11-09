@@ -29,27 +29,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
         presenter.attach(this, application)
         presenter.getItems()
 
-
-    }
-
-
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detach()
-    }
-
-    override fun showLoading() {
-        progressBar.visibility = View.VISIBLE
-    }
-
-
-    override fun showItems(items: List<Item>) {
-        progressBar.visibility = View.GONE
-
-        // Listener for an item click in a list of items
-        val listener = object: ItemAdapter.Listener {
+        val listener = object : ItemAdapter.Listener {
             override fun onItemClicked(position: Int) {
 //                Snackbar.make(activityMainLayout, item.guid, Snackbar.LENGTH_SHORT)
 //                        .show()
@@ -61,12 +41,42 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(items, listener)
+            adapter = ItemAdapter(null, listener)
+        }
+
+
+
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detach()
+    }
+
+    override fun showLoading(show: Boolean) {
+        if (show) {
+            progressBar.visibility = View.VISIBLE
+        } else {
+            progressBar.visibility = View.GONE
         }
     }
 
+
+    override fun showItems(items: List<Item>) {
+
+        Snackbar.make(activityMainLayout, "${items.size} Items received.", Snackbar.LENGTH_SHORT).show()
+
+        val adapter = recyclerView.adapter as ItemAdapter
+        adapter.setData(items)
+
+    }
+
     override fun showItemDetails(position: Int, item: Item) {
-//        val itemView = recyclerView.layoutManager?.getChildAt(position)
+//        val itemView =
+//
+//
+// recyclerView.layoutManager?.getChildAt(position)
 //        val imgView = itemView?.findViewById<View>(R.id.itemImg)
 //        val titleView = itemView?.findViewById<View>(R.id.itemTitle)
 //

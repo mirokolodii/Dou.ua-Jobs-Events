@@ -11,12 +11,15 @@ import io.reactivex.ObservableOnSubscribe
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.TimeUnit
 
 
 class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
 
     private val douApiService = DouAPIService.create()
     private val logTag = "RetrofitDataProvider"
+    private var items: List<Item>? = null
+
 
 
     companion object {
@@ -47,6 +50,9 @@ class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
 
     init {
         DB_INSTANCE = AppDatabase.getInstance(application!!)
+
+        // Refresh data from network
+        douApiService.getEvents().enqueue(this)
     }
 
     fun detach() {
@@ -55,21 +61,13 @@ class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
 
 
     fun getItemsObservable(): Observable<List<Item>> {
-
-        val observable = Observable.create<List<Item>> { emitter ->
-            emitter.onNext(DB_INSTANCE!!.itemDao().getItems())
+        return Observable
+                .create<List<Item>> { emitter ->
+            items = DB_INSTANCE!!.itemDao().getItems()
+            emitter.onNext(items!!)
+            emitter.onComplete()
         }
 
-        // Refresh data from network
-        douApiService.getEvents().enqueue(this)
-
-        return observable
-
-    }
-
-
-    fun readFromDB() {
-        GetItemsAsyncTask().execute()
     }
 
     // Retrofit callback

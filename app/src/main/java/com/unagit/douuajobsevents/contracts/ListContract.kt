@@ -6,7 +6,7 @@ import com.unagit.douuajobsevents.presenters.BasePresenter
 interface ListContract {
 
     interface ListView {
-        fun showLoading()
+        fun showLoading(show: Boolean)
         fun showItems(items: List<Item>)
         fun showItemDetails(position: Int, item: Item)
     }

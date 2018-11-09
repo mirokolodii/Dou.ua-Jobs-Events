@@ -9,7 +9,7 @@ import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
 import kotlinx.android.synthetic.main.list_item.view.*
 
-class ItemAdapter(private var items: List<Item>, private val listener: Listener)
+class ItemAdapter(private var items: List<Item>?, private val listener: Listener)
     : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -18,12 +18,12 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item = items!![position]
         holder.bind(item, listener, position)
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return if(items != null) items!!.size else 0
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -39,6 +39,11 @@ class ItemAdapter(private var items: List<Item>, private val listener: Listener)
             itemView.setOnClickListener {listener.onItemClicked(position)}
 
         }
+    }
+
+    fun setData(items: List<Item>) {
+        this.items = items
+        notifyDataSetChanged()
     }
     interface Listener {
         fun onItemClicked(position: Int)

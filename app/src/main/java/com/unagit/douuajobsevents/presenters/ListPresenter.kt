@@ -10,12 +10,15 @@ import com.unagit.douuajobsevents.models.DataProvider
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class ListPresenter : ListContract.ListPresenter {
     private var view: ListContract.ListView? = null
     private var dataProvider: DataProvider? = null
+    private lateinit var disposable: Disposable
 
     override fun attach(view: ListContract.ListView, application: Application) {
         this.view = view
@@ -24,6 +27,8 @@ class ListPresenter : ListContract.ListPresenter {
 
     override fun detach() {
         this.view = null
+        disposable.dispose()
+
         // TODO: Should I detach in DataProvider?
         // -- yes: lost singleton
         // -- no: memory leakage?
@@ -32,21 +37,21 @@ class ListPresenter : ListContract.ListPresenter {
 
 
     override fun getItems() {
-        view?.showLoading()
+        view?.showLoading(true)
 
         val itemsObservable = dataProvider!!.getItemsObservable()
 
-        itemsObservable
+        disposable = itemsObservable
+                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object: Observer<List<Item>>{
+                .subscribeWith(object: DisposableObserver<List<Item>>() {
                     override fun onComplete() {
                     }
 
-                    override fun onSubscribe(d: Disposable) {
-                    }
-
                     override fun onNext(t: List<Item>) {
+
+                        view?.showLoading(false)
                         view?.showItems(t)
                     }
 
@@ -55,20 +60,6 @@ class ListPresenter : ListContract.ListPresenter {
                 })
 
 
-
-//        // Simulate network delay
-//        val handler = Handler()
-//        val runnable = Runnable {
-//            val items = getTestItems()
-//        }
-//        handler.postDelayed(runnable, 1 * 1000)
-
-
-    }
-
-
-    private fun getTestItems(): List<Item> {
-        return DataInjector.getItems()
     }
 
     override fun itemClicked(position: Int) {
