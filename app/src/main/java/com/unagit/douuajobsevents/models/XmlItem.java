@@ -13,8 +13,8 @@ class XmlItem {
     @Element(name = "title")
     String title;
 
-    @Element(name = "link")
-    String link;
+    @Element(name = "guid")
+    String guid;
 
     @Element(name = "description")
     String description;

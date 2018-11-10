@@ -11,7 +11,7 @@ object TabsObj {
 
 object RetrofitConstants {
     const val DOU_UA_BASE_API_URL = "https://dou.ua/"
-    const val DOU_UA_CALENDAR_API_URL = "calendar/feed/"
+    const val DOU_UA_CALENDAR_API_URL = "https://dou.ua/calendar/feed/"
     const val DOU_UA_VACANCIES_API_URL = "https://jobs.dou.ua/vacancies/feeds/"
 }
 
