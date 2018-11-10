@@ -68,6 +68,10 @@ class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
         return if(items != null) items!![position].guid else null
     }
 
+    fun getRefreshDataObservable(): Observable<List<Item>> {
+
+    }
+
     // Retrofit callback
     override fun onFailure(call: Call<ItemDataWrapper>, t: Throwable) {
         Log.d(logTag, "Failed to get data: ${t.message}")
