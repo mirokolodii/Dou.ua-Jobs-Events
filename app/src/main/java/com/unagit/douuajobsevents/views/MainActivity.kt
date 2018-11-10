@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
     override fun showItems(items: List<Item>) {
 
-        Snackbar.make(activityMainLayout, "${items.size} Items received.", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(activityMainLayout, "${items.size} items received from local DB.", Snackbar.LENGTH_SHORT).show()
 
         val adapter = recyclerView.adapter as ItemAdapter
         adapter.setData(items)
