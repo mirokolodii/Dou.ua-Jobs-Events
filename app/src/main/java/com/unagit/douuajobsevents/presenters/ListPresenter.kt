@@ -1,6 +1,9 @@
 package com.unagit.douuajobsevents.presenters
 
 import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.util.Log
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.Item
@@ -99,5 +102,11 @@ class ListPresenter : ListContract.ListPresenter {
                         Log.e(logTag, "Error in refreshData {${e.message}")
                     }
                 })
+    }
+
+    private fun hasNetwork(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return (activeNetwork != null && activeNetwork.isConnected)
     }
 }
