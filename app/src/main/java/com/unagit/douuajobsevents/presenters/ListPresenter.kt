@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit
 class ListPresenter : ListContract.ListPresenter {
     private var view: ListContract.ListView? = null
     private var dataProvider: DataProvider? = null
-    private lateinit var localDataDisposable: Disposable
-    private lateinit var refreshDataDisposable: Disposable
+    private var localDataDisposable: Disposable? = null
+    private var refreshDataDisposable: Disposable? = null
     private val logTag = "ListPresenter"
 
     override fun attach(view: ListContract.ListView, application: Application) {
@@ -27,8 +27,8 @@ class ListPresenter : ListContract.ListPresenter {
 
     override fun detach() {
         this.view = null
-        localDataDisposable.dispose()
-        refreshDataDisposable.dispose()
+        localDataDisposable?.dispose()
+        refreshDataDisposable?.dispose()
 
         // TODO: Should I detach in DataProvider?
         // -- yes: lost singleton
