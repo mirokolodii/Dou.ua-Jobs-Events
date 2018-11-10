@@ -41,6 +41,10 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = ItemAdapter(null, listener)
         }
+
+        button.setOnClickListener {
+            presenter.refreshData()
+        }
     }
 
 
@@ -92,4 +96,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
     }
 
+    override fun showSnackbar(string: String) {
+        Snackbar.make(activityMainLayout, string, Snackbar.LENGTH_SHORT).show()
+    }
 }

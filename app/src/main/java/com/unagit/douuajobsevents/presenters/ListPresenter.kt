@@ -15,16 +15,20 @@ import java.util.concurrent.TimeUnit
 class ListPresenter : ListContract.ListPresenter {
     private var view: ListContract.ListView? = null
     private var dataProvider: DataProvider? = null
-    private lateinit var disposable: Disposable
+    private lateinit var localDataDisposable: Disposable
+    private lateinit var refreshDataDisposable: Disposable
+    private val logTag = "ListPresenter"
 
     override fun attach(view: ListContract.ListView, application: Application) {
         this.view = view
         this.dataProvider = DataProvider(application)
+//        refreshData()
     }
 
     override fun detach() {
         this.view = null
-        disposable.dispose()
+        localDataDisposable.dispose()
+        refreshDataDisposable.dispose()
 
         // TODO: Should I detach in DataProvider?
         // -- yes: lost singleton
@@ -38,7 +42,7 @@ class ListPresenter : ListContract.ListPresenter {
 
         val itemsObservable = dataProvider!!.getItemsObservable()
 
-        disposable = itemsObservable
+        localDataDisposable = itemsObservable
                 .delay(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -73,5 +77,27 @@ class ListPresenter : ListContract.ListPresenter {
 
 //        val tag = "PresenterDebugging"
 //        Log.d(tag, "Position is $position, item is ${DataInjector.getItemInPosition(position)}")
+    }
+
+    override fun refreshData() {
+        refreshDataDisposable = dataProvider!!.getRefreshDataObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableObserver<List<Item>>() {
+                    override fun onComplete() {
+                    }
+
+                    override fun onNext(t: List<Item>) {
+                        Log.d(logTag, "onNext in refreshData is triggered")
+                        view?.showItems(t)
+                        view?.showSnackbar("${t.size} items received from web.")
+
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(logTag, "Error in refreshData {${e.message}")
+                    }
+                })
     }
 }
