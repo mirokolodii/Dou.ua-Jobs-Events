@@ -1,25 +1,19 @@
 package com.unagit.douuajobsevents.views
 
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.contracts.ListContract
-import com.unagit.douuajobsevents.models.AppDatabase
-import com.unagit.douuajobsevents.models.DataInjector
-import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.list_item.*
 import android.util.Pair as AndroidPair
 
 class MainActivity : AppCompatActivity(), ListContract.ListView {
@@ -31,17 +25,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
         setContentView(R.layout.activity_main)
         presenter.attach(this, application)
         presenter.getItems()
-
-//        val listener = object : ItemAdapter.Listener {
-//            override fun onItemClicked(position: Int) {
-//                presenter.itemClicked(position)
-//            }
-//        }
-
-//        recyclerView.apply {
-//            layoutManager = LinearLayoutManager(this@MainActivity)
-//            adapter = ItemAdapter(null, listener)
-//        }
 
         button.setOnClickListener {
             presenter.refreshData()
@@ -64,8 +47,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
 
     override fun showItems(items: List<Item>) {
-//        val adapter = recyclerView.adapter as ItemAdapter
-//        adapter.setData(items.toMutableList())
 
                 val listener = object : ItemAdapter.Listener {
             override fun onItemClicked(position: Int) {

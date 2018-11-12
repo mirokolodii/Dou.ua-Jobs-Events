@@ -35,16 +35,16 @@ class ListPresenter : ListContract.ListPresenter {
 
 
     override fun detach() {
-        this.view = null
+        stopDataRefresh()
         localDataDisposable?.dispose()
         refreshDataDisposable?.dispose()
+        this.view = null
 
         // TODO: Should I detach in DataProvider?
         // -- yes: lost singleton
         // -- no: memory leakage?
 //        dataProvider?.detach()
 
-        stopDataRefresh()
     }
 
     private fun initiateDataRefresh() {

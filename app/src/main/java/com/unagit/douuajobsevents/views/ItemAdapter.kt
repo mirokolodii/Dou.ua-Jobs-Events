@@ -10,7 +10,7 @@ import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
 import kotlinx.android.synthetic.main.list_item.view.*
 
-class ItemAdapter(private var items: MutableList<Item>?, private val listener: Listener)
+class ItemAdapter(private var items: MutableList<Item>, private val listener: Listener)
     : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -19,12 +19,12 @@ class ItemAdapter(private var items: MutableList<Item>?, private val listener: L
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items!![position]
+        val item = items[position]
         holder.bind(item, listener, position)
     }
 
     override fun getItemCount(): Int {
-        return if (items != null) items!!.size else 0
+        return items.size
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -42,14 +42,14 @@ class ItemAdapter(private var items: MutableList<Item>?, private val listener: L
         }
     }
 
-    fun setData(items: MutableList<Item>) {
-        this.items = items
-        notifyDataSetChanged()
-    }
+//    fun setData(items: MutableList<Item>) {
+//        this.items = items
+//        notifyDataSetChanged()
+//    }
 
     fun insertData(newItems: List<Item>, inPosition: Int) {
 //        Log.d("ItemAdapter", "Items: ${this.items?.size}")
-        this.items?.addAll(inPosition, newItems)
+        this.items.addAll(inPosition, newItems)
         notifyItemRangeInserted(inPosition, newItems.size)
 //        Log.d("ItemAdapter", "Items after insert: ${this.items?.size}")
 
