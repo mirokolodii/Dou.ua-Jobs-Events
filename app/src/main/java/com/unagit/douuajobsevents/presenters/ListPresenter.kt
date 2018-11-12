@@ -22,6 +22,7 @@ class ListPresenter : ListContract.ListPresenter {
 
     // Fields used for data refresh from web with interval 'refreshInterval' msec.
     private var refreshDataDisposable: Disposable? = null
+    private val initialRefreshInterval = 5 * 1000L /* 5 sec */
     private val refreshInterval = 60 * 5 * 1000L /* 5 min */
     private val refreshHandler = Handler()
     private var refreshRunnable: Runnable? = null
@@ -56,7 +57,7 @@ class ListPresenter : ListContract.ListPresenter {
 
             refreshHandler.postDelayed(refreshRunnable, refreshInterval)
         }
-        refreshHandler.post(refreshRunnable)
+        refreshHandler.postDelayed(refreshRunnable, initialRefreshInterval)
     }
 
     private fun stopDataRefresh() {
@@ -120,9 +121,15 @@ class ListPresenter : ListContract.ListPresenter {
                     }
 
                     override fun onNext(t: List<Item>) {
-                        Log.d(logTag, "onNext in refreshData is triggered")
-                        view?.showItems(t)
-                        view?.showSnackbar("${t.size} items received from web.")
+//                        Log.d(logTag, "onNext in refreshData is triggered")
+                        view?.insertNewItems(t)
+                        val message = if(t.size == 1) {
+                            "${t.size} new item received."
+                        }
+                        else {
+                            "${t.size} new items received."
+                        }
+                        view?.showSnackbar(message)
 
 
                     }

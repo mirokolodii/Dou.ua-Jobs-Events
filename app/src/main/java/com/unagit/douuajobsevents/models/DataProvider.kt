@@ -99,6 +99,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
 //                                }
 //                            }
 
+
                             // Convert XmlItem into Item and save item into local DB
                             .map { xmlItem ->
                                 val item = getItemFrom(xmlItem)

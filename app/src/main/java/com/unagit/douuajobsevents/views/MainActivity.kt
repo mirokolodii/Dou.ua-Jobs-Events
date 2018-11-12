@@ -67,8 +67,16 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
     override fun showItems(items: List<Item>) {
         val adapter = recyclerView.adapter as ItemAdapter
-        adapter.setData(items)
+        adapter.setData(items.toMutableList())
     }
+
+    override fun insertNewItems(newItems: List<Item>) {
+        val adapter = recyclerView.adapter as ItemAdapter
+        val insertPosition = 0
+        adapter.insertData(newItems, insertPosition)
+        recyclerView.scrollToPosition(insertPosition)
+    }
+
 
     override fun showItemDetails(position: Int, guid: String) {
 //        val itemView =

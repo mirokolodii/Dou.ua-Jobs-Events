@@ -11,6 +11,7 @@ interface ListContract {
         fun showItemDetails(position: Int, guid: String)
         fun showSnackbar(string: String)
         fun hasNetwork(): Boolean
+        fun insertNewItems(newItems: List<Item>)
     }
 
     interface ListPresenter : BasePresenter<ListView> {

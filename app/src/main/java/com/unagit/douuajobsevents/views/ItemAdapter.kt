@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.views
 
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,7 @@ import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
 import kotlinx.android.synthetic.main.list_item.view.*
 
-class ItemAdapter(private var items: List<Item>?, private val listener: Listener)
+class ItemAdapter(private var items: MutableList<Item>?, private val listener: Listener)
     : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -23,7 +24,7 @@ class ItemAdapter(private var items: List<Item>?, private val listener: Listener
     }
 
     override fun getItemCount(): Int {
-        return if(items != null) items!!.size else 0
+        return if (items != null) items!!.size else 0
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -36,15 +37,24 @@ class ItemAdapter(private var items: List<Item>?, private val listener: Listener
                     .centerInside()
                     .into(itemView.itemImg)
 
-            itemView.setOnClickListener {listener.onItemClicked(position)}
+            itemView.setOnClickListener { listener.onItemClicked(position) }
 
         }
     }
 
-    fun setData(items: List<Item>) {
+    fun setData(items: MutableList<Item>) {
         this.items = items
         notifyDataSetChanged()
     }
+
+    fun insertData(newItems: List<Item>, inPosition: Int) {
+//        Log.d("ItemAdapter", "Items: ${this.items?.size}")
+        this.items?.addAll(inPosition, newItems)
+        notifyItemRangeInserted(inPosition, newItems.size)
+//        Log.d("ItemAdapter", "Items after insert: ${this.items?.size}")
+
+    }
+
     interface Listener {
         fun onItemClicked(position: Int)
     }
