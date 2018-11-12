@@ -32,18 +32,16 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
         presenter.attach(this, application)
         presenter.getItems()
 
-        val listener = object : ItemAdapter.Listener {
-            override fun onItemClicked(position: Int) {
-//                Snackbar.make(activityMainLayout, item.guid, Snackbar.LENGTH_SHORT)
-//                        .show()
-                presenter.itemClicked(position)
-            }
-        }
+//        val listener = object : ItemAdapter.Listener {
+//            override fun onItemClicked(position: Int) {
+//                presenter.itemClicked(position)
+//            }
+//        }
 
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(null, listener)
-        }
+//        recyclerView.apply {
+//            layoutManager = LinearLayoutManager(this@MainActivity)
+//            adapter = ItemAdapter(null, listener)
+//        }
 
         button.setOnClickListener {
             presenter.refreshData()
@@ -66,8 +64,20 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
 
     override fun showItems(items: List<Item>) {
-        val adapter = recyclerView.adapter as ItemAdapter
-        adapter.setData(items.toMutableList())
+//        val adapter = recyclerView.adapter as ItemAdapter
+//        adapter.setData(items.toMutableList())
+
+                val listener = object : ItemAdapter.Listener {
+            override fun onItemClicked(position: Int) {
+                presenter.itemClicked(position)
+            }
+        }
+
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = ItemAdapter(items.toMutableList(), listener)
+        }
+
     }
 
     override fun insertNewItems(newItems: List<Item>) {

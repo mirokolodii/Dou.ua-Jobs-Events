@@ -73,7 +73,6 @@ class ListPresenter : ListContract.ListPresenter {
         val itemsObservable = dataProvider!!.getItemsObservable()
 
         localDataDisposable = itemsObservable
-                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object: DisposableObserver<List<Item>>() {
