@@ -1,7 +1,10 @@
 package com.unagit.douuajobsevents.views
 
 import android.app.ActivityOptions
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -63,12 +66,8 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
 
     override fun showItems(items: List<Item>) {
-
-        Snackbar.make(activityMainLayout, "${items.size} items received from local DB.", Snackbar.LENGTH_SHORT).show()
-
         val adapter = recyclerView.adapter as ItemAdapter
         adapter.setData(items)
-
     }
 
     override fun showItemDetails(position: Int, guid: String) {
@@ -98,5 +97,11 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
     override fun showSnackbar(string: String) {
         Snackbar.make(activityMainLayout, string, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun hasNetwork(): Boolean {
+        val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return (activeNetwork != null && activeNetwork.isConnected)
     }
 }

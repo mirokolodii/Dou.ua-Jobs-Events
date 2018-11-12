@@ -1,13 +1,10 @@
 package com.unagit.douuajobsevents.presenters
 
 import android.app.Application
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import android.os.Handler
 import android.util.Log
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.Item
-import com.unagit.douuajobsevents.models.DataInjector
 import com.unagit.douuajobsevents.models.DataProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -19,14 +16,22 @@ class ListPresenter : ListContract.ListPresenter {
     private var view: ListContract.ListView? = null
     private var dataProvider: DataProvider? = null
     private var localDataDisposable: Disposable? = null
-    private var refreshDataDisposable: Disposable? = null
+
     private val logTag = "ListPresenter"
+
+
+    // Fields used for data refresh from web with interval 'refreshInterval' msec.
+    private var refreshDataDisposable: Disposable? = null
+    private val refreshInterval = 60 * 5 * 1000L /* 5 min */
+    private val refreshHandler = Handler()
+    private var refreshRunnable: Runnable? = null
 
     override fun attach(view: ListContract.ListView, application: Application) {
         this.view = view
         this.dataProvider = DataProvider(application)
-//        refreshData()
+        initiateDataRefresh()
     }
+
 
     override fun detach() {
         this.view = null
@@ -37,6 +42,27 @@ class ListPresenter : ListContract.ListPresenter {
         // -- yes: lost singleton
         // -- no: memory leakage?
 //        dataProvider?.detach()
+
+        stopDataRefresh()
+    }
+
+    private fun initiateDataRefresh() {
+        refreshRunnable = Runnable {
+            if(view != null && view!!.hasNetwork()) {
+                refreshData()
+            } else {
+                view?.showSnackbar("Can't refresh: no network access.")
+            }
+
+            refreshHandler.postDelayed(refreshRunnable, refreshInterval)
+        }
+        refreshHandler.post(refreshRunnable)
+    }
+
+    private fun stopDataRefresh() {
+        if(refreshRunnable != null) {
+            refreshHandler.removeCallbacksAndMessages(null)
+        }
     }
 
 
@@ -60,7 +86,10 @@ class ListPresenter : ListContract.ListPresenter {
                     }
 
                     override fun onError(e: Throwable) {
+                        Log.e(logTag, e.message)
+                        view?.showSnackbar("Error: can't receive data from local cache.")
                     }
+
                 })
 
 
@@ -100,13 +129,8 @@ class ListPresenter : ListContract.ListPresenter {
 
                     override fun onError(e: Throwable) {
                         Log.e(logTag, "Error in refreshData {${e.message}")
+                        view?.showSnackbar("Error: can't refresh data.")
                     }
                 })
-    }
-
-    private fun hasNetwork(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
-        return (activeNetwork != null && activeNetwork.isConnected)
     }
 }

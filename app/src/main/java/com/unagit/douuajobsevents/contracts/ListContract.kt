@@ -10,6 +10,7 @@ interface ListContract {
         fun showItems(items: List<Item>)
         fun showItemDetails(position: Int, guid: String)
         fun showSnackbar(string: String)
+        fun hasNetwork(): Boolean
     }
 
     interface ListPresenter : BasePresenter<ListView> {
