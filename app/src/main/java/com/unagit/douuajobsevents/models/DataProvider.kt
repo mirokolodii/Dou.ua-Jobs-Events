@@ -93,11 +93,11 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                     it.items
 
                             // Filter out those items, which are already in local DB
-//                            .filter { xmlItem ->
-//                                !items!!.any { item ->
-//                                    item.guid == xmlItem.guid
-//                                }
-//                            }
+                            .filter { xmlItem ->
+                                !items!!.any { item ->
+                                    item.guid == xmlItem.guid
+                                }
+                            }
 
 
                             // Convert XmlItem into Item and save item into local DB
@@ -107,9 +107,6 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                                 Log.d(logTag, "Created item with imageUrl ${item.imgUrl}.")
                                 item
                             }
-
-
-
                 }
 
     }
