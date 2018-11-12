@@ -13,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
+class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper> */ {
 
     private val douApiService = DouAPIService.create()
     private val logTag = "RetrofitDataProvider"
@@ -23,27 +23,27 @@ class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
     companion object {
         private var DB_INSTANCE: AppDatabase? = null
 
-        class InsertAsyncTask : AsyncTask<Item, Void, Void>() {
-            override fun doInBackground(vararg params: Item?): Void? {
-                DB_INSTANCE?.itemDao()?.insert(params[0]!!)
-                return null
-            }
-        }
-
-        class GetItemsAsyncTask : AsyncTask<Void, Void, List<Item>?>() {
-
-            override fun doInBackground(vararg params: Void?): List<Item>? {
-                return DB_INSTANCE?.itemDao()?.getItems()
-            }
-
-            override fun onPostExecute(result: List<Item>?) {
-//                super.onPostExecute(result)
-                result?.forEach {
-                    Log.d("DBTest", it.title)
-                }
-
-            }
-        }
+//        class InsertAsyncTask : AsyncTask<Item, Void, Void>() {
+//            override fun doInBackground(vararg params: Item?): Void? {
+//                DB_INSTANCE?.itemDao()?.insert(params[0]!!)
+//                return null
+//            }
+//        }
+//
+//        class GetItemsAsyncTask : AsyncTask<Void, Void, List<Item>?>() {
+//
+//            override fun doInBackground(vararg params: Void?): List<Item>? {
+//                return DB_INSTANCE?.itemDao()?.getItems()
+//            }
+//
+//            override fun onPostExecute(result: List<Item>?) {
+////                super.onPostExecute(result)
+//                result?.forEach {
+//                    Log.d("DBTest", it.title)
+//                }
+//
+//            }
+//        }
     }
 
     init {
@@ -147,31 +147,31 @@ class DataProvider(var application: Application?) : Callback<ItemDataWrapper> {
     }
 
     // Retrofit callback
-    override fun onFailure(call: Call<ItemDataWrapper>, t: Throwable) {
-        Log.d(logTag, "Failed to get data: ${t.message}")
-    }
-
-    // Retrofit callback
-    override fun onResponse(call: Call<ItemDataWrapper>, response: Response<ItemDataWrapper>) {
-//        Log.d(logTag, "${call.request().url()}")
-//        Log.d(logTag, "Received response from retrofit + ${response.isSuccessful}")
-//        Log.d(logTag, "Received response from retrofit + ${response.body()}")
-
-        // Extract data
-        val wrapper = response.body()
-        if (wrapper != null) {
-            val items = wrapper.items
-            items.forEach {
-                //                Log.d(logTag, it.title)
-
-//                val description = HtmlCompat.fromHtml(it.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
-                val item = Item(it.guid, it.title, "https://", it.description)
-                Log.d(logTag, "insert task executed: ${it.guid}")
-                InsertAsyncTask().execute(item)
-
-            }
-        } else {
-            Log.d(logTag, "Received data is empty.")
-        }
-    }
+//    override fun onFailure(call: Call<ItemDataWrapper>, t: Throwable) {
+//        Log.d(logTag, "Failed to get data: ${t.message}")
+//    }
+//
+//    // Retrofit callback
+//    override fun onResponse(call: Call<ItemDataWrapper>, response: Response<ItemDataWrapper>) {
+////        Log.d(logTag, "${call.request().url()}")
+////        Log.d(logTag, "Received response from retrofit + ${response.isSuccessful}")
+////        Log.d(logTag, "Received response from retrofit + ${response.body()}")
+//
+//        // Extract data
+//        val wrapper = response.body()
+//        if (wrapper != null) {
+//            val items = wrapper.items
+//            items.forEach {
+//                //                Log.d(logTag, it.title)
+//
+////                val description = HtmlCompat.fromHtml(it.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
+//                val item = Item(it.guid, it.title, "https://", it.description)
+//                Log.d(logTag, "insert task executed: ${it.guid}")
+//                InsertAsyncTask().execute(item)
+//
+//            }
+//        } else {
+//            Log.d(logTag, "Received data is empty.")
+//        }
+//    }
 }
