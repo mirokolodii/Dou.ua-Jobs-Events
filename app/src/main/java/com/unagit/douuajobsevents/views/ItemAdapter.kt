@@ -1,10 +1,12 @@
 package com.unagit.douuajobsevents.views
 
+import android.text.Html
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
@@ -29,7 +31,7 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: Li
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Item, listener: Listener, position: Int) {
-            itemView.itemTitle.text = item.title
+            itemView.itemTitle.text = prepareHtmlString(item.title)
             Picasso
                     .get()
                     .load(item.imgUrl)
@@ -39,6 +41,19 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: Li
 
             itemView.setOnClickListener { listener.onItemClicked(position) }
 
+        }
+
+        private fun prepareHtmlString(title: String): CharSequence? {
+            val commaIndex = title.indexOf(",")
+
+            val str = StringBuilder()
+                    .append("<b>")
+                    .append(title.substring(0, commaIndex))
+                    .append("</b>")
+                    .append(",<br>")
+                    .append(title.substring(commaIndex+1).trim())
+                    .toString()
+            return HtmlCompat.fromHtml(str, HtmlCompat.FROM_HTML_MODE_COMPACT)
         }
     }
 
