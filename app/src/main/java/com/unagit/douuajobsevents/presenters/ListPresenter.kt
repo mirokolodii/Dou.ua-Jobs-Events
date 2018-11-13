@@ -114,8 +114,6 @@ class ListPresenter : ListContract.ListPresenter {
                             "${t.size} new items received."
                         }
                         view?.showSnackbar(message)
-
-
                     }
 
                     override fun onError(e: Throwable) {

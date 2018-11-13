@@ -71,21 +71,22 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
 
 
     override fun onItemClicked(parent: View, guid: String) {
+        // Prepare transition animation.
         val imgView = parent.findViewById<View>(R.id.itemImg)
         val titleView = parent.findViewById<View>(R.id.itemTitle)
-        val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
-        detailsIntent.putExtra(getString(R.string.extra_guid_id), guid)
         val transImgName = getString(R.string.transition_img_name)
         val transTitleName = getString(R.string.transition_title_name)
         val transContainerName = getString(R.string.transition_container_name)
         val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
                 this@MainActivity,
-
                 AndroidPair.create(imgView, transImgName),
                 AndroidPair.create(titleView, transTitleName),
                 AndroidPair.create(parent, transContainerName)
         )
 
+        // Start new DetailsActivity with transition animation and pass guid to it.
+        val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
+        detailsIntent.putExtra(getString(R.string.extra_guid_id), guid)
         startActivity(detailsIntent, transitionActivityOptions.toBundle())
     }
 

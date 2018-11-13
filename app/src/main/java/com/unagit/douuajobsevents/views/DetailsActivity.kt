@@ -17,10 +17,6 @@ import kotlinx.android.synthetic.main.activity_details.*
 
 class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
     val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
-    override fun showItem(item: Item) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,25 +26,26 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) //remove title
 
-
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
         Snackbar.make(activityDetailsLayout, guid, Snackbar.LENGTH_SHORT).show()
 
-//        val item = DataInjector.getItemById(guid)
-//        Log.d("detailsTag", "${item.title}, ${item.imgUrl}")
+        presenter.attach(this, application)
+        presenter.requestItemFromId(guid)
+    }
 
-//
-//        //Load img into ImgView
-//        Picasso
-//                .get()
-//                .load(item.imgUrl)
-////                .resize(200, 150)
-////                .centerInside()
-//                .into(detailedItemImg)
-//
-//        detailedItemTitle.text = item.title
-//        detailedItemDetails.text = item.description
+    override fun showItem(item: Item) {
+        detailedItemTitle.text = item.title
+        detailedItemDetails.text = HtmlCompat.fromHtml(item.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
+
+        //Load img into ImgView
+        Picasso
+                .get()
+                .load(item.imgUrl)
+//                .resize(200, 150)
+//                .centerInside()
+                .into(detailedItemImg)
+
 
 
 //        detailedItemTitle.setOnClickListener { _ ->
@@ -59,9 +56,8 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 //            Snackbar.make(activityDetailsLayout, "Details clicked ${detailedItemDetails.linksClickable}", Snackbar.LENGTH_SHORT).show()
 //        }
 
-//        detailedItemDetails.setMovementMethod(LinkMovementMethod.getInstance())
-
+        // Set links in details to be clickable
+        detailedItemDetails.movementMethod = LinkMovementMethod.getInstance() //.setMovementMethod(LinkMovementMethod.getInstance())
     }
-
 }
 

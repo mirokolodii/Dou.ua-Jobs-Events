@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.core.text.HtmlCompat
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -68,9 +69,16 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
 
     }
 
-    fun getGuidForItemIn(position: Int): String? {
-        return if (items != null) items!![position].guid else null
+    fun getItemWithIdObservable(guid: String): Single<Item> {
+        return Single.create {emitter ->
+                val item = DB_INSTANCE!!.itemDao().getItemWithId(guid)
+                emitter.onSuccess(item)
+        }
     }
+
+//    fun getGuidForItemIn(position: Int): String? {
+//        return if (items != null) items!![position].guid else null
+//    }
 
     fun getRefreshDataObservable(): Observable<List<Item>> {
 

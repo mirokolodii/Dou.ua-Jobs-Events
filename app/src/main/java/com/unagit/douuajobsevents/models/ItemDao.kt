@@ -13,4 +13,7 @@ interface ItemDao{
 
     @Query("SELECT * from entity_table")
     fun getItems(): List<Item>
+
+    @Query("SELECT * from entity_table WHERE guid = :guid LIMIT 1")
+    fun getItemWithId(guid: String): Item
 }
