@@ -10,6 +10,6 @@ interface DetailsContract {
     }
 
     interface DetailsPresenter : BasePresenter<DetailsView> {
-        fun getItemFromId(id: String): Item
+        fun requestItemFromId(id: String)
     }
 }

@@ -10,11 +10,17 @@ import androidx.core.text.HtmlCompat
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.models.DataInjector
+import com.unagit.douuajobsevents.contracts.DetailsContract
+import com.unagit.douuajobsevents.models.Item
+import com.unagit.douuajobsevents.presenters.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
-import org.jsoup.Jsoup
 
-class DetailsActivity : AppCompatActivity() {
+class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
+    val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
+    override fun showItem(item: Item) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,10 +32,9 @@ class DetailsActivity : AppCompatActivity() {
 
 
         // Get Item from guid
-
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
+        Snackbar.make(activityDetailsLayout, guid, Snackbar.LENGTH_SHORT).show()
 
-                    Snackbar.make(activityDetailsLayout, guid, Snackbar.LENGTH_SHORT).show()
 //        val item = DataInjector.getItemById(guid)
 //        Log.d("detailsTag", "${item.title}, ${item.imgUrl}")
 
