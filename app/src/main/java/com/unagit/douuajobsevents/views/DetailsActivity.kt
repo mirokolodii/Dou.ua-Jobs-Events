@@ -35,7 +35,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
     }
 
     override fun showItem(item: Item) {
-        detailedItemTitle.text = item.title
+        detailedItemTitle.text = HtmlCompat.fromHtml(item.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
         detailedItemDetails.text = HtmlCompat.fromHtml(item.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
         //Load img into ImgView

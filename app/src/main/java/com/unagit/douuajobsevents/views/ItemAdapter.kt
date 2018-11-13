@@ -22,7 +22,7 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.bind(item, listener, position)
+        holder.bind(item, listener)
     }
 
     override fun getItemCount(): Int {
@@ -30,37 +30,19 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: Item, listener: OnClickListener, position: Int) {
-            itemView.itemTitle.text = prepareHtmlString(item.title)
+        fun bind(item: Item, listener: OnClickListener) {
+            itemView.itemTitle.text = HtmlCompat.fromHtml(item.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
             Picasso
                     .get()
                     .load(item.imgUrl)
-                    .resize(200, 150)
-                    .centerInside()
+//                    .resize(200, 150)
+//                    .centerInside()
                     .into(itemView.itemImg)
 
             itemView.setOnClickListener { listener.onItemClicked(itemView, item.guid) }
 
         }
-
-        private fun prepareHtmlString(title: String): CharSequence? {
-            val commaIndex = title.indexOf(",")
-
-            val str = StringBuilder()
-                    .append("<b>")
-                    .append(title.substring(0, commaIndex))
-                    .append("</b>")
-                    .append(",<br>")
-                    .append(title.substring(commaIndex+1).trim())
-                    .toString()
-            return HtmlCompat.fromHtml(str, HtmlCompat.FROM_HTML_MODE_COMPACT)
-        }
     }
-
-//    fun setData(items: MutableList<Item>) {
-//        this.items = items
-//        notifyDataSetChanged()
-//    }
 
     fun insertData(newItems: List<Item>, inPosition: Int) {
 //        Log.d("ItemAdapter", "Items: ${this.items?.size}")

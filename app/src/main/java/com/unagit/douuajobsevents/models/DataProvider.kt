@@ -120,36 +120,29 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
     }
 
     private fun getItemFrom(xmlItem: XmlItem): Item {
-//        Log.d(logTag, "-----In getItemFrom--------")
         val guid = xmlItem.guid
-        val title = xmlItem.title
-//        Log.d(logTag, "$guid")
-//        Log.d(logTag, "$title")
-//        Log.d(logTag, "description is ${xmlItem.description}")
-
-        // Convert HTML codes into HTML tags
-//        val htmlStr = HtmlCompat.fromHtml(xmlItem.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
-        // Parse HTML code
-//        Log.d(logTag, "htmlStr is $htmlStr ")
-
-//        val doc: Document = Jsoup.parseBodyFragment(htmlStr.toString())
+        val title = prepareHtmlTitle(xmlItem.title)
         val doc: Document = Jsoup.parseBodyFragment(xmlItem.description)
-//        Log.d(logTag, "doc.body is ${doc.body()} ")
 
         // Get image url from first paragraph
         val imgUrl = doc.body().selectFirst("p").selectFirst("img").attr("src")
-//        Log.d(logTag, "$imgUrl")
+
         // Get HTML paragraphs omitting first two
         val description = doc.select("body > :gt(1)").html()
-//        Log.d(logTag, "$description")
 
-        // Get Spanned from String
-//        val spannedDesc = HtmlCompat.fromHtml(itemDesc, HtmlCompat.FROM_HTML_MODE_COMPACT)
+        return Item(guid, title, imgUrl, description)
+    }
 
-        val item = Item(guid, title, imgUrl, description)
-//        Log.d(logTag, "${item.guid}, ${item.title}")
-        return item
+    private fun prepareHtmlTitle(title: String): String {
+        val commaIndex = title.indexOf(",")
 
+        return StringBuilder()
+                .append("<b>")
+                .append(title.substring(0, commaIndex))
+                .append("</b>")
+                .append(",<br>")
+                .append(title.substring(commaIndex+1).trim())
+                .toString()
     }
 
     // Retrofit callback
