@@ -95,21 +95,6 @@ class ListPresenter : ListContract.ListPresenter {
 
     }
 
-    override fun itemClicked(position: Int) {
-        val guid = dataProvider?.getGuidForItemIn(position)
-
-        if(guid != null) {
-        view?.showItemDetails(position, guid)
-
-        } else {
-            Log.e(this.javaClass.simpleName, "No items")
-        }
-
-
-
-//        val tag = "PresenterDebugging"
-//        Log.d(tag, "Position is $position, item is ${DataInjector.getItemInPosition(position)}")
-    }
 
     override fun refreshData() {
         refreshDataDisposable = dataProvider!!.getRefreshDataObservable()

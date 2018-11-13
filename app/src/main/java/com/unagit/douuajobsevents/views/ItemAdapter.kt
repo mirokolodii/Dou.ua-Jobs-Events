@@ -12,7 +12,7 @@ import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
 import kotlinx.android.synthetic.main.list_item.view.*
 
-class ItemAdapter(private var items: MutableList<Item>, private val listener: Listener)
+class ItemAdapter(private var items: MutableList<Item>, private val listener: OnClickListener)
     : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -30,7 +30,7 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: Li
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: Item, listener: Listener, position: Int) {
+        fun bind(item: Item, listener: OnClickListener, position: Int) {
             itemView.itemTitle.text = prepareHtmlString(item.title)
             Picasso
                     .get()
@@ -39,7 +39,7 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: Li
                     .centerInside()
                     .into(itemView.itemImg)
 
-            itemView.setOnClickListener { listener.onItemClicked(position) }
+            itemView.setOnClickListener { listener.onItemClicked(itemView, item.guid) }
 
         }
 
@@ -70,7 +70,7 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: Li
 
     }
 
-    interface Listener {
-        fun onItemClicked(position: Int)
+    interface OnClickListener {
+        fun onItemClicked(parent: View, guid: String)
     }
 }

@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.views
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -16,7 +17,7 @@ import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Pair as AndroidPair
 
-class MainActivity : AppCompatActivity(), ListContract.ListView {
+class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener{
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
 
@@ -48,15 +49,15 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
 
     override fun showItems(items: List<Item>) {
 
-                val listener = object : ItemAdapter.Listener {
-            override fun onItemClicked(position: Int) {
-                presenter.itemClicked(position)
-            }
-        }
+//                val listener = object : ItemAdapter.Listener {
+//            override fun onItemClicked(position: Int) {
+//                presenter.itemClicked(position)
+//            }
+//        }
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(items.toMutableList(), listener)
+            adapter = ItemAdapter(items.toMutableList(), this@MainActivity)
         }
 
     }
@@ -69,29 +70,23 @@ class MainActivity : AppCompatActivity(), ListContract.ListView {
     }
 
 
-    override fun showItemDetails(position: Int, guid: String) {
-//        val itemView =
-// recyclerView.layoutManager?.getChildAt(position)
-//        val imgView = itemView?.findViewById<View>(R.id.itemImg)
-//        val titleView = itemView?.findViewById<View>(R.id.itemTitle)
-//
+    override fun onItemClicked(parent: View, guid: String) {
+        val imgView = parent.findViewById<View>(R.id.itemImg)
+        val titleView = parent.findViewById<View>(R.id.itemTitle)
         val detailsIntent = Intent(this@MainActivity, DetailsActivity::class.java)
         detailsIntent.putExtra(getString(R.string.extra_guid_id), guid)
-//        val transImgName = getString(R.string.transition_img_name)
-//        val transTitleName = getString(R.string.transition_title_name)
-//        val transContainerName = getString(R.string.transition_container_name)
-//        val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
-//                this@MainActivity,
-//
-//                AndroidPair.create(imgView, transImgName),
-//                AndroidPair.create(titleView, transTitleName),
-//                AndroidPair.create(itemView, transContainerName)
-//        )
-//
-//
-//
-        startActivity(detailsIntent) //, transitionActivityOptions.toBundle())
+        val transImgName = getString(R.string.transition_img_name)
+        val transTitleName = getString(R.string.transition_title_name)
+        val transContainerName = getString(R.string.transition_container_name)
+        val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
+                this@MainActivity,
 
+                AndroidPair.create(imgView, transImgName),
+                AndroidPair.create(titleView, transTitleName),
+                AndroidPair.create(parent, transContainerName)
+        )
+
+        startActivity(detailsIntent, transitionActivityOptions.toBundle())
     }
 
     override fun showSnackbar(string: String) {

@@ -8,7 +8,6 @@ interface ListContract {
     interface ListView {
         fun showLoading(show: Boolean)
         fun showItems(items: List<Item>)
-        fun showItemDetails(position: Int, guid: String)
         fun showSnackbar(string: String)
         fun hasNetwork(): Boolean
         fun insertNewItems(newItems: List<Item>)
@@ -16,7 +15,6 @@ interface ListContract {
 
     interface ListPresenter : BasePresenter<ListView> {
         fun getItems()
-        fun itemClicked(position: Int)
         fun refreshData()
     }
 }
