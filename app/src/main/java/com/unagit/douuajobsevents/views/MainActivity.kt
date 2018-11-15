@@ -14,6 +14,7 @@ import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
+import com.unagit.douuajobsevents.services.CheckForNewItemsService
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Pair as AndroidPair
 
@@ -30,6 +31,10 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         button.setOnClickListener {
             presenter.refreshData()
         }
+
+
+        val serviceIntent = Intent(this, CheckForNewItemsService::class.java)
+        startService(serviceIntent)
     }
 
 
