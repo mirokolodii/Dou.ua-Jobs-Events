@@ -23,7 +23,7 @@
         <activity android:name=".views.DetailsActivity" />
 
         <service
-            android:name=".services.CheckForNewItemsService"
+            android:name=".services.RefreshService"
             android:exported="false"
             android:description="@string/refresh_service_desc" />
     </application>

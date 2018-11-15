@@ -14,55 +14,55 @@ import io.reactivex.schedulers.Schedulers
 import androidx.core.app.NotificationCompat
 import android.app.PendingIntent
 import com.unagit.douuajobsevents.views.MainActivity
-import android.content.Context.NOTIFICATION_SERVICE
-import androidx.core.content.ContextCompat.getSystemService
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import com.unagit.douuajobsevents.R
 
 
-class CheckForNewItemsService : Service() {
+class RefreshService : Service() {
 
-    private var dataProvider : DataProvider? = null
-        private val notificationId = 1
+    private var dataProvider: DataProvider? = null
+    private val notificationId = 1
+    private val logTag = this.javaClass.simpleName
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        val serviceName = this.javaClass.simpleName
-        Toast.makeText(this, "$serviceName has been started", Toast.LENGTH_SHORT)
-                .show()
-
+        Log.d(logTag, "$logTag service started")
         initializeFields()
 
         refreshData()
-
-
 
         return START_NOT_STICKY
     }
 
     private fun initializeFields() {
-        if(dataProvider == null) {
+        if (dataProvider == null) {
             dataProvider = DataProvider(this.application)
         }
     }
 
 
     private fun refreshData() {
+
+        Log.d(logTag, "refreshData triggered")
+
         dataProvider!!.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object: DisposableObserver<List<Item>>() {
+                .subscribe(object : DisposableObserver<List<Item>>() {
                     override fun onComplete() {
+                        Log.d(logTag, "onComplete triggered.")
                         stopSelf()
                     }
 
                     override fun onNext(t: List<Item>) {
+                        Log.d(logTag, "onNext triggered.")
                         showNotification(t.size)
                     }
 
                     override fun onError(e: Throwable) {
+                        Log.d(logTag, "onError triggered ${e.printStackTrace()}.")
                         stopSelf()
                     }
                 })
@@ -70,10 +70,12 @@ class CheckForNewItemsService : Service() {
 
     private fun showNotification(itemsNumber: Int) {
 
-            val notificationManager: NotificationManager =
-                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        Log.d(logTag, "showNotification triggered.")
 
-            val channelId = "channel_id"
+        val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val channelId = "channel_id"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "notification channel name"
             val descriptionText = "notification channel description"

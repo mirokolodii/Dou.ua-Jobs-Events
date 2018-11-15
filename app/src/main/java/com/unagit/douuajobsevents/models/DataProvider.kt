@@ -102,7 +102,8 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
 
                             // Filter out those items, which are already in local DB
                             .filter { xmlItem ->
-                                !items!!.any { item ->
+                                val localItems = DB_INSTANCE!!.itemDao().getItems()
+                                !localItems.any { item ->
                                     item.guid == xmlItem.guid
                                 }
                             }
