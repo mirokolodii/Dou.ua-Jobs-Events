@@ -21,6 +21,7 @@ import android.app.AlarmManager
 import androidx.core.content.ContextCompat.getSystemService
 import android.app.PendingIntent
 import android.os.SystemClock
+import android.util.Log
 import com.unagit.douuajobsevents.services.RefreshAlarmReceiver
 import java.util.*
 
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
                 SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                 AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                 pendingIntent)
+        Log.d("alarmManager", "AlarmManager is set from MainActivity")
     }
 
 

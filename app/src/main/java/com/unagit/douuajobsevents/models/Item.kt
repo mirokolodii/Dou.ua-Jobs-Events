@@ -10,8 +10,10 @@ import com.unagit.douuajobsevents.helpers.ItemType
 @Entity(tableName = "entity_table")
 data class Item(
         @PrimaryKey @NonNull var guid: String,
-        var title: String,
-//        var type: ItemType,
+        val title: String,
+        val type: Int,
         @ColumnInfo(name = "img_url") var imgUrl: String,
-        var description: String
+        val description: String,
+        val timestamp: Long
+
 )

@@ -22,23 +22,24 @@ import com.unagit.douuajobsevents.R
 
 
 class RefreshService : Service() {
+
+    private var dataProvider: DataProvider? = null
+    private val notificationId = 1
+    private val logTag = this.javaClass.simpleName
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(logTag, "$logTag service started")
+        Log.d("alarmManager", "$logTag service started")
         initializeFields()
 
         refreshData()
 
         return START_NOT_STICKY
     }
-
-    private var dataProvider: DataProvider? = null
-    private val notificationId = 1
-    private val logTag = this.javaClass.simpleName
-
+    
     private fun initializeFields() {
         if (dataProvider == null) {
             dataProvider = DataProvider(this.application)
@@ -96,9 +97,9 @@ class RefreshService : Service() {
 
         val mBuilder = NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.abc_ic_arrow_drop_right_black_24dp)
-                .setContentTitle("Title")
-                .setSubText("subtext")
-                .setContentText("$itemsNumber notification text")
+                .setContentTitle("$itemsNumber new item(s) received")
+//                .setSubText("subtext")
+                .setContentText("Tap to open in app.")
 //                .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 //                .setColor(Color.GREEN)

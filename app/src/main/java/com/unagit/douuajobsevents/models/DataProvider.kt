@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.AsyncTask
 import android.util.Log
 import androidx.core.text.HtmlCompat
+import com.unagit.douuajobsevents.helpers.ItemType
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -13,6 +14,7 @@ import org.jsoup.nodes.Document
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper> */ {
 
@@ -130,8 +132,10 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
 
         // Get HTML paragraphs omitting first two
         val description = doc.select("body > :gt(1)").html()
+        val timestamp = Calendar.getInstance().timeInMillis
+        val type = ItemType.EVENT.value
 
-        return Item(guid, title, imgUrl, description)
+        return Item(guid, title, type, imgUrl, description, timestamp)
     }
 
     private fun prepareHtmlTitle(title: String): String {

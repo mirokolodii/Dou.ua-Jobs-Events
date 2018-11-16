@@ -15,7 +15,7 @@ object RetrofitConstants {
     const val DOU_UA_VACANCIES_API_URL = "https://jobs.dou.ua/vacancies/feeds/"
 }
 
-enum class ItemType {
-    EVENT,
-    JOB
+enum class ItemType(val value: Int) {
+    EVENT(1),
+    JOB(2)
 }

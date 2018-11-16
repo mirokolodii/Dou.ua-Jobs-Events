@@ -11,7 +11,7 @@ interface ItemDao{
     @Delete
     fun delete(item: Item)
 
-    @Query("SELECT * from entity_table")
+    @Query("SELECT * from entity_table ORDER BY timestamp DESC")
     fun getItems(): List<Item>
 
     @Query("SELECT * from entity_table WHERE guid = :guid LIMIT 1")
