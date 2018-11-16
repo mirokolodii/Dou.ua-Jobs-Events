@@ -18,7 +18,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
 
     private val douApiService = DouAPIService.create()
     private val logTag = "RetrofitDataProvider"
-    private var items: List<Item>? = null
+//    private var items: List<Item>? = null
 
 
     companion object {
@@ -62,8 +62,8 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
     fun getItemsObservable(): Observable<List<Item>> {
         return Observable
                 .create<List<Item>> { emitter ->
-                    items = DB_INSTANCE!!.itemDao().getItems()
-                    emitter.onNext(items!!)
+                    val localItems = DB_INSTANCE!!.itemDao().getItems()
+                    emitter.onNext(localItems)
                     emitter.onComplete()
                 }
 
