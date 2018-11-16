@@ -17,17 +17,16 @@ import com.unagit.douuajobsevents.views.MainActivity
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import androidx.core.app.JobIntentService
 import com.unagit.douuajobsevents.R
 
 
 class RefreshService : Service() {
-
-    private var dataProvider: DataProvider? = null
-    private val notificationId = 1
-    private val logTag = this.javaClass.simpleName
+    override fun onBind(intent: Intent?): IBinder? {
+        return null
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
         Log.d(logTag, "$logTag service started")
         initializeFields()
 
@@ -35,6 +34,10 @@ class RefreshService : Service() {
 
         return START_NOT_STICKY
     }
+
+    private var dataProvider: DataProvider? = null
+    private val notificationId = 1
+    private val logTag = this.javaClass.simpleName
 
     private fun initializeFields() {
         if (dataProvider == null) {
@@ -111,7 +114,4 @@ class RefreshService : Service() {
 
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
 }

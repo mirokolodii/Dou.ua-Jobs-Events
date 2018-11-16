@@ -25,7 +25,14 @@
         <service
             android:name=".services.RefreshService"
             android:exported="false"
-            android:description="@string/refresh_service_desc" />
+            android:description="@string/refresh_service_desc"
+            />
+        <receiver android:name=".services.BootReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

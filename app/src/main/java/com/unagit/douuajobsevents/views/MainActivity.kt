@@ -17,6 +17,13 @@ import com.unagit.douuajobsevents.presenters.ListPresenter
 import com.unagit.douuajobsevents.services.RefreshService
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Pair as AndroidPair
+import android.app.AlarmManager
+import androidx.core.content.ContextCompat.getSystemService
+import android.app.PendingIntent
+import android.os.SystemClock
+import com.unagit.douuajobsevents.services.RefreshAlarmReceiver
+import java.util.*
+
 
 class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener{
 
@@ -33,7 +40,25 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         }
 
 
+        scheduleRefreshService()
 
+
+    }
+
+    private fun scheduleRefreshService() {
+        val intent = Intent(this, RefreshAlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT)
+//        val calendar = Calendar.getInstance()
+//        calendar.timeInMillis =System.currentTimeMillis()
+//        calendar.add(Calendar.MINUTE, 5)
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setInexactRepeating(
+                AlarmManager.ELAPSED_REALTIME,
+                SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                pendingIntent)
     }
 
 
