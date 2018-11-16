@@ -32,6 +32,11 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 
         presenter.attach(this, application)
         presenter.requestItemFromId(guid)
+
+        fab.setOnClickListener { view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+        }
     }
 
     override fun showItem(item: Item) {
@@ -56,7 +61,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 //            Snackbar.make(activityDetailsLayout, "Details clicked ${detailedItemDetails.linksClickable}", Snackbar.LENGTH_SHORT).show()
 //        }
 
-        // Set links in details to be clickable
+        // Set links in description to be clickable
         detailedItemDetails.movementMethod = LinkMovementMethod.getInstance() //.setMovementMethod(LinkMovementMethod.getInstance())
     }
 }
