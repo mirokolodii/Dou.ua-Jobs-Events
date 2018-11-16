@@ -33,8 +33,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         }
 
 
-        val serviceIntent = Intent(this, RefreshService::class.java)
-        startService(serviceIntent)
+
     }
 
 
