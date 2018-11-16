@@ -5,7 +5,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,7 +16,6 @@ import com.unagit.douuajobsevents.views.MainActivity
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.core.app.JobIntentService
 import com.unagit.douuajobsevents.R
 
 
@@ -39,7 +37,7 @@ class RefreshService : Service() {
 
         return START_NOT_STICKY
     }
-    
+
     private fun initializeFields() {
         if (dataProvider == null) {
             dataProvider = DataProvider(this.application)
@@ -96,7 +94,7 @@ class RefreshService : Service() {
                 PendingIntent.getActivity(this, 0, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val mBuilder = NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.abc_ic_arrow_drop_right_black_24dp)
+                .setSmallIcon(R.drawable.abc_ic_menu_overflow_material)
                 .setContentTitle("$itemsNumber new item(s) received")
 //                .setSubText("subtext")
                 .setContentText("Tap to open in app.")
