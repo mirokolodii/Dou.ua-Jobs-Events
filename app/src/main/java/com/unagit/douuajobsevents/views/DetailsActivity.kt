@@ -3,15 +3,17 @@ package com.unagit.douuajobsevents.views
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Spanned
 import android.text.method.LinkMovementMethod
-import android.util.Log
-import android.view.View
+import android.transition.Explode
+import android.transition.Fade
+import android.transition.Slide
+import android.transition.TransitionManager
+import android.view.Gravity
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.contracts.DetailsContract
@@ -41,8 +43,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(guid)))
         }
 
-
-
+        // Hide fab once scrolled to the bottom
         nestedScrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             if (v != null && v.canScrollVertically(1)) {
                 fab.show()
