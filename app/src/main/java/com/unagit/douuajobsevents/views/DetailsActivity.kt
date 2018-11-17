@@ -1,5 +1,7 @@
 package com.unagit.douuajobsevents.views
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
@@ -33,9 +35,12 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         presenter.attach(this, application)
         presenter.requestItemFromId(guid)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        // Open event in browser
+        fab.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(guid)))
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                    .setAction("Action", null).show()
+
         }
     }
 
