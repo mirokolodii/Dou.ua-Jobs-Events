@@ -86,7 +86,7 @@ class ListPresenter : ListContract.ListPresenter {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(logTag, e.message)
+                        Log.e(logTag, "Error in getItems. ${e.message}")
                         view?.showSnackbar("Error: can't receive data from local cache.")
                     }
 
@@ -117,7 +117,7 @@ class ListPresenter : ListContract.ListPresenter {
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(logTag, "Error in refreshData {${e.message}")
+                        Log.e(logTag, "Error in refreshData. ${e.message}")
                         view?.showSnackbar("Error: can't refresh data.")
                     }
                 })

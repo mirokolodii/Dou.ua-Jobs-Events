@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.text.HtmlCompat
+import androidx.core.widget.NestedScrollView
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
@@ -30,7 +32,6 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
-        Snackbar.make(activityDetailsLayout, guid, Snackbar.LENGTH_SHORT).show()
 
         presenter.attach(this, application)
         presenter.requestItemFromId(guid)
@@ -38,9 +39,21 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         // Open event in browser
         fab.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(guid)))
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+        }
+
+
+
+        nestedScrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            if (v != null && v.canScrollVertically(1)) {
+                fab.show()
+//            Snackbar.make(v, "Not at the bottom", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show()
 
+            } else {
+//                Snackbar.make(v!!, "At the bottom", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show()
+                fab.hide()
+            }
         }
     }
 
