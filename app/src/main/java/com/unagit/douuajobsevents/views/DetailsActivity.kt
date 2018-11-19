@@ -11,6 +11,7 @@ import android.transition.TransitionManager
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.google.android.material.snackbar.Snackbar
@@ -104,10 +105,15 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
                 true
             }
             menu_add_to_calendar -> {
-                Snackbar.make(activityDetailsLayout,
+                val snackbar = Snackbar.make(activityDetailsLayout,
                         "Add to calendar clicked",
                         Snackbar.LENGTH_SHORT)
-                        .show()
+                val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
+                layoutParams.anchorId = R.id.bottom_bar //Id for your bottomNavBar or TabLayout
+                layoutParams.anchorGravity = Gravity.TOP
+                layoutParams.gravity = Gravity.TOP
+                snackbar.view.layoutParams = layoutParams
+                snackbar.show()
                 true
             } else -> super.onOptionsItemSelected(item)
         }
