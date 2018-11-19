@@ -8,14 +8,16 @@ import android.transition.Explode
 import android.transition.Fade
 import android.transition.Slide
 import android.transition.TransitionManager
-import android.view.Gravity
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
+import com.unagit.douuajobsevents.R.id.menu_add_to_calendar
+import com.unagit.douuajobsevents.R.id.menu_share
 import com.unagit.douuajobsevents.contracts.DetailsContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.DetailsPresenter
@@ -28,9 +30,10 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+//        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(bottom_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false) //remove title
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
@@ -82,6 +85,32 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 
         // Set links in description to be clickable
         detailedItemDetails.movementMethod = LinkMovementMethod.getInstance() //.setMovementMethod(LinkMovementMethod.getInstance())
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.details_bottom_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+        return when(item?.itemId) {
+            menu_share -> {
+                Snackbar.make(activityDetailsLayout,
+                        "Share clicked",
+                        Snackbar.LENGTH_SHORT)
+                        .show()
+                true
+            }
+            menu_add_to_calendar -> {
+                Snackbar.make(activityDetailsLayout,
+                        "Add to calendar clicked",
+                        Snackbar.LENGTH_SHORT)
+                        .show()
+                true
+            } else -> super.onOptionsItemSelected(item)
+        }
     }
 }
 
