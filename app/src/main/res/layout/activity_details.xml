@@ -99,18 +99,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:fabAlignmentMode="center"
+        android:backgroundTint="@android:color/holo_blue_bright"
         app:hideOnScroll="true"
-        app:fabCradleRoundedCornerRadius="15dp"
         style="@style/Widget.MaterialComponents.BottomAppBar"
-        app:navigationIcon="@drawable/hrevent"/>
+        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         app:layout_anchor="@id/bottom_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
         app:srcCompat="@drawable/ic_open_in_browser_black_24dp"
         />
 
