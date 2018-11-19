@@ -98,10 +98,13 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 
         return when(item?.itemId) {
             menu_share -> {
-                Snackbar.make(activityDetailsLayout,
+                val snackbar = Snackbar.make(activityDetailsLayout,
                         "Share clicked",
                         Snackbar.LENGTH_SHORT)
-                        .show()
+                val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
+                layoutParams.setMargins(0, 0, 0, bottom_bar.height);
+                snackbar.view.layoutParams = layoutParams
+                snackbar.show()
                 true
             }
             menu_add_to_calendar -> {
