@@ -102,6 +102,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 //                layoutParams.setMargins(0, 0, 0, bottom_bar.height);
 //                snackbar.view.layoutParams = layoutParams
 //                snackbar.show()
+                Share()
                 true
             }
             menu_add_to_calendar -> {
@@ -117,12 +118,27 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
             Log.e(this.javaClass.simpleName, "Item is null.")
             return
         }
+        val title = HtmlCompat.fromHtml(this.item!!.title, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+        val guid = this.item!!.guid
         val intent = Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.Events.TITLE, this.item?.title)
-                .putExtra(CalendarContract.Events.DESCRIPTION, this.item?.guid)
+//                .putExtra(CalendarContract.Events.TITLE, title)
+                .putExtra(CalendarContract.Events.DESCRIPTION, "$title $guid")
                 .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
         startActivity(intent)
+    }
+
+    private fun Share() {
+        if(this.item == null) {
+            Log.e(this.javaClass.simpleName, "Item is null.")
+            return
+        }
+        val title = HtmlCompat.fromHtml(this.item!!.title, HtmlCompat.FROM_HTML_MODE_COMPACT).toString()
+        val guid = this.item!!.guid
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, "$title $guid")
+        startActivity(Intent.createChooser(intent, "Share with"))
     }
 }
 
