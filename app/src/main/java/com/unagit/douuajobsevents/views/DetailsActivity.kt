@@ -3,18 +3,13 @@ package com.unagit.douuajobsevents.views
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.text.method.LinkMovementMethod
-import android.transition.Explode
-import android.transition.Fade
-import android.transition.Slide
-import android.transition.TransitionManager
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.R.id.menu_add_to_calendar
@@ -25,7 +20,8 @@ import com.unagit.douuajobsevents.presenters.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
 
 class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
-    val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
+    private val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
+    private var item: Item? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +59,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
     }
 
     override fun showItem(item: Item) {
+        this.item = item
         detailedItemTitle.text = HtmlCompat.fromHtml(item.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
         detailedItemDetails.text = HtmlCompat.fromHtml(item.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
@@ -98,28 +95,34 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 
         return when(item?.itemId) {
             menu_share -> {
-                val snackbar = Snackbar.make(activityDetailsLayout,
-                        "Share clicked",
-                        Snackbar.LENGTH_SHORT)
-                val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.setMargins(0, 0, 0, bottom_bar.height);
-                snackbar.view.layoutParams = layoutParams
-                snackbar.show()
+//                val snackbar = Snackbar.make(activityDetailsLayout,
+//                        "Share clicked",
+//                        Snackbar.LENGTH_SHORT)
+//                val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
+//                layoutParams.setMargins(0, 0, 0, bottom_bar.height);
+//                snackbar.view.layoutParams = layoutParams
+//                snackbar.show()
                 true
             }
             menu_add_to_calendar -> {
-                val snackbar = Snackbar.make(activityDetailsLayout,
-                        "Add to calendar clicked",
-                        Snackbar.LENGTH_SHORT)
-                val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.anchorId = R.id.bottom_bar //Id for your bottomNavBar or TabLayout
-                layoutParams.anchorGravity = Gravity.TOP
-                layoutParams.gravity = Gravity.TOP
-                snackbar.view.layoutParams = layoutParams
-                snackbar.show()
+                addToCalendar()
+
                 true
             } else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun addToCalendar() {
+        if(this.item == null) {
+            Log.e(this.javaClass.simpleName, "Item is null.")
+            return
+        }
+        val intent = Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.Events.TITLE, this.item?.title)
+                .putExtra(CalendarContract.Events.DESCRIPTION, this.item?.guid)
+                .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY)
+        startActivity(intent)
     }
 }
 
