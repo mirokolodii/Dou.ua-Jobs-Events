@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.provider.CalendarContract
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.app.NavUtils
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.squareup.picasso.Picasso
@@ -28,47 +25,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-        setSupportActionBar(toolbar)
-//        setSupportActionBar(bottom_bar)
-        supportActionBar?.setDisplayShowTitleEnabled(false) //remove title
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        // Need this code for reversed animation transition to work on back arrow pressed.
-        toolbar.setNavigationOnClickListener {
-            onBackPressed()
-        }
-
-        bottom_bar.inflateMenu(R.menu.details_bottom_menu)
-        bottom_bar.setOnMenuItemClickListener {
-
-            return@setOnMenuItemClickListener when(it.itemId) {
-//            R.id.home -> {
-//                //
-//                NavUtils.navigateUpFromSameTask(this)
-//                true
-//            }
-                menu_share -> {
-//                val snackbar = Snackbar.make(activityDetailsLayout,
-//                        "Share clicked",
-//                        Snackbar.LENGTH_SHORT)
-//                val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
-//                layoutParams.setMargins(0, 0, 0, bottom_bar.height);
-//                snackbar.view.layoutParams = layoutParams
-//                snackbar.show()
-                    Share()
-                    true
-                }
-                menu_add_to_calendar -> {
-                    addToCalendar()
-
-                    true
-                } else -> super.onOptionsItemSelected(it)
-            }
-        }
-
-
-
+        setupBarsAndMenu()
 
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
@@ -85,13 +42,34 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         nestedScrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             if (v != null && v.canScrollVertically(1)) {
                 fab.show()
-//            Snackbar.make(v, "Not at the bottom", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
-
             } else {
-//                Snackbar.make(v!!, "At the bottom", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show()
                 fab.hide()
+            }
+        }
+    }
+
+    private fun setupBarsAndMenu() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false) //remove title
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Need this code for reversed animation transition to work on back arrow pressed.
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
+        bottom_bar.inflateMenu(R.menu.details_bottom_menu)
+        bottom_bar.setOnMenuItemClickListener {
+
+            return@setOnMenuItemClickListener when(it.itemId) {
+                menu_share -> {
+                    share()
+                    true
+                }
+                menu_add_to_calendar -> {
+                    addToCalendar()
+                    true
+                } else -> super.onOptionsItemSelected(it)
             }
         }
     }
@@ -109,52 +87,10 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 //                .centerInside()
                 .into(detailedItemImg)
 
-
-
-//        detailedItemTitle.setOnClickListener { _ ->
-//            Snackbar.make(activityDetailsLayout, item.title, Snackbar.LENGTH_SHORT).show()
-//        }
-//
-//        detailedItemDetails.setOnClickListener { _ ->
-//            Snackbar.make(activityDetailsLayout, "Details clicked ${detailedItemDetails.linksClickable}", Snackbar.LENGTH_SHORT).show()
-//        }
-
         // Set links in description to be clickable
-        detailedItemDetails.movementMethod = LinkMovementMethod.getInstance() //.setMovementMethod(LinkMovementMethod.getInstance())
+        detailedItemDetails.movementMethod = LinkMovementMethod.getInstance()
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        val inflater = menuInflater
-//        inflater.inflate(R.menu.details_bottom_menu, menu)
-//        return true
-//    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-
-        return when(item?.itemId) {
-//            R.id.home -> {
-//                //
-//                NavUtils.navigateUpFromSameTask(this)
-//                true
-//            }
-            menu_share -> {
-//                val snackbar = Snackbar.make(activityDetailsLayout,
-//                        "Share clicked",
-//                        Snackbar.LENGTH_SHORT)
-//                val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
-//                layoutParams.setMargins(0, 0, 0, bottom_bar.height);
-//                snackbar.view.layoutParams = layoutParams
-//                snackbar.show()
-                Share()
-                true
-            }
-            menu_add_to_calendar -> {
-                addToCalendar()
-
-                true
-            } else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     private fun addToCalendar() {
         if(this.item == null) {
@@ -171,7 +107,7 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         startActivity(intent)
     }
 
-    private fun Share() {
+    private fun share() {
         if(this.item == null) {
             Log.e(this.javaClass.simpleName, "Item is null.")
             return
