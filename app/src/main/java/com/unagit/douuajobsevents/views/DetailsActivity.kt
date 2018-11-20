@@ -8,12 +8,13 @@ import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NavUtils
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.R.id.menu_add_to_calendar
-import com.unagit.douuajobsevents.R.id.menu_share
+import com.unagit.douuajobsevents.R.id.*
 import com.unagit.douuajobsevents.contracts.DetailsContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.DetailsPresenter
@@ -27,10 +28,47 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-//        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(bottom_bar)
+        setSupportActionBar(toolbar)
+//        setSupportActionBar(bottom_bar)
         supportActionBar?.setDisplayShowTitleEnabled(false) //remove title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        // Need this code for reversed animation transition to work on back arrow pressed.
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+
+        bottom_bar.inflateMenu(R.menu.details_bottom_menu)
+        bottom_bar.setOnMenuItemClickListener {
+
+            return@setOnMenuItemClickListener when(it.itemId) {
+//            R.id.home -> {
+//                //
+//                NavUtils.navigateUpFromSameTask(this)
+//                true
+//            }
+                menu_share -> {
+//                val snackbar = Snackbar.make(activityDetailsLayout,
+//                        "Share clicked",
+//                        Snackbar.LENGTH_SHORT)
+//                val layoutParams = snackbar.view.layoutParams as CoordinatorLayout.LayoutParams
+//                layoutParams.setMargins(0, 0, 0, bottom_bar.height);
+//                snackbar.view.layoutParams = layoutParams
+//                snackbar.show()
+                    Share()
+                    true
+                }
+                menu_add_to_calendar -> {
+                    addToCalendar()
+
+                    true
+                } else -> super.onOptionsItemSelected(it)
+            }
+        }
+
+
+
 
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
@@ -85,15 +123,20 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         detailedItemDetails.movementMethod = LinkMovementMethod.getInstance() //.setMovementMethod(LinkMovementMethod.getInstance())
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.details_bottom_menu, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        val inflater = menuInflater
+//        inflater.inflate(R.menu.details_bottom_menu, menu)
+//        return true
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
         return when(item?.itemId) {
+//            R.id.home -> {
+//                //
+//                NavUtils.navigateUpFromSameTask(this)
+//                true
+//            }
             menu_share -> {
 //                val snackbar = Snackbar.make(activityDetailsLayout,
 //                        "Share clicked",
