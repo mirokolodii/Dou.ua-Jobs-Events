@@ -8,9 +8,9 @@ Kotlin
 MVP
 
 ### Libraries:
-Retrofit2
-RxJava
-Room
-Jsoup
-Picasso
+* Retrofit2
+* RxJava
+* Room
+* Jsoup
+* Picasso
 
