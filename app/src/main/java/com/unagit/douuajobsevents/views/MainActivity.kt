@@ -22,8 +22,12 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.app.PendingIntent
 import android.os.SystemClock
 import android.util.Log
+import android.view.Menu
+import androidx.appcompat.widget.Toolbar
 import com.unagit.douuajobsevents.services.RefreshAlarmReceiver
 import java.util.*
+import android.view.MenuInflater
+import android.view.MenuItem
 
 
 class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener{
@@ -36,14 +40,36 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         presenter.attach(this, application)
         presenter.getItems()
 
-        button.setOnClickListener {
-            presenter.refreshData()
-        }
+//        button.setOnClickListener {
+//            presenter.refreshData()
+//        }
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
 
         scheduleRefreshService()
 
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when(item?.itemId) {
+            R.id.menu_refresh -> {
+                presenter.refreshData()
+                true
+            }
+            R.id.menu_clear_cache -> {
+                presenter.clearLocalData()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun scheduleRefreshService() {

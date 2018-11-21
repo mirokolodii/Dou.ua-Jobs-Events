@@ -5,6 +5,7 @@ import android.os.AsyncTask
 import android.util.Log
 import androidx.core.text.HtmlCompat
 import com.unagit.douuajobsevents.helpers.ItemType
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -78,9 +79,12 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         }
     }
 
-//    fun getGuidForItemIn(position: Int): String? {
-//        return if (items != null) items!![position].guid else null
-//    }
+    fun getDeleteLocalDataObservable(): Completable {
+        return Completable.create { emitter ->
+            DB_INSTANCE!!.itemDao().deleteAll()
+            emitter.onComplete()
+        }
+    }
 
     fun getRefreshDataObservable(): Observable<List<Item>> {
 

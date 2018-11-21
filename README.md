@@ -1,16 +1,16 @@
 # Dou.ua Jobs&Events
-This Android app lists jobs and events from rss feed Dou.ua, which is popular ukrainian service related to software development and information technology.
+This Android app lists jobs and events from rss feed of Dou.ua, which is a popular ukrainian internet portal related to software development and information technology.
 
-Language:
+### Language:
 Kotlin
 
-Architecture: 
+### Architecture: 
 MVP
 
-Libraries:
-Retrofit2
-RxJava
-Room
-Jsoup
-Picasso
+### Libraries:
+* Retrofit2
+* RxJava
+* Room
+* Jsoup
+* Picasso
 

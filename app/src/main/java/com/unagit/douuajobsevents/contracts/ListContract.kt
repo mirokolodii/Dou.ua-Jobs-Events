@@ -16,5 +16,6 @@ interface ListContract {
     interface ListPresenter : BasePresenter<ListView> {
         fun getItems()
         fun refreshData()
+        fun clearLocalData()
     }
 }
