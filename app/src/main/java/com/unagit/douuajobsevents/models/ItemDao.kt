@@ -16,4 +16,7 @@ interface ItemDao{
 
     @Query("SELECT * from entity_table WHERE guid = :guid LIMIT 1")
     fun getItemWithId(guid: String): Item
+
+    @Query("DELETE from entity_table")
+    fun deleteAll()
 }

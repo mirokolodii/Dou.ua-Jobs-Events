@@ -59,8 +59,17 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-
-        return super.onOptionsItemSelected(item)
+        return when(item?.itemId) {
+            R.id.menu_refresh -> {
+                presenter.refreshData()
+                true
+            }
+            R.id.menu_clear_cache -> {
+                presenter.clearLocalData()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun scheduleRefreshService() {

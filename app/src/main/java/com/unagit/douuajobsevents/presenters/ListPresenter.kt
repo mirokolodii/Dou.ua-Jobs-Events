@@ -8,6 +8,7 @@ import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.models.DataProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -16,16 +17,16 @@ class ListPresenter : ListContract.ListPresenter {
     private var view: ListContract.ListView? = null
     private var dataProvider: DataProvider? = null
     private var localDataDisposable: Disposable? = null
+    private var clearLocalDataDisposable: Disposable? = null
+    private var refreshDataDisposable: Disposable? = null
+    private var refreshRunnable: Runnable? = null
+    private val initialRefreshInterval = 5 * 1000L /* 5 sec */
 
     private val logTag = "ListPresenter"
 
-
     // Fields used for data refresh from web with interval 'refreshInterval' msec.
-    private var refreshDataDisposable: Disposable? = null
-    private val initialRefreshInterval = 5 * 1000L /* 5 sec */
     private val refreshInterval = 60 * 5 * 1000L /* 5 min */
     private val refreshHandler = Handler()
-    private var refreshRunnable: Runnable? = null
 
     override fun attach(view: ListContract.ListView, application: Application) {
         this.view = view
@@ -38,6 +39,7 @@ class ListPresenter : ListContract.ListPresenter {
         stopDataRefresh()
         localDataDisposable?.dispose()
         refreshDataDisposable?.dispose()
+        clearLocalDataDisposable?.dispose()
         this.view = null
 
         // TODO: Should I detach in DataProvider?
@@ -66,6 +68,23 @@ class ListPresenter : ListContract.ListPresenter {
         }
     }
 
+    override fun clearLocalData() {
+        clearLocalDataDisposable = dataProvider!!.getDeleteLocalDataObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableCompletableObserver() {
+                    override fun onComplete() {
+                        view?.showSnackbar("Local data has been deleted.")
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                        view?.showSnackbar("Oops :-( Something prevents from deleting local cache.")
+                    }
+                })
+        getItems()
+        initiateDataRefresh()
+    }
 
     override fun getItems() {
         view?.showLoading(true)
@@ -107,18 +126,17 @@ class ListPresenter : ListContract.ListPresenter {
                     override fun onNext(t: List<Item>) {
 //                        Log.d(logTag, "onNext in refreshData is triggered")
                         view?.insertNewItems(t)
-                        val message = if(t.size == 1) {
-                            "${t.size} new item received."
-                        }
-                        else {
-                            "${t.size} new items received."
+                        val message = when {
+                            t.isEmpty() -> "No new items."
+                            t.size == 1 -> "${t.size} new item received."
+                            else -> "${t.size} new items received."
                         }
                         view?.showSnackbar(message)
                     }
 
                     override fun onError(e: Throwable) {
                         Log.e(logTag, "Error in refreshData. ${e.message}")
-                        view?.showSnackbar("Error: can't refresh data.")
+                        view?.showSnackbar("Error - can't refresh data.")
                     }
                 })
     }
