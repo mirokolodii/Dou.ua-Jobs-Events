@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         setSupportActionBar(toolbar)
 
 
-        scheduleRefreshService()
+        scheduleRefreshWorkerTask()
 
 
     }
@@ -87,6 +87,30 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
                 AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                 pendingIntent)
         Log.d("alarmManager", "AlarmManager is set from MainActivity")
+    }
+
+    private fun scheduleRefreshWorkerTask() {
+        val workConstraints = Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+        val applicationData = Data.Builder()
+                .putString(Keys.APP_ID, getApplicationId())
+                .putString(Keys.LOGGING_LEVEL, mitterConfig.loggingLevel.toString())
+                .build()
+        val periodicRefreshTokenWork = PeriodicWorkRequest.Builder(
+                RefreshTokenWorker::class.java,
+                1,
+                TimeUnit.HOURS
+        ).setConstraints(workConstraints)
+                .setInputData(applicationData)
+                .build()
+        WorkManager.getInstance()
+                ?.enqueueUniquePeriodicWork(
+                        uniqueWorkName,
+                        ExistingPeriodicWorkPolicy.REPLACE,
+                        periodicRefreshTokenWork
+                )
     }
 
 
