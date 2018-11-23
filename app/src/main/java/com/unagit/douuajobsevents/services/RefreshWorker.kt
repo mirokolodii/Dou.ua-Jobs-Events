@@ -33,7 +33,6 @@ class RefreshWorker(@NonNull appContext: Context,
         Log.d("alarmManager", "$logTag service started")
         initializeFields()
 
-        Log.d(logTag, "refreshData triggered")
 
         refreshData()
 
@@ -49,6 +48,7 @@ class RefreshWorker(@NonNull appContext: Context,
 
 
     private fun refreshData() {
+        Log.d(logTag, "refreshData triggered")
         dataProvider!!.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

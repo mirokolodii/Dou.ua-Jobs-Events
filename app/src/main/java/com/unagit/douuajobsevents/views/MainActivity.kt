@@ -105,28 +105,28 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
 //                .build()
 
 //
-//        val periodicRefreshRequest = PeriodicWorkRequest.Builder(
-//                RefreshWorker::class.java,
-//                1,
-//                TimeUnit.HOURS
-//        ).setConstraints(workConstraints)
-////                .setInputData(applicationData)
-//                .build()
-//        WorkManager.getInstance()
-//                .enqueueUniquePeriodicWork(
-//                        UNIQUE_REFRESH_WORKER_NAME,
-//                        ExistingPeriodicWorkPolicy.REPLACE,
-//                        periodicRefreshRequest
-//                )
-
-
-        val singleRefreshRequest = OneTimeWorkRequest
-                .Builder(RefreshWorker::class.java)
-                .setConstraints(workConstraints)
+        val periodicRefreshRequest = PeriodicWorkRequest.Builder(
+                RefreshWorker::class.java,
+                15,
+                TimeUnit.MINUTES
+        ).setConstraints(workConstraints)
 //                .setInputData(applicationData)
                 .build()
         WorkManager.getInstance()
-                .enqueue(singleRefreshRequest)
+                .enqueueUniquePeriodicWork(
+                        UNIQUE_REFRESH_WORKER_NAME,
+                        ExistingPeriodicWorkPolicy.REPLACE,
+                        periodicRefreshRequest
+                )
+
+
+//        val singleRefreshRequest = OneTimeWorkRequest
+//                .Builder(RefreshWorker::class.java)
+//                .setConstraints(workConstraints)
+////                .setInputData(applicationData)
+//                .build()
+//        WorkManager.getInstance()
+//                .enqueue(singleRefreshRequest)
 
     }
 
