@@ -1,6 +1,7 @@
 package com.unagit.douuajobsevents.views
 
 import android.app.ActivityOptions
+import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -141,5 +142,17 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
         return (activeNetwork != null && activeNetwork.isConnected)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if(Intent.ACTION_SEARCH == intent?.action) {
+            val query = intent.getStringExtra(SearchManager.QUERY)
+            performSearch(query)
+        }
+    }
+
+    private fun performSearch(query: String) {
+        showSnackbar(query)
     }
 }
