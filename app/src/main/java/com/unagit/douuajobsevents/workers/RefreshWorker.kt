@@ -69,9 +69,17 @@ class RefreshWorker(@NonNull appContext: Context,
 
     }
 
-    private fun showNotification(itemsNumber: Int) {
+    private fun showNotification(itemsCount: Int) {
 
         Log.d(logTag, "showNotification triggered.")
+
+        if(itemsCount == 0) {
+            return
+        }
+        val message = when {
+            itemsCount == 1 -> "${itemsCount} new item received."
+            else -> "${itemsCount} new items received."
+        }
 
         val notificationManager: NotificationManager =
                 this.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -94,7 +102,7 @@ class RefreshWorker(@NonNull appContext: Context,
 
         val mBuilder = NotificationCompat.Builder(applicationContext, channelId)
                 .setSmallIcon(R.drawable.abc_ic_menu_overflow_material)
-                .setContentTitle("$itemsNumber new item(s) received")
+                .setContentTitle(message)
 //                .setSubText("subtext")
                 .setContentText("Tap to open in app.")
 //                .setOngoing(true)
