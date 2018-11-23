@@ -1,7 +1,5 @@
 package com.unagit.douuajobsevents.views
 
-import android.text.Html
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View

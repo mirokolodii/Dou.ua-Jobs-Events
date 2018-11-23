@@ -11,7 +11,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 class ListPresenter : ListContract.ListPresenter {
     private var view: ListContract.ListView? = null
