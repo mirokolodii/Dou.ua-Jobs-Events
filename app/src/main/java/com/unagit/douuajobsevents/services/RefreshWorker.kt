@@ -1,7 +1,6 @@
 package com.unagit.douuajobsevents.services
 
-import android.app.NotificationChannel
-import android.app.Service
+import android.app.*
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
@@ -11,51 +10,52 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import androidx.core.app.NotificationCompat
-import android.app.PendingIntent
 import com.unagit.douuajobsevents.views.MainActivity
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import androidx.annotation.NonNull
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.unagit.douuajobsevents.R
 
 
-class RefreshWorker : Worker {
+class RefreshWorker(@NonNull appContext: Context,
+                    @NonNull workerParams: WorkerParameters)
+    : Worker(appContext, workerParams) {
 
     private var dataProvider: DataProvider? = null
     private val notificationId = 1
     private val logTag = this.javaClass.simpleName
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
 
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun doWork(): Result {
         Log.d("alarmManager", "$logTag service started")
         initializeFields()
 
+        Log.d(logTag, "refreshData triggered")
+
         refreshData()
 
+        Log.d(logTag, "About to return Result.SUCCESS.")
+        return Result.SUCCESS
     }
 
     private fun initializeFields() {
         if (dataProvider == null) {
-            dataProvider = DataProvider(this.application)
+            dataProvider = DataProvider(applicationContext as Application)
         }
     }
 
 
     private fun refreshData() {
-
-        Log.d(logTag, "refreshData triggered")
-
         dataProvider!!.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : DisposableObserver<List<Item>>() {
+                .blockingSubscribe(object : DisposableObserver<List<Item>>() {
+
                     override fun onComplete() {
                         Log.d(logTag, "onComplete triggered.")
-                        stopSelf()
                     }
 
                     override fun onNext(t: List<Item>) {
@@ -65,9 +65,9 @@ class RefreshWorker : Worker {
 
                     override fun onError(e: Throwable) {
                         Log.d(logTag, "onError triggered ${e.printStackTrace()}.")
-                        stopSelf()
                     }
                 })
+
     }
 
     private fun showNotification(itemsNumber: Int) {
@@ -75,7 +75,7 @@ class RefreshWorker : Worker {
         Log.d(logTag, "showNotification triggered.")
 
         val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                this.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val channelId = "channel_id"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -89,11 +89,11 @@ class RefreshWorker : Worker {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val mainActivityIntent = Intent(this, MainActivity::class.java)
+        val mainActivityIntent = Intent(applicationContext, MainActivity::class.java)
         val mainActivityPendingIntent =
-                PendingIntent.getActivity(this, 0, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getActivity(applicationContext, 0, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val mBuilder = NotificationCompat.Builder(this, channelId)
+        val mBuilder = NotificationCompat.Builder(applicationContext, channelId)
                 .setSmallIcon(R.drawable.abc_ic_menu_overflow_material)
                 .setContentTitle("$itemsNumber new item(s) received")
 //                .setSubText("subtext")
