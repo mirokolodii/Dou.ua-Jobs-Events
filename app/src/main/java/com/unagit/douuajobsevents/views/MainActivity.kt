@@ -86,8 +86,10 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
                 TimeUnit.HOURS,
                 15,
                 TimeUnit.MINUTES
-        ).setConstraints(workConstraints)
+        )
+                .setConstraints(workConstraints)
 //                .setInputData(applicationData)
+
                 .build()
         WorkManager.getInstance()
                 .enqueueUniquePeriodicWork(
