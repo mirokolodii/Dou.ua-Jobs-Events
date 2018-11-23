@@ -28,9 +28,13 @@ import com.unagit.douuajobsevents.services.RefreshAlarmReceiver
 import java.util.*
 import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.work.*
+import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
+import com.unagit.douuajobsevents.services.RefreshWorker
+import java.util.concurrent.TimeUnit
 
 
-class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener{
+class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
 
@@ -59,7 +63,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId) {
+        return when (item?.itemId) {
             R.id.menu_refresh -> {
                 presenter.refreshData()
                 true
@@ -90,27 +94,40 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     }
 
     private fun scheduleRefreshWorkerTask() {
+        Log.d("WorkManager", "scheduleRefreshWorkerTask triggered.")
         val workConstraints = Constraints
                 .Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
-        val applicationData = Data.Builder()
-                .putString(Keys.APP_ID, getApplicationId())
-                .putString(Keys.LOGGING_LEVEL, mitterConfig.loggingLevel.toString())
-                .build()
-        val periodicRefreshTokenWork = PeriodicWorkRequest.Builder(
-                RefreshTokenWorker::class.java,
-                1,
-                TimeUnit.HOURS
-        ).setConstraints(workConstraints)
-                .setInputData(applicationData)
+//        val applicationData = Data.Builder()
+//                .putString(Keys.APP_ID, getApplicationId())
+//                .putString(Keys.LOGGING_LEVEL, mitterConfig.loggingLevel.toString())
+//                .build()
+
+//
+//        val periodicRefreshRequest = PeriodicWorkRequest.Builder(
+//                RefreshWorker::class.java,
+//                1,
+//                TimeUnit.HOURS
+//        ).setConstraints(workConstraints)
+////                .setInputData(applicationData)
+//                .build()
+//        WorkManager.getInstance()
+//                .enqueueUniquePeriodicWork(
+//                        UNIQUE_REFRESH_WORKER_NAME,
+//                        ExistingPeriodicWorkPolicy.REPLACE,
+//                        periodicRefreshRequest
+//                )
+
+
+        val singleRefreshRequest = OneTimeWorkRequest
+                .Builder(RefreshWorker::class.java)
+                .setConstraints(workConstraints)
+//                .setInputData(applicationData)
                 .build()
         WorkManager.getInstance()
-                ?.enqueueUniquePeriodicWork(
-                        uniqueWorkName,
-                        ExistingPeriodicWorkPolicy.REPLACE,
-                        periodicRefreshTokenWork
-                )
+                .enqueue(singleRefreshRequest)
+
     }
 
 
