@@ -1,8 +1,7 @@
-package com.unagit.douuajobsevents.services
+package com.unagit.douuajobsevents.workers
 
 import android.app.*
 import android.content.Intent
-import android.os.IBinder
 import android.util.Log
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item

@@ -14,23 +14,15 @@ import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
-import com.unagit.douuajobsevents.services.RefreshService
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Pair as AndroidPair
-import android.app.AlarmManager
-import androidx.core.content.ContextCompat.getSystemService
-import android.app.PendingIntent
-import android.os.SystemClock
 import android.util.Log
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
-import com.unagit.douuajobsevents.services.RefreshAlarmReceiver
-import java.util.*
-import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.work.*
 import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
-import com.unagit.douuajobsevents.services.RefreshWorker
+import com.unagit.douuajobsevents.workers.RefreshWorker
 import java.util.concurrent.TimeUnit
 
 
@@ -74,23 +66,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun scheduleRefreshService() {
-        val intent = Intent(this, RefreshAlarmReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//        val calendar = Calendar.getInstance()
-//        calendar.timeInMillis =System.currentTimeMillis()
-//        calendar.add(Calendar.MINUTE, 5)
-
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setInexactRepeating(
-                AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                pendingIntent)
-        Log.d("alarmManager", "AlarmManager is set from MainActivity")
     }
 
     private fun scheduleRefreshWorkerTask() {
