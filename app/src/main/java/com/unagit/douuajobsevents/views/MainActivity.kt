@@ -82,6 +82,8 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
 //
         val periodicRefreshRequest = PeriodicWorkRequest.Builder(
                 RefreshWorker::class.java,
+                8,
+                TimeUnit.HOURS,
                 15,
                 TimeUnit.MINUTES
         ).setConstraints(workConstraints)
@@ -90,7 +92,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         WorkManager.getInstance()
                 .enqueueUniquePeriodicWork(
                         UNIQUE_REFRESH_WORKER_NAME,
-                        ExistingPeriodicWorkPolicy.REPLACE,
+                        ExistingPeriodicWorkPolicy.KEEP,
                         periodicRefreshRequest
                 )
 
