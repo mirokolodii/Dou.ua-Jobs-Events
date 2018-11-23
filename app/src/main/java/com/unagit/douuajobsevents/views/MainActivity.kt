@@ -36,16 +36,9 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         presenter.attach(this, application)
         presenter.getItems()
 
-//        button.setOnClickListener {
-//            presenter.refreshData()
-//        }
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-
         scheduleRefreshWorkerTask()
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -74,22 +67,15 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
                 .Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
-//        val applicationData = Data.Builder()
-//                .putString(Keys.APP_ID, getApplicationId())
-//                .putString(Keys.LOGGING_LEVEL, mitterConfig.loggingLevel.toString())
-//                .build()
 
-//
-        val periodicRefreshRequest = PeriodicWorkRequest.Builder(
-                RefreshWorker::class.java,
-                8,
-                TimeUnit.HOURS,
-                15,
-                TimeUnit.MINUTES
-        )
+        val periodicRefreshRequest = PeriodicWorkRequest
+                .Builder(
+                        RefreshWorker::class.java,
+                        8,
+                        TimeUnit.HOURS,
+                        15,
+                        TimeUnit.MINUTES)
                 .setConstraints(workConstraints)
-//                .setInputData(applicationData)
-
                 .build()
         WorkManager.getInstance()
                 .enqueueUniquePeriodicWork(
@@ -97,22 +83,12 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
                         ExistingPeriodicWorkPolicy.KEEP,
                         periodicRefreshRequest
                 )
-
-
-//        val singleRefreshRequest = OneTimeWorkRequest
-//                .Builder(RefreshWorker::class.java)
-//                .setConstraints(workConstraints)
-////                .setInputData(applicationData)
-//                .build()
-//        WorkManager.getInstance()
-//                .enqueue(singleRefreshRequest)
-
     }
 
 
     override fun onDestroy() {
-        super.onDestroy()
         presenter.detach()
+        super.onDestroy()
     }
 
     override fun showLoading(show: Boolean) {
@@ -123,20 +99,11 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         }
     }
 
-
     override fun showItems(items: List<Item>) {
-
-//                val listener = object : ItemAdapter.Listener {
-//            override fun onItemClicked(position: Int) {
-//                presenter.itemClicked(position)
-//            }
-//        }
-
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = ItemAdapter(items.toMutableList(), this@MainActivity)
         }
-
     }
 
     override fun insertNewItems(newItems: List<Item>) {
@@ -145,7 +112,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         adapter.insertData(newItems, insertPosition)
         recyclerView.scrollToPosition(insertPosition)
     }
-
 
     override fun onItemClicked(parent: View, guid: String) {
         // Prepare transition animation.
