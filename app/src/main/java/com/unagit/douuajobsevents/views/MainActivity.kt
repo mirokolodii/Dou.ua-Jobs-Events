@@ -21,6 +21,7 @@ import android.util.Log
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
 import android.view.MenuItem
+import androidx.appcompat.widget.SearchView
 import androidx.work.*
 import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.workers.RefreshWorker
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     private val presenter: ListContract.ListPresenter = ListPresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("Search", "onCreate triggered.")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter.attach(this, application)
@@ -45,6 +47,45 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
+
+        // Get the SearchView and set the searchable configuration
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchMenuItem = menu?.findItem(R.id.menu_search)?.actionView as SearchView
+        searchMenuItem.apply {
+            // Assumes current activity is the searchable activity
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+//            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    Log.d("Search", "onQueryTextChange triggered.")
+                    val adapter = recyclerView.adapter as ItemAdapter
+
+                    // Filter results based on search query.
+                    adapter.filter.filter(newText)
+
+                    return true
+                }
+
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    Log.d("Search", "onQueryTextSubmit triggered.")
+                    return false
+                }
+            })
+
+            setOnCloseListener {
+                Log.d("Search", "onCloseListener triggered.")
+                true
+            }
+
+            setOnQueryTextFocusChangeListener { v, hasFocus ->
+                Log.d("Search", "setOnQueryTextFocusChangeListener hasFocus: $hasFocus.")
+
+            }
+
+        }
+
+
+
         return true
     }
 
@@ -145,14 +186,16 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     }
 
     override fun onNewIntent(intent: Intent?) {
+        Log.d("Search", "onNewIntent triggered.")
         super.onNewIntent(intent)
-        if(Intent.ACTION_SEARCH == intent?.action) {
+        if (Intent.ACTION_SEARCH == intent?.action) {
             val query = intent.getStringExtra(SearchManager.QUERY)
             performSearch(query)
         }
     }
 
     private fun performSearch(query: String) {
+        Log.d("Search", "performSearch triggered.")
         showSnackbar(query)
     }
 }
