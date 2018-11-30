@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.views
 
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -68,17 +69,32 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
             override fun performFiltering(constraint: CharSequence?): FilterResults {
 
                 if (constraint != null) {
-                    val filteredItems = this@ItemAdapter.items.filter {
-                        it.title.contains(constraint, true)
-                    }
+                    val filteredItems =
+                            this@ItemAdapter.items
+                                    .filter {
+                                        Log.d("Search", "${it.title} contains $constraint?")
+                                        it.title.contains(constraint, true)
 
-                }
+                                    }
+                                    .toMutableList()
+
+                    val result = FilterResults()
+                    result.values = filteredItems
+                    return result
+
+                } else throw NullPointerException("Filter text is null.")
 
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                results?.values
+                this@ItemAdapter.filteredItems = results?.values as MutableList<Item>
+                notifyDataSetChanged()
             }
         }
     }
+
+//    fun restoreData() {
+//        filteredItems = items
+//        notifyDataSetChanged()
+//    }
 }

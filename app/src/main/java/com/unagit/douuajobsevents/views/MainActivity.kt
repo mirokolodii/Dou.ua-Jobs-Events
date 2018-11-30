@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
 //            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    Log.d("Search", "onQueryTextChange triggered.")
+                    Log.d("Search", "onQueryTextChange triggered with text = $newText. ${newText.isNullOrEmpty()}")
                     val adapter = recyclerView.adapter as ItemAdapter
 
                     // Filter results based on search query.
@@ -67,20 +67,22 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
                 }
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    Log.d("Search", "onQueryTextSubmit triggered.")
+//                    Log.d("Search", "onQueryTextSubmit triggered.")
                     return false
                 }
             })
 
-            setOnCloseListener {
-                Log.d("Search", "onCloseListener triggered.")
-                true
-            }
-
-            setOnQueryTextFocusChangeListener { v, hasFocus ->
-                Log.d("Search", "setOnQueryTextFocusChangeListener hasFocus: $hasFocus.")
-
-            }
+//            setOnCloseListener {
+//                Log.d("Search", "onCloseListener triggered.")
+//                true
+//            }
+//
+//            setOnQueryTextFocusChangeListener { v, hasFocus ->
+//                Log.d("Search", "setOnQueryTextFocusChangeListener hasFocus: $hasFocus.")
+////                val adapter = recyclerView.adapter as ItemAdapter
+////                adapter.restoreData()
+//
+//            }
 
         }
 
