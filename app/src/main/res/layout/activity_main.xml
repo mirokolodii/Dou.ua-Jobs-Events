@@ -25,7 +25,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?attr/actionBarSize"
         android:layoutAnimation="@anim/layout_animation_slide_from_bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
@@ -46,8 +47,6 @@
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="0dp"
-        android:layout_marginStart="0dp"
         android:background="?android:attr/windowBackground"
         android:layout_gravity="bottom"
         app:menu="@menu/main_bottom_nav"

@@ -14,25 +14,39 @@ import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
-import com.unagit.douuajobsevents.services.RefreshService
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Pair as AndroidPair
 import android.app.AlarmManager
-import androidx.core.content.ContextCompat.getSystemService
 import android.app.PendingIntent
 import android.os.SystemClock
 import android.util.Log
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
 import com.unagit.douuajobsevents.services.RefreshAlarmReceiver
-import java.util.*
-import android.view.MenuInflater
 import android.view.MenuItem
-
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener{
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
+
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.navigation_home -> {
+                showSnackbar("home")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_dashboard -> {
+                showSnackbar("dashboard")
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_notifications -> {
+                showSnackbar("notifications")
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +60,28 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        bottom_nav.setOnNavigationItemSelectedListener { item ->
+            Log.e("bottom_nav", item.itemId.toString())
+            when (item.itemId) {
+                R.id.navigation_home -> {
+
+                    showSnackbar("home")
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.navigation_dashboard -> {
+                    showSnackbar("dashboard")
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.navigation_notifications -> {
+                    showSnackbar("notifications")
+                    return@setOnNavigationItemSelectedListener true
+                }
+
+            }
+            return@setOnNavigationItemSelectedListener false
+        }
 
         scheduleRefreshService()
-
 
     }
 
