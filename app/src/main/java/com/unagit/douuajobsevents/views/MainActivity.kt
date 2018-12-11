@@ -1,6 +1,7 @@
 package com.unagit.douuajobsevents.views
 
 import android.app.ActivityOptions
+import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -16,14 +17,16 @@ import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Pair as AndroidPair
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.os.SystemClock
 import android.util.Log
 import android.view.Menu
 import androidx.appcompat.widget.Toolbar
-import com.unagit.douuajobsevents.services.RefreshAlarmReceiver
 import android.view.MenuItem
+import androidx.appcompat.widget.SearchView
+import androidx.work.*
+import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
+import com.unagit.douuajobsevents.workers.RefreshWorker
+import java.util.concurrent.TimeUnit
+
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
@@ -55,11 +58,9 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         presenter.attach(this, application)
         presenter.getItems()
 
-//        button.setOnClickListener {
-//            presenter.refreshData()
-//        }
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+        scheduleRefreshWorkerTask()
 
         bottom_nav.setOnNavigationItemSelectedListener { item ->
             Log.e("bottom_nav", item.itemId.toString())
@@ -89,6 +90,47 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
+
+        // Get the SearchView and set the searchable configuration
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchMenuItem = menu?.findItem(R.id.menu_search)?.actionView as SearchView
+        searchMenuItem.apply {
+            // Assumes current activity is the searchable activity
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+//            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    Log.d("Search", "onQueryTextChange triggered with text = $newText. ${newText.isNullOrEmpty()}")
+                    val adapter = recyclerView.adapter as ItemAdapter
+
+                    // Filter results based on search query.
+                    adapter.filter.filter(newText)
+
+                    return true
+                }
+
+                override fun onQueryTextSubmit(query: String?): Boolean {
+//                    Log.d("Search", "onQueryTextSubmit triggered.")
+                    return false
+                }
+            })
+
+//            setOnCloseListener {
+//                Log.d("Search", "onCloseListener triggered.")
+//                true
+//            }
+//
+//            setOnQueryTextFocusChangeListener { v, hasFocus ->
+//                Log.d("Search", "setOnQueryTextFocusChangeListener hasFocus: $hasFocus.")
+////                val adapter = recyclerView.adapter as ItemAdapter
+////                adapter.restoreData()
+//
+//            }
+
+        }
+
+
+
         return true
     }
 
@@ -106,27 +148,34 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         }
     }
 
-    private fun scheduleRefreshService() {
-        val intent = Intent(this, RefreshAlarmReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT)
-//        val calendar = Calendar.getInstance()
-//        calendar.timeInMillis =System.currentTimeMillis()
-//        calendar.add(Calendar.MINUTE, 5)
+    private fun scheduleRefreshWorkerTask() {
+        Log.d("WorkManager", "scheduleRefreshWorkerTask triggered.")
+        val workConstraints = Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setInexactRepeating(
-                AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                pendingIntent)
-        Log.d("alarmManager", "AlarmManager is set from MainActivity")
+        val periodicRefreshRequest = PeriodicWorkRequest
+                .Builder(
+                        RefreshWorker::class.java,
+                        8,
+                        TimeUnit.HOURS,
+                        15,
+                        TimeUnit.MINUTES)
+                .setConstraints(workConstraints)
+                .build()
+        WorkManager.getInstance()
+                .enqueueUniquePeriodicWork(
+                        UNIQUE_REFRESH_WORKER_NAME,
+                        ExistingPeriodicWorkPolicy.KEEP,
+                        periodicRefreshRequest
+                )
     }
 
 
     override fun onDestroy() {
-        super.onDestroy()
         presenter.detach()
+        super.onDestroy()
     }
 
     override fun showLoading(show: Boolean) {
@@ -137,15 +186,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         }
     }
 
-
     override fun showItems(items: List<Item>) {
-
-//                val listener = object : ItemAdapter.Listener {
-//            override fun onItemClicked(position: Int) {
-//                presenter.itemClicked(position)
-//            }
-//        }
-
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = ItemAdapter(items.toMutableList(), this@MainActivity)
@@ -160,7 +201,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         mAdapter?.insertData(newItems, insertPosition)
         recyclerView.scrollToPosition(insertPosition)
     }
-
 
     override fun onItemClicked(parent: View, guid: String) {
         // Prepare transition animation.
@@ -190,5 +230,19 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
         return (activeNetwork != null && activeNetwork.isConnected)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        Log.d("Search", "onNewIntent triggered.")
+        super.onNewIntent(intent)
+        if (Intent.ACTION_SEARCH == intent?.action) {
+            val query = intent.getStringExtra(SearchManager.QUERY)
+            performSearch(query)
+        }
+    }
+
+    private fun performSearch(query: String) {
+        Log.d("Search", "performSearch triggered.")
+        showSnackbar(query)
     }
 }

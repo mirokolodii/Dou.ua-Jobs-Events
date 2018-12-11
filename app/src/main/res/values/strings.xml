@@ -7,6 +7,8 @@
     <string name="toolbar_title">toolbar title</string>
     <string name="extra_guid_id">extra_guid_id</string>
     <string name="refresh_service_desc">Dou.ua data refresh service</string>
+    <string name="detailed_image_desc">Details Image</string>
+    <string name="search_hint">Key words&#8230;</string>
     <string name="title_fav">Favourites</string>
     <string name="title_jobs">Job</string>
     <string name="title_events">Events</string>
