@@ -108,41 +108,75 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
     }
 
     fun getRefreshDataObservable(): Observable<List<Item>> {
-        return douApiService.getEventsObservable()
+        val localItems = DB_INSTANCE!!.itemDao().getItems()
+
+        val eventsObservable = douApiService.getEventsObservable()
                 .map {
                     Log.d(logTag, "received Observable from retrofit call with ${it.items.size} elements.")
                     it.items
 
                             // Filter out those items, which are already in local DB
                             .filter { xmlItem ->
-                                val localItems = DB_INSTANCE!!.itemDao().getItems()
                                 !localItems.any { item ->
-                                    item.guid == xmlItem.guid
-                                }
+                                    item.guid == xmlItem.guid }
                             }
 
 
                             // Convert XmlItem into Item
                             // and save Item into local DB
                             .map { xmlItem ->
-                                val item = getItemFrom(xmlItem)
+                                val item = getEventFrom(xmlItem)
+                                DB_INSTANCE?.itemDao()?.insert(item)
+                                Log.d(logTag, "Created item with imageUrl ${item.imgUrl}.")
+                                item
+                            }
+                }
+        val vacanciesObservable = douApiService.getVacanciesObservable()
+                .map {
+                    it.items
+                            .filter { xmlItem ->
+                                    !localItems.any { item ->
+                                        item.guid == xmlItem.guid }
+                            }
+                            .map { xmlItem ->
+                                val item = getJobFrom(xmlItem)
                                 DB_INSTANCE?.itemDao()?.insert(item)
                                 Log.d(logTag, "Created item with imageUrl ${item.imgUrl}.")
                                 item
                             }
                 }
 
+        return Observable.merge<List<Item>>(eventsObservable, vacanciesObservable)
+    }
+
+    private fun getJobFrom(xmlItem: XmlItem): Item {
+        val guid = xmlItem.guid
+        val title = prepareHtmlTitle(xmlItem.title)
+        val timestamp = Calendar.getInstance().timeInMillis
+        val type = ItemType.JOB.value
+        val imgUrl = ""
+        val isFavourite = false
+        val description = xmlItem.description
+        return Item(
+                guid,
+                title,
+                type,
+                imgUrl,
+                description,
+                timestamp,
+                false
+        )
     }
 
     /**
-     * Converts XmlItem into Item.
+     * Converts XmlItem into event as Item.
      * Parses html code in body, extracts img url and description.
      * @param xmlItem XmlItem received from web
      * @return Item, converted from xml.
      * @see XmlItem
      * @see Item
      */
-    private fun getItemFrom(xmlItem: XmlItem): Item {
+    private fun getEventFrom(xmlItem: XmlItem): Item {
         val guid = xmlItem.guid
         val title = prepareHtmlTitle(xmlItem.title)
         val doc: Document = Jsoup.parseBodyFragment(xmlItem.description)
@@ -169,33 +203,4 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                 .append(title.substring(commaIndex + 1).trim())
                 .toString()
     }
-
-    // Retrofit callback
-//    override fun onFailure(call: Call<ItemDataWrapper>, t: Throwable) {
-//        Log.d(logTag, "Failed to get data: ${t.message}")
-//    }
-//
-//    // Retrofit callback
-//    override fun onResponse(call: Call<ItemDataWrapper>, response: Response<ItemDataWrapper>) {
-////        Log.d(logTag, "${call.request().url()}")
-////        Log.d(logTag, "Received response from retrofit + ${response.isSuccessful}")
-////        Log.d(logTag, "Received response from retrofit + ${response.body()}")
-//
-//        // Extract data
-//        val wrapper = response.body()
-//        if (wrapper != null) {
-//            val items = wrapper.items
-//            items.forEach {
-//                //                Log.d(logTag, it.title)
-//
-////                val description = HtmlCompat.fromHtml(it.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
-//                val item = Item(it.guid, it.title, "https://", it.description)
-//                Log.d(logTag, "insert task executed: ${it.guid}")
-//                InsertAsyncTask().execute(item)
-//
-//            }
-//        } else {
-//            Log.d(logTag, "Received data is empty.")
-//        }
-//    }
 }

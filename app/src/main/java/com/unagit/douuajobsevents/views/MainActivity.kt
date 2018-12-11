@@ -111,10 +111,10 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
                 true
             }
             R.id.menu_clear_cache -> {
-                when(mTab) {
+                when (mTab) {
                     Tab.EVENTS -> presenter.clearLocalData(ItemType.EVENT)
                     Tab.VACANCIES -> presenter.clearLocalData(ItemType.JOB)
-                    Tab.FAVOURITES-> presenter.clearLocalData(null)
+                    Tab.FAVOURITES -> presenter.clearLocalData(null)
                 }
 
                 true
@@ -167,9 +167,22 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     }
 
     override fun insertNewItems(newItems: List<Item>) {
-        val insertPosition = 0
-        mAdapter?.insertData(newItems, insertPosition)
-        recyclerView.scrollToPosition(insertPosition)
+        val filteredItems = when (mTab) {
+            Tab.EVENTS -> {
+                newItems.filter { it.type == ItemType.EVENT.value }
+
+            }
+            Tab.VACANCIES -> {
+                newItems.filter { it.type == ItemType.JOB.value }
+            }
+            else -> return
+        }
+
+        if (!filteredItems.isEmpty()) {
+            val insertPosition = 0
+            mAdapter?.insertData(filteredItems, insertPosition)
+            recyclerView.scrollToPosition(insertPosition)
+        }
     }
 
     override fun onItemClicked(parent: View, guid: String) {

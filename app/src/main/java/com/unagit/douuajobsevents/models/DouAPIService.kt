@@ -10,14 +10,6 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory
 import retrofit2.http.GET
 
 interface DouAPIService {
-    @GET(RetrofitConstants.DOU_UA_CALENDAR_API_URL)
-    fun getEvents(): Call<ItemDataWrapper>
-
-    @GET(RetrofitConstants.DOU_UA_VACANCIES_API_URL)
-    fun getVacancies(): Call<ItemDataWrapper>
-
-    @GET(RetrofitConstants.DOU_UA_CALENDAR_API_URL)
-    fun getRawEvents(): Call<ResponseBody>
 
     @GET(RetrofitConstants.DOU_UA_CALENDAR_API_URL)
     fun getEventsObservable(): Observable<ItemDataWrapper>
