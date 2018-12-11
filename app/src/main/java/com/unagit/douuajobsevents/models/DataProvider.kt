@@ -149,6 +149,14 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         return Observable.merge<List<Item>>(eventsObservable, vacanciesObservable)
     }
 
+    /**
+     * Converts XmlItem into job as Item object.
+     * Parses html code in body, extracts img url and description.
+     * @param xmlItem XmlItem received from web
+     * @return Item, converted from xml.
+     * @see XmlItem
+     * @see Item
+     */
     private fun getJobFrom(xmlItem: XmlItem): Item {
         val guid = xmlItem.guid
         val title = prepareHtmlTitle(xmlItem.title)
@@ -169,7 +177,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
     }
 
     /**
-     * Converts XmlItem into event as Item.
+     * Converts XmlItem into event as Item object.
      * Parses html code in body, extracts img url and description.
      * @param xmlItem XmlItem received from web
      * @return Item, converted from xml.
