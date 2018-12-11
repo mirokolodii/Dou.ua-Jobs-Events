@@ -1,13 +1,14 @@
 package com.unagit.douuajobsevents.helpers
 
-object TabsObj {
-    const val TABS_COUNT = 2
-    const val TAB_BUNDLE_LABEL = "tabLabel"
-    enum class Tabs(val pos: Int, val title: String) {
-        TAB_1(0, "Events"),
-        TAB_2(1, "Jobs")
-    }
-}
+//object TabsObj {
+//    const val TABS_COUNT = 2
+//    const val TAB_BUNDLE_LABEL = "tabLabel"
+//
+//    enum class Tabs(val pos: Int, val title: String) {
+//        TAB_1(0, "Events"),
+//        TAB_2(1, "Jobs")
+//    }
+//}
 
 object RetrofitConstants {
     const val DOU_UA_BASE_API_URL = "https://dou.ua/"
@@ -23,4 +24,10 @@ object WorkerConstants {
 enum class ItemType(val value: Int) {
     EVENT(1),
     JOB(2)
+}
+
+enum class Tab {
+    EVENTS,
+    VACANCIES,
+    FAVOURITES
 }

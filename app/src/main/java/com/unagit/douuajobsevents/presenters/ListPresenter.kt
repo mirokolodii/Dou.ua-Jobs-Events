@@ -7,6 +7,7 @@ import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.models.DataProvider
+import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -77,7 +78,7 @@ class ListPresenter : ListContract.ListPresenter {
         }
     }
 
-    override fun clearLocalData() {
+    override fun clearLocalData(type: ItemType?) {
         val clearLocalDataDisposable = dataProvider!!.getDeleteLocalDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -93,41 +94,30 @@ class ListPresenter : ListContract.ListPresenter {
                     }
                 })
         compositeDisposable.add(clearLocalDataDisposable)
-        getItems()
+
+        if(type != null) {
+            getItems(type)
+        } else {
+            getFavourites()
+        }
         initiateDataRefresh()
     }
 
 
-    override fun getItems() {
-        view?.showLoading(true)
-
-        val localDataDisposable = dataProvider!!.getItemsObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object: DisposableObserver<List<Item>>() {
-                    override fun onComplete() {
-                    }
-
-                    override fun onNext(t: List<Item>) {
-                        view?.showLoading(false)
-                        view?.showItems(t)
-                    }
-
-                    override fun onError(e: Throwable) {
-                        view?.showLoading(false)
-                        Log.e(logTag, "Error in getItems. ${e.message}")
-                        view?.showSnackbar("Error: can't receive data from local cache.")
-                    }
-
-                })
-
-        compositeDisposable.add(localDataDisposable)
+    override fun getItems(type: ItemType) {
+        val observable = dataProvider!!.getItemsObservable(type)
+        getItems(observable)
     }
 
-    override fun getItems(type: ItemType) {
+    override fun getFavourites() {
+        val observable = dataProvider!!.getFavouritesObservable()
+        getItems(observable)
+    }
+
+    private fun getItems(observable: Single<List<Item>>) {
         view?.showLoading(true)
 
-        val disposable = dataProvider!!.getItemsObservable(type)
+        val disposable = observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object: DisposableSingleObserver<List<Item>>() {

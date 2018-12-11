@@ -24,6 +24,7 @@ import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.work.*
 import com.unagit.douuajobsevents.helpers.ItemType
+import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.workers.RefreshWorker
 import java.util.concurrent.TimeUnit
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
     private var mAdapter: ItemAdapter? = null
+    private var mTab = Tab.EVENTS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,15 +48,17 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
             Log.e("bottom_nav", item.itemId.toString())
             when (item.itemId) {
                 R.id.navigation_events -> {
-
+                    mTab = Tab.EVENTS
                     presenter.getItems(ItemType.EVENT)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_vacancies -> {
+                    mTab = Tab.VACANCIES
                     presenter.getItems(ItemType.JOB)
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_favourites -> {
+                    mTab = Tab.FAVOURITES
                     presenter.getFavourites()
                     return@setOnNavigationItemSelectedListener true
                 }
@@ -107,7 +111,12 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
                 true
             }
             R.id.menu_clear_cache -> {
-                presenter.clearLocalData()
+                when(mTab) {
+                    Tab.EVENTS -> presenter.clearLocalData(ItemType.EVENT)
+                    Tab.VACANCIES -> presenter.clearLocalData(ItemType.JOB)
+                    Tab.FAVOURITES-> presenter.clearLocalData(null)
+                }
+
                 true
             }
             else -> super.onOptionsItemSelected(item)
