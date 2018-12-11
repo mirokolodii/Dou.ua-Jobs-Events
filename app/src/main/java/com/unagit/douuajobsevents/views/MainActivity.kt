@@ -27,30 +27,10 @@ import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_
 import com.unagit.douuajobsevents.workers.RefreshWorker
 import java.util.concurrent.TimeUnit
 
-import com.google.android.material.bottomnavigation.BottomNavigationView
-
 class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
     private var mAdapter: ItemAdapter? = null
-
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_home -> {
-                showSnackbar("home")
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_dashboard -> {
-                showSnackbar("dashboard")
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_notifications -> {
-                showSnackbar("notifications")
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +40,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        scheduleRefreshWorkerTask()
 
         bottom_nav.setOnNavigationItemSelectedListener { item ->
             Log.e("bottom_nav", item.itemId.toString())
@@ -83,8 +62,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
             return@setOnNavigationItemSelectedListener false
         }
 
-        scheduleRefreshService()
-
+        scheduleRefreshWorkerTask()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -110,27 +88,10 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
                 }
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
-//                    Log.d("Search", "onQueryTextSubmit triggered.")
                     return false
                 }
             })
-
-//            setOnCloseListener {
-//                Log.d("Search", "onCloseListener triggered.")
-//                true
-//            }
-//
-//            setOnQueryTextFocusChangeListener { v, hasFocus ->
-//                Log.d("Search", "setOnQueryTextFocusChangeListener hasFocus: $hasFocus.")
-////                val adapter = recyclerView.adapter as ItemAdapter
-////                adapter.restoreData()
-//
-//            }
-
         }
-
-
-
         return true
     }
 
