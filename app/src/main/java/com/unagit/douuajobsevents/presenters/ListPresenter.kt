@@ -4,20 +4,27 @@ import android.app.Application
 import android.os.Handler
 import android.util.Log
 import com.unagit.douuajobsevents.contracts.ListContract
+import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.models.DataProvider
+import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.internal.disposables.DisposableContainer
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
+import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
 class ListPresenter : ListContract.ListPresenter {
     private var view: ListContract.ListView? = null
+    private val compositeDisposable = CompositeDisposable()
+
     private var dataProvider: DataProvider? = null
-    private var localDataDisposable: Disposable? = null
-    private var clearLocalDataDisposable: Disposable? = null
-    private var refreshDataDisposable: Disposable? = null
+//    private var localDataDisposable: Disposable? = null
+//    private var clearLocalDataDisposable: Disposable? = null
+//    private var refreshDataDisposable: Disposable? = null
     private var refreshRunnable: Runnable? = null
     private val initialRefreshInterval = 5 * 1000L /* 5 sec */
 
@@ -36,9 +43,12 @@ class ListPresenter : ListContract.ListPresenter {
 
     override fun detach() {
         stopDataRefresh()
-        localDataDisposable?.dispose()
-        refreshDataDisposable?.dispose()
-        clearLocalDataDisposable?.dispose()
+        if(!compositeDisposable.isDisposed) {
+            compositeDisposable.dispose()
+        }
+//        localDataDisposable?.dispose()
+//        refreshDataDisposable?.dispose()
+//        clearLocalDataDisposable?.dispose()
         this.view = null
 
         // TODO: Should I detach in DataProvider?
@@ -68,7 +78,7 @@ class ListPresenter : ListContract.ListPresenter {
     }
 
     override fun clearLocalData() {
-        clearLocalDataDisposable = dataProvider!!.getDeleteLocalDataObservable()
+        val clearLocalDataDisposable = dataProvider!!.getDeleteLocalDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object: DisposableCompletableObserver() {
@@ -78,19 +88,20 @@ class ListPresenter : ListContract.ListPresenter {
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
-                        view?.showSnackbar("Oops :-( Something prevents from deleting local cache.")
+                        view?.showSnackbar(
+                                "Oops :-( Error happened while trying to delete local cache.")
                     }
                 })
+        compositeDisposable.add(clearLocalDataDisposable)
         getItems()
         initiateDataRefresh()
     }
 
+
     override fun getItems() {
         view?.showLoading(true)
 
-        val itemsObservable = dataProvider!!.getItemsObservable()
-
-        localDataDisposable = itemsObservable
+        val localDataDisposable = dataProvider!!.getItemsObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object: DisposableObserver<List<Item>>() {
@@ -98,24 +109,42 @@ class ListPresenter : ListContract.ListPresenter {
                     }
 
                     override fun onNext(t: List<Item>) {
-
                         view?.showLoading(false)
                         view?.showItems(t)
                     }
 
                     override fun onError(e: Throwable) {
+                        view?.showLoading(false)
                         Log.e(logTag, "Error in getItems. ${e.message}")
                         view?.showSnackbar("Error: can't receive data from local cache.")
                     }
 
                 })
 
-
+        compositeDisposable.add(localDataDisposable)
     }
 
+    override fun getItems(type: ItemType) {
+        view?.showLoading(true)
+
+        val disposable = dataProvider!!.getItemsObservable(type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object: DisposableSingleObserver<List<Item>>() {
+                    override fun onSuccess(t: List<Item>) {
+                        view?.showLoading(false)
+                        view?.showItems(t)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        view?.showLoading(false)
+                    }
+                })
+        compositeDisposable.add(disposable)
+    }
 
     override fun refreshData() {
-        refreshDataDisposable = dataProvider!!.getRefreshDataObservable()
+        val refreshDataDisposable = dataProvider!!.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object: DisposableObserver<List<Item>>() {
@@ -138,5 +167,6 @@ class ListPresenter : ListContract.ListPresenter {
                         view?.showSnackbar("Error - can't refresh data.")
                     }
                 })
+        compositeDisposable.add(refreshDataDisposable)
     }
 }

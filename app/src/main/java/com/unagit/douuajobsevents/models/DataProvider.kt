@@ -72,10 +72,31 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
 
     }
 
+    fun getItemsObservable(ofType: ItemType): Single<List<Item>> {
+        return Single
+                .create<List<Item>> { emitter ->
+                    val localItems =
+                            if (ofType.value == ItemType.EVENT.value) {
+                                DB_INSTANCE!!.itemDao().getItems(ItemType.EVENT.value)
+                            } else {
+                                DB_INSTANCE!!.itemDao().getItems(ItemType.JOB.value)
+                            }
+                    emitter.onSuccess(localItems)
+                }
+    }
+
+    fun getFavouritesObservable(): Single<List<Item>> {
+        return Single
+                .create<List<Item>> { emitter ->
+                    val localItems = DB_INSTANCE!!.itemDao().getFavourites()
+                    emitter.onSuccess(localItems)
+                }
+    }
+
     fun getItemWithIdObservable(guid: String): Single<Item> {
-        return Single.create {emitter ->
-                val item = DB_INSTANCE!!.itemDao().getItemWithId(guid)
-                emitter.onSuccess(item)
+        return Single.create { emitter ->
+            val item = DB_INSTANCE!!.itemDao().getItemWithId(guid)
+            emitter.onSuccess(item)
         }
     }
 
@@ -87,20 +108,6 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
     }
 
     fun getRefreshDataObservable(): Observable<List<Item>> {
-
-//        val wrapper = douApiService.getEventsObservable()
-//        val rawItems = wrapper.map {
-//            Log.d(logTag, "received Observable from retrofit call with ${it.items.size} elements.")
-//            it.items
-//        }
-//
-//        val items = rawItems.map {
-//            it.map {
-//                getItemFrom(it)
-//            }
-//        }
-
-
         return douApiService.getEventsObservable()
                 .map {
                     Log.d(logTag, "received Observable from retrofit call with ${it.items.size} elements.")
@@ -115,7 +122,8 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                             }
 
 
-                            // Convert XmlItem into Item and save item into local DB
+                            // Convert XmlItem into Item
+                            // and save Item into local DB
                             .map { xmlItem ->
                                 val item = getItemFrom(xmlItem)
                                 DB_INSTANCE?.itemDao()?.insert(item)
@@ -126,6 +134,14 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
 
     }
 
+    /**
+     * Converts XmlItem into Item.
+     * Parses html code in body, extracts img url and description.
+     * @param xmlItem XmlItem received from web
+     * @return Item, converted from xml.
+     * @see XmlItem
+     * @see Item
+     */
     private fun getItemFrom(xmlItem: XmlItem): Item {
         val guid = xmlItem.guid
         val title = prepareHtmlTitle(xmlItem.title)
@@ -139,7 +155,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         val timestamp = Calendar.getInstance().timeInMillis
         val type = ItemType.EVENT.value
 
-        return Item(guid, title, type, imgUrl, description, timestamp)
+        return Item(guid, title, type, imgUrl, description, timestamp, false)
     }
 
     private fun prepareHtmlTitle(title: String): String {
@@ -150,7 +166,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                 .append(title.substring(0, commaIndex))
                 .append("</b>")
                 .append(",<br>")
-                .append(title.substring(commaIndex+1).trim())
+                .append(title.substring(commaIndex + 1).trim())
                 .toString()
     }
 

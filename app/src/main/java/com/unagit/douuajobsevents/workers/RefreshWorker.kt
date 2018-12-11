@@ -77,8 +77,8 @@ class RefreshWorker(@NonNull appContext: Context,
             return
         }
         val message = when {
-            itemsCount == 1 -> "${itemsCount} new item received."
-            else -> "${itemsCount} new items received."
+            itemsCount == 1 -> "$itemsCount new item received."
+            else -> "$itemsCount new items received."
         }
 
         val notificationManager: NotificationManager =

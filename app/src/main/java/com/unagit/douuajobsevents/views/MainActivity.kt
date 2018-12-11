@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.work.*
+import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.workers.RefreshWorker
 import java.util.concurrent.TimeUnit
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter.attach(this, application)
-        presenter.getItems()
+        presenter.getItems(ItemType.EVENT)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -62,6 +63,12 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
             return@setOnNavigationItemSelectedListener false
         }
 
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = ItemAdapter(emptyList<Item>().toMutableList(), this@MainActivity)
+        }
+        mAdapter = recyclerView.adapter as ItemAdapter
+
         scheduleRefreshWorkerTask()
     }
 
@@ -79,10 +86,8 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
                     Log.d("Search", "onQueryTextChange triggered with text = $newText. ${newText.isNullOrEmpty()}")
-                    val adapter = recyclerView.adapter as ItemAdapter
-
                     // Filter results based on search query.
-                    adapter.filter.filter(newText)
+                    mAdapter?.filter?.filter(newText)
 
                     return true
                 }
@@ -148,12 +153,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     }
 
     override fun showItems(items: List<Item>) {
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(items.toMutableList(), this@MainActivity)
-        }
-
-        mAdapter = recyclerView.adapter as ItemAdapter
+        mAdapter?.setNewData(items)
 
     }
 

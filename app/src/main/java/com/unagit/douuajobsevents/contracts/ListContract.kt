@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.contracts
 
+import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.BasePresenter
 
@@ -15,6 +16,7 @@ interface ListContract {
 
     interface ListPresenter : BasePresenter<ListView> {
         fun getItems()
+        fun getItems(type: ItemType)
         fun refreshData()
         fun clearLocalData()
     }

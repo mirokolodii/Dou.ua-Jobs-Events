@@ -22,7 +22,8 @@ interface DouAPIService {
     @GET(RetrofitConstants.DOU_UA_CALENDAR_API_URL)
     fun getEventsObservable(): Observable<ItemDataWrapper>
 
-
+    @GET(RetrofitConstants.DOU_UA_VACANCIES_API_URL)
+    fun getVacanciesObservable(): Observable<ItemDataWrapper>
 
     companion object {
         fun create(): DouAPIService {
@@ -34,6 +35,4 @@ interface DouAPIService {
             return retrofit.create(DouAPIService::class.java)
         }
     }
-
-
 }

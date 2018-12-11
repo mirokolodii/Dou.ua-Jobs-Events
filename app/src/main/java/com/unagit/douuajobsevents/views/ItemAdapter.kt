@@ -21,7 +21,8 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
      * During initialization filteredItems equal to items, received by ItemAdapter as a DataSet.
      * filteredItems are used to show filtered data, depending on user's search input.
      */
-    var filteredItems = items
+    private var filteredItems = mutableListOf<Item>().apply { addAll(items) }
+
 
     /**
      * A listener of a RecyclerView item's click.
@@ -76,6 +77,14 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
         this.items.addAll(inPosition, newItems)
         this.filteredItems.addAll(inPosition, newItems)
         notifyItemRangeInserted(inPosition, newItems.size)
+    }
+
+    fun setNewData(newItems: List<Item>) {
+        this.items.clear()
+        this.items.addAll(newItems)
+        this.filteredItems.clear()
+        this.filteredItems.addAll(newItems)
+        notifyDataSetChanged()
     }
 
     /**

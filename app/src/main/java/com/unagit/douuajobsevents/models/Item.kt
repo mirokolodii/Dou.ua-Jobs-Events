@@ -12,6 +12,7 @@ data class Item(
         val type: Int,
         @ColumnInfo(name = "img_url") var imgUrl: String,
         val description: String,
-        val timestamp: Long
+        val timestamp: Long,
+        val isFavourite: Boolean
 
 )
