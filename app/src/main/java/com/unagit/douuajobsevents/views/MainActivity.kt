@@ -26,9 +26,10 @@ import com.unagit.douuajobsevents.services.RefreshAlarmReceiver
 import android.view.MenuItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener{
+class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
+    private var mAdapter: ItemAdapter? = null
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -92,7 +93,7 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when(item?.itemId) {
+        return when (item?.itemId) {
             R.id.menu_refresh -> {
                 presenter.refreshData()
                 true
@@ -150,12 +151,13 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
             adapter = ItemAdapter(items.toMutableList(), this@MainActivity)
         }
 
+        mAdapter = recyclerView.adapter as ItemAdapter
+
     }
 
     override fun insertNewItems(newItems: List<Item>) {
-        val adapter = recyclerView.adapter as ItemAdapter
         val insertPosition = 0
-        adapter.insertData(newItems, insertPosition)
+        mAdapter?.insertData(newItems, insertPosition)
         recyclerView.scrollToPosition(insertPosition)
     }
 
