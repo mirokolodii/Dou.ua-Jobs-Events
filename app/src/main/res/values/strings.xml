@@ -10,6 +10,6 @@
     <string name="detailed_image_desc">Details Image</string>
     <string name="search_hint">Key words&#8230;</string>
     <string name="title_fav">Favourites</string>
-    <string name="title_jobs">Job</string>
+    <string name="title_jobs">Vacancies</string>
     <string name="title_events">Events</string>
 </resources>

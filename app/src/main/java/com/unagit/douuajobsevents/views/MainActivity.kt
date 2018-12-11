@@ -45,17 +45,17 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         bottom_nav.setOnNavigationItemSelectedListener { item ->
             Log.e("bottom_nav", item.itemId.toString())
             when (item.itemId) {
-                R.id.navigation_home -> {
+                R.id.navigation_events -> {
 
-                    showSnackbar("home")
+                    presenter.getItems(ItemType.EVENT)
                     return@setOnNavigationItemSelectedListener true
                 }
-                R.id.navigation_dashboard -> {
-                    showSnackbar("dashboard")
+                R.id.navigation_vacancies -> {
+                    presenter.getItems(ItemType.JOB)
                     return@setOnNavigationItemSelectedListener true
                 }
-                R.id.navigation_notifications -> {
-                    showSnackbar("notifications")
+                R.id.navigation_favourites -> {
+                    presenter.getFavourites()
                     return@setOnNavigationItemSelectedListener true
                 }
 
