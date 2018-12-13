@@ -5,8 +5,15 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 /**
- * This class is used to map XML 'item' element to object.
+ * This class is used to map XML 'item' element to Item object.
+ * XmlItem, which is received from web, consists only from 3 elements,
+ * while Item class includes more fields.
+ * As example, 'description' includes also image URL,
+ * which should be extracted to separate
+ * field in Item.
+ *
  * @author Myroslav Kolodii
+ * @see Item
  */
 @Root(name = "item", strict = false)
 class XmlItem {
