@@ -11,6 +11,11 @@ object RetrofitConstants {
     const val DOU_UA_VACANCIES_API_URL = "https://jobs.dou.ua/vacancies/feeds/"
 }
 
+object WorkerConstants {
+    const val UNIQUE_REFRESH_WORKER_NAME
+            = "com.unagit.douuajobsevents.services.refreshworker_unique_name"
+}
+
 // Represents two types of Item - Event and Job (Vacancy)
 enum class ItemType(val value: Int) {
     EVENT(1),
