@@ -66,9 +66,9 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     private fun initBottomNav() {
         bottom_nav.setOnNavigationItemSelectedListener { item ->
             Log.e("bottom_nav", item.itemId.toString())
+            showSnackbar("Test message")
             when (item.itemId) {
                 R.id.navigation_events -> {
-                    showSnackbar("Test message")
                     mTab = Tab.EVENTS
                     presenter.getItems(ItemType.EVENT)
                     return@setOnNavigationItemSelectedListener true
