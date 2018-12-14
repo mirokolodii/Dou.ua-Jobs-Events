@@ -41,13 +41,34 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
         presenter.attach(this, application)
         presenter.getItems(ItemType.EVENT)
 
+        initToolbar()
+
+        initBottomNav()
+
+        initRecycleView()
+
+        scheduleRefreshWorkerTask()
+    }
+
+    private fun initToolbar() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+    }
 
+    private fun initRecycleView() {
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = ItemAdapter(emptyList<Item>().toMutableList(), this@MainActivity)
+        }
+        mAdapter = recyclerView.adapter as ItemAdapter
+    }
+
+    private fun initBottomNav() {
         bottom_nav.setOnNavigationItemSelectedListener { item ->
             Log.e("bottom_nav", item.itemId.toString())
             when (item.itemId) {
                 R.id.navigation_events -> {
+                    showSnackbar("Test message")
                     mTab = Tab.EVENTS
                     presenter.getItems(ItemType.EVENT)
                     return@setOnNavigationItemSelectedListener true
@@ -66,14 +87,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
             }
             return@setOnNavigationItemSelectedListener false
         }
-
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(emptyList<Item>().toMutableList(), this@MainActivity)
-        }
-        mAdapter = recyclerView.adapter as ItemAdapter
-
-        scheduleRefreshWorkerTask()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
