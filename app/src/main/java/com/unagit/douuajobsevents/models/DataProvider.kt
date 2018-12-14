@@ -108,17 +108,18 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
     }
 
     fun getRefreshDataObservable(): Observable<List<Item>> {
-        val localItems = DB_INSTANCE!!.itemDao().getItems()
 
         val eventsObservable = douApiService.getEventsObservable()
                 .map {
                     Log.d(logTag, "received Observable from retrofit call with ${it.items.size} elements.")
+                    val localItems = DB_INSTANCE!!.itemDao().getItems()
                     it.items
 
                             // Filter out those items, which are already in local DB
                             .filter { xmlItem ->
                                 !localItems.any { item ->
-                                    item.guid == xmlItem.guid }
+                                    item.guid == xmlItem.guid
+                                }
                             }
 
 
@@ -133,10 +134,12 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                 }
         val vacanciesObservable = douApiService.getVacanciesObservable()
                 .map {
+                    val localItems = DB_INSTANCE!!.itemDao().getItems()
                     it.items
                             .filter { xmlItem ->
-                                    !localItems.any { item ->
-                                        item.guid == xmlItem.guid }
+                                !localItems.any { item ->
+                                    item.guid == xmlItem.guid
+                                }
                             }
                             .map { xmlItem ->
                                 val item = getJobFrom(xmlItem)
