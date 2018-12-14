@@ -5,6 +5,7 @@ import android.os.AsyncTask
 import android.util.Log
 import androidx.core.text.HtmlCompat
 import com.unagit.douuajobsevents.helpers.ItemType
+import com.unagit.douuajobsevents.helpers.Language
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -165,7 +166,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         val title = prepareHtmlTitle(xmlItem.title)
         val timestamp = Calendar.getInstance().timeInMillis
         val type = ItemType.JOB.value
-        val imgUrl = ""
+        val imgUrl = getImgUrlFromTitle(title)
         val isFavourite = false
         val description = xmlItem.description
         return Item(
@@ -177,6 +178,18 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                 timestamp,
                 false
         )
+    }
+
+    private fun getImgUrlFromTitle(title: String): String {
+        val languages = Language.values()
+        languages.forEach {
+            if(title.contains(it.name,true)) {
+                return it.url
+            }
+        }
+
+        return Language.DEFAULT.url
+
     }
 
     /**
