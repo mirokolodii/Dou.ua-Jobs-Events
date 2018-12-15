@@ -82,6 +82,7 @@ class DetailsPresenter : DetailsContract.DetailsPresenter {
      * guid of Item to be altered
      */
     private fun setAs(favourite: Boolean, guid: String) {
-
+        //TODO: get Completable from dataProvider and show result in view
+        dataProvider!!.changeItemFavourite(favourite, guid)
     }
 }

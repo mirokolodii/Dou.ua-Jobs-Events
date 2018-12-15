@@ -79,6 +79,14 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         }
     }
 
+    fun changeItemFavourite(setAsFav: Boolean, guid: String): Completable {
+        return Completable.create { emitter ->
+            // TODO: set/delete as favourite
+//            DB_INSTANCE!!.itemDao().deleteAll()
+            emitter.onComplete()
+        }
+    }
+
 
     /**
      * @return Observable with a list of new Items, which are not yet available in local db.
