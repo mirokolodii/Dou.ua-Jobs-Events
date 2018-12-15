@@ -103,10 +103,10 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         detailedItemDetails.movementMethod = LinkMovementMethod.getInstance()
 
         // Set favourites icon drawable in menu from bottom bar
-        setFavouriteIcon(true) //item.isFavourite)
+        showAsFavourite(true) //item.isFavourite)
     }
 
-    private fun setFavouriteIcon(isFavourite: Boolean) {
+    override fun showAsFavourite(isFavourite: Boolean) {
         val favMenuItem = bottom_bar.menu.findItem(menu_favourites)
         if(isFavourite) {
             favMenuItem.setIcon(R.drawable.ic_favorite)

@@ -19,7 +19,7 @@ interface DetailsContract {
          */
         fun showItem(item: Item)
 
-        fun setFavouriteIcon(isFavourite: Boolean)
+        fun showAsFavourite(isFavourite: Boolean)
     }
 
     // Presenter
