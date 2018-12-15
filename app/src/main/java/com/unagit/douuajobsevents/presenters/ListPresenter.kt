@@ -99,6 +99,11 @@ class ListPresenter : ListContract.ListPresenter {
         refreshData()
     }
 
+    /**
+     * Asks Data provider for all locally stored items
+     * and shows them in view.
+     * @see Item
+     */
     override fun getItems() {
         view?.showLoading(true)
 
@@ -128,6 +133,12 @@ class ListPresenter : ListContract.ListPresenter {
     }
 
 
+    /**
+     * Asks Data provider to refresh a data from web.
+     * Inserts new items into view's list and shows snackbar message with
+     * a number of newly received items.
+     * @see Item
+     */
     override fun refreshData() {
         refreshDataDisposable = dataProvider!!.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
@@ -137,7 +148,6 @@ class ListPresenter : ListContract.ListPresenter {
                     }
 
                     override fun onNext(t: List<Item>) {
-//                        Log.d(logTag, "onNext in refreshData is triggered")
                         view?.insertNewItems(t)
                         val message = when {
                             t.isEmpty() -> "No new items."

@@ -33,14 +33,17 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         presenter.attach(this, application)
         presenter.requestItemFromId(guid)
 
-        // Open event in browser
+        // FAB onClickListener:
+        // Opens item's URL in a web browser
         fab.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(guid)))
         }
 
-        // Hide fab once scrolled to the bottom
-        nestedScrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            if (v != null && v.canScrollVertically(1)) {
+        // Hide fab once scrolled to the bottom,
+        // un-hide otherwise
+        nestedScrollView.setOnScrollChangeListener {
+            v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            if (v != null && v.canScrollVertically(1 /* positive direction means scrolling down*/)) {
                 fab.show()
             } else {
                 fab.hide()
@@ -48,19 +51,24 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         }
     }
 
+    /**
+     * Setup top and bottom bars.
+     * Top bar includes navigation,
+     * while bottom one includes menu elements.
+     */
     private fun setupBarsAndMenu() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) //remove title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // Need this code for reversed animation transition to work on back arrow pressed.
+        // Need this code for reversed animation transition to work on back arrow pressed
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
 
+        // Set bottom bar menu
         bottom_bar.inflateMenu(R.menu.details_bottom_menu)
         bottom_bar.setOnMenuItemClickListener {
-
             return@setOnMenuItemClickListener when(it.itemId) {
                 menu_share -> {
                     share()
@@ -74,6 +82,9 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         }
     }
 
+    /**
+     * Showes Item, received from presenter, on the screen.
+     */
     override fun showItem(item: Item) {
         this.item = item
         detailedItemTitle.text = HtmlCompat.fromHtml(item.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
@@ -91,7 +102,9 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         detailedItemDetails.movementMethod = LinkMovementMethod.getInstance()
     }
 
-
+    /**
+     * Setup and starts activity for add-to-calendar intent.
+     */
     private fun addToCalendar() {
         if(this.item == null) {
             Log.e(this.javaClass.simpleName, "Item is null.")
@@ -107,6 +120,9 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         startActivity(intent)
     }
 
+    /**
+     * Setup and starts activity for 'share' intent.
+     */
     private fun share() {
         if(this.item == null) {
             Log.e(this.javaClass.simpleName, "Item is null.")
