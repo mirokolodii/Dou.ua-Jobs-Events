@@ -92,8 +92,11 @@ class ListPresenter : ListContract.ListPresenter {
                                 "Oops :-( Something went wrong while trying to delete local cache.")
                     }
                 })
-        getItems()
-        initiateDataRefresh()
+//        getItems()
+//        initiateDataRefresh()
+
+        // Once local data is deleted, initiate a new refresh from web.
+        refreshData()
     }
 
     override fun getItems() {
