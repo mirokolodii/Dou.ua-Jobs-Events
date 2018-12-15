@@ -80,10 +80,11 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
                 } else -> super.onOptionsItemSelected(it)
             }
         }
+
     }
 
     /**
-     * Showes Item, received from presenter, on the screen.
+     * Shows Item on the screen.
      */
     override fun showItem(item: Item) {
         this.item = item
@@ -100,6 +101,18 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 
         // Set links in description to be clickable
         detailedItemDetails.movementMethod = LinkMovementMethod.getInstance()
+
+        // Set favourites icon drawable in menu from bottom bar
+        setFavouriteIcon(true) //item.isFavourite)
+    }
+
+    private fun setFavouriteIcon(isFavourite: Boolean) {
+        val favMenuItem = bottom_bar.menu.findItem(menu_favourites)
+        if(isFavourite) {
+            favMenuItem.setIcon(R.drawable.ic_favorite)
+        } else {
+            favMenuItem.setIcon(R.drawable.ic_favorite_border)
+        }
     }
 
     /**

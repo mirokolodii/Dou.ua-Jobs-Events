@@ -13,4 +13,9 @@
         android:icon="@drawable/ic_event_note_black_24dp"
         android:title="Add to calendar"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_favourites"
+        android:icon="@drawable/ic_event_note_black_24dp"
+        android:title="@string/add_to_favourites"
+        app:showAsAction="ifRoom" />
 </menu>

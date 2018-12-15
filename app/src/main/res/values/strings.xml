@@ -9,4 +9,5 @@
     <string name="refresh_service_desc">Dou.ua data refresh service</string>
     <string name="detailed_image_desc">Details Image</string>
     <string name="search_hint">Key words&#8230;</string>
+    <string name="add_to_favourites">Add to favourites</string>
 </resources>
