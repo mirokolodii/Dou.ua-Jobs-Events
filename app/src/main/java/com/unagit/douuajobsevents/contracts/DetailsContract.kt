@@ -18,6 +18,8 @@ interface DetailsContract {
          * @see Item
          */
         fun showItem(item: Item)
+
+        fun setFavouriteIcon(isFavourite: Boolean)
     }
 
     // Presenter
@@ -28,5 +30,9 @@ interface DetailsContract {
          * @see Item
          */
         fun requestItemFromId(id: String)
+
+        fun addToFavourites(guid: String)
+
+        fun removeFromFavourites(guid: String)
     }
 }
