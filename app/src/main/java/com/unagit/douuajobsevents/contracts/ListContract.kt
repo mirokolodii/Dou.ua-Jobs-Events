@@ -13,7 +13,7 @@ interface ListContract {
     // View
     interface ListView {
         /**
-         * Informs user that some loading is ongoing in background
+         * Informs user that some loading work is ongoing in background
          * by showing some kind of loading spinner or in any other way.
          * @param show true to show loading process, false to dismiss it.
          */
@@ -27,7 +27,7 @@ interface ListContract {
         fun showItems(items: List<Item>)
 
         /**
-         * Displays a snackbar to the user.
+         * Displays a message in a snackbar to the user.
          * @param message to be shown.
          */
         fun showSnackbar(message: String)
@@ -40,7 +40,7 @@ interface ListContract {
 
         /**
          * Informs view to insert new items, which have been received
-         * during refreshment process.
+         * during refreshment from web.
          * @param newItems List of new items to be inserted.
          */
         fun insertNewItems(newItems: List<Item>)
@@ -49,7 +49,7 @@ interface ListContract {
     // Presenter
     interface ListPresenter : BasePresenter<ListView> {
         /**
-         * Initiates a call to repository to get a list of items from repository.
+         * Initiates a call to repository to get a list of items.
          */
         fun getItems()
 

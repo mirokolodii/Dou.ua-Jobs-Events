@@ -15,5 +15,5 @@ public class ItemDataWrapper {
 
     @ElementList(name="item", inline = true)
     @Path("channel")
-    List<XmlItem> items;
+    List<XmlItem> xmlItems;
 }

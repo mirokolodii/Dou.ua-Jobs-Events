@@ -1,67 +1,50 @@
 package com.unagit.douuajobsevents.models
 
 import android.app.Application
-import android.os.AsyncTask
 import android.util.Log
-import androidx.core.text.HtmlCompat
 import com.unagit.douuajobsevents.helpers.ItemType
 import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 
+/**
+ * This class is responsible for providing data to the app from tho sources:
+ * 1. from local db with help of Room,
+ * 2. from web, using Retrofit.
+ * @param application is required to create an instance of local db.
+ */
 class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper> */ {
 
+    /**
+     * Instance of Retrofit API service.
+     */
     private val douApiService = DouAPIService.create()
-    private val logTag = "RetrofitDataProvider"
-//    private var items: List<Item>? = null
 
-
+    // Constants
     companion object {
+        /**
+         * Instance of local Room db.
+         */
         private var DB_INSTANCE: AppDatabase? = null
 
-//        class InsertAsyncTask : AsyncTask<Item, Void, Void>() {
-//            override fun doInBackground(vararg params: Item?): Void? {
-//                DB_INSTANCE?.itemDao()?.insert(params[0]!!)
-//                return null
-//            }
-//        }
-//
-//        class GetItemsAsyncTask : AsyncTask<Void, Void, List<Item>?>() {
-//
-//            override fun doInBackground(vararg params: Void?): List<Item>? {
-//                return DB_INSTANCE?.itemDao()?.getItems()
-//            }
-//
-//            override fun onPostExecute(result: List<Item>?) {
-////                super.onPostExecute(result)
-//                result?.forEach {
-//                    Log.d("DBTest", it.title)
-//                }
-//
-//            }
-//        }
     }
 
     init {
+        // Initialize local db instance
         DB_INSTANCE = AppDatabase.getInstance(application!!)
-
-        // Refresh data from network
-//        douApiService.getEvents().enqueue(this)
     }
 
     fun detach() {
         this.application = null
     }
 
-
+    /**
+     * @return Observable with a list of locally stored items.
+     * @see Observable
+     */
     fun getItemsObservable(): Observable<List<Item>> {
         return Observable
                 .create<List<Item>> { emitter ->
@@ -72,6 +55,12 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
 
     }
 
+    /**
+     * @param guid an ID of an Item to be returned.
+     * @return Single with a single Item from local db.
+     * @see Item
+     * @see Single
+     */
     fun getItemWithIdObservable(guid: String): Single<Item> {
         return Single.create {emitter ->
                 val item = DB_INSTANCE!!.itemDao().getItemWithId(guid)
@@ -79,6 +68,11 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         }
     }
 
+    /**
+     * Deletes all items from local db.
+     * @return Completable, once completed.
+     * @see Completable
+     */
     fun getDeleteLocalDataObservable(): Completable {
         return Completable.create { emitter ->
             DB_INSTANCE!!.itemDao().deleteAll()
@@ -86,40 +80,35 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         }
     }
 
+
+    /**
+     * @return Observable with a list of new Items, which are not yet available in local db.
+     * @see Observable
+     */
     fun getRefreshDataObservable(): Observable<List<Item>> {
-
-//        val wrapper = douApiService.getEventsObservable()
-//        val rawItems = wrapper.map {
-//            Log.d(logTag, "received Observable from retrofit call with ${it.items.size} elements.")
-//            it.items
-//        }
-//
-//        val items = rawItems.map {
-//            it.map {
-//                getItemFrom(it)
-//            }
-//        }
-
-
         return douApiService.getEventsObservable()
+
+                // Extract ItemDataWrapper into a list of xml items.
                 .map {
-                    Log.d(logTag, "received Observable from retrofit call with ${it.items.size} elements.")
-                    it.items
+                    it.xmlItems
 
                             // Filter out those items, which are already in local DB
                             .filter { xmlItem ->
+
+                                // Get a list of locally stored items
                                 val localItems = DB_INSTANCE!!.itemDao().getItems()
+
+                                // Return true, only if xmlItem IS NOT present in localItems
                                 !localItems.any { item ->
                                     item.guid == xmlItem.guid
                                 }
                             }
 
-
-                            // Convert XmlItem into Item and save item into local DB
+                            // Convert XmlItem object into Item object and save item into local DB,
+                            // return this item
                             .map { xmlItem ->
                                 val item = getItemFrom(xmlItem)
                                 DB_INSTANCE?.itemDao()?.insert(item)
-                                Log.d(logTag, "Created item with imageUrl ${item.imgUrl}.")
                                 item
                             }
                 }
@@ -142,6 +131,15 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         return Item(guid, title, type, imgUrl, description, timestamp)
     }
 
+    /**
+     * Adds HTML bold tabs (<b></b>) to a part of title before first occurance of ',' symbol,
+     * followed by a 'new line' (<br>) tag.
+     * Example:
+     * @code {val input = "A Java conference, 17th of December, Lviv"}
+     * @code {prepareHtmlTitle(input)} // returns "<b>A Java conference</b><br>, 17th of December, Lviv"
+     * @param title to be changed.
+     * @return title with added HTML tags.
+     */
     private fun prepareHtmlTitle(title: String): String {
         val commaIndex = title.indexOf(",")
 
@@ -153,33 +151,4 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                 .append(title.substring(commaIndex+1).trim())
                 .toString()
     }
-
-    // Retrofit callback
-//    override fun onFailure(call: Call<ItemDataWrapper>, t: Throwable) {
-//        Log.d(logTag, "Failed to get data: ${t.message}")
-//    }
-//
-//    // Retrofit callback
-//    override fun onResponse(call: Call<ItemDataWrapper>, response: Response<ItemDataWrapper>) {
-////        Log.d(logTag, "${call.request().url()}")
-////        Log.d(logTag, "Received response from retrofit + ${response.isSuccessful}")
-////        Log.d(logTag, "Received response from retrofit + ${response.body()}")
-//
-//        // Extract data
-//        val wrapper = response.body()
-//        if (wrapper != null) {
-//            val items = wrapper.items
-//            items.forEach {
-//                //                Log.d(logTag, it.title)
-//
-////                val description = HtmlCompat.fromHtml(it.description, HtmlCompat.FROM_HTML_MODE_COMPACT)
-//                val item = Item(it.guid, it.title, "https://", it.description)
-//                Log.d(logTag, "insert task executed: ${it.guid}")
-//                InsertAsyncTask().execute(item)
-//
-//            }
-//        } else {
-//            Log.d(logTag, "Received data is empty.")
-//        }
-//    }
 }
