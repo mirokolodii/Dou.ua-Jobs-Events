@@ -28,9 +28,9 @@ interface ListContract {
 
         /**
          * Displays a message in a snackbar to the user.
-         * @param message to be shown.
+         * @param text to be shown.
          */
-        fun showSnackbar(message: String)
+        fun showMessage(text: String)
 
         /**
          * Verifes whether or not a network connection is available.

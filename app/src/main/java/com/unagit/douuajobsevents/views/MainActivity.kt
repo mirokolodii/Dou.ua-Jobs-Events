@@ -28,7 +28,7 @@ import com.unagit.douuajobsevents.workers.RefreshWorker
 import java.util.concurrent.TimeUnit
 
 
-class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
+class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
 
@@ -198,14 +198,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
     }
 
     /**
-     * Shows message on the screen.
-     * @param string specifying a message
-     */
-    override fun showSnackbar(string: String) {
-        Snackbar.make(activityMainLayout, string, Snackbar.LENGTH_SHORT).show()
-    }
-
-    /**
      * Informs whether network connection is available.
      * @return Boolean. True - has network, false - no network
      */
@@ -226,6 +218,6 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
 
     private fun performSearch(query: String) {
         Log.d("Search", "performSearch triggered.")
-        showSnackbar(query)
+        showMessage(query)
     }
 }

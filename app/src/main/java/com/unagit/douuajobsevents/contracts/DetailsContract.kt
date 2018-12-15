@@ -20,6 +20,8 @@ interface DetailsContract {
         fun showItem(item: Item)
 
         fun showAsFavourite(isFavourite: Boolean)
+
+        fun showMessage(text: String)
     }
 
     // Presenter

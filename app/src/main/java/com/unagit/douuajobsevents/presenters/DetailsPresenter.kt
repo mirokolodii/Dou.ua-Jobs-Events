@@ -11,6 +11,7 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
 class DetailsPresenter : DetailsContract.DetailsPresenter {
+
     private var view: DetailsContract.DetailsView? = null
     private var dataProvider: DataProvider? = null
     private val compositeDisposable = CompositeDisposable()
@@ -54,5 +55,33 @@ class DetailsPresenter : DetailsContract.DetailsPresenter {
                 .subscribeWith(observer)
 
         compositeDisposable.add(single)
+    }
+
+    /**
+     * Sets Item with provided guid as favourite.
+     * @param guid of Item to be altered
+     * @see Item
+     */
+    override fun addToFavourites(guid: String) {
+        setAs(true, guid)
+    }
+
+    /**
+     * Removes Item with provided guid from favourites.
+     * @param guid of Item to be altered
+     * @see Item
+     */
+    override fun removeFromFavourites(guid: String) {
+        setAs(false, guid)
+    }
+
+    /**
+     * Asks DataProvider to set or remove from favourites.
+     * Once done, tells view to show a result.
+     * @param favourite true - set as favourite, false - remove from favourites
+     * guid of Item to be altered
+     */
+    private fun setAs(favourite: Boolean, guid: String) {
+
     }
 }

@@ -17,7 +17,7 @@ import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
 
-class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
+class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
     private val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
     private var item: Item? = null
 
@@ -103,8 +103,10 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         detailedItemDetails.movementMethod = LinkMovementMethod.getInstance()
 
         // Set favourites icon drawable in menu from bottom bar
+        TODO("Change isFavourite value from hardcoded to one from Item")
         showAsFavourite(true) //item.isFavourite)
     }
+
 
     override fun showAsFavourite(isFavourite: Boolean) {
         val favMenuItem = bottom_bar.menu.findItem(menu_favourites)

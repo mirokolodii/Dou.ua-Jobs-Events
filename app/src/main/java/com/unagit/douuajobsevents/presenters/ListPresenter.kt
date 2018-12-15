@@ -57,7 +57,7 @@ class ListPresenter : ListContract.ListPresenter {
             if(view != null && view!!.hasNetwork()) {
                 refreshData()
             } else {
-                view?.showSnackbar("Can't refresh: no network access.")
+                view?.showMessage("Can't refresh: no network access.")
             }
 
             // Regular refreshes
@@ -83,12 +83,12 @@ class ListPresenter : ListContract.ListPresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object: DisposableCompletableObserver() {
                     override fun onComplete() {
-                        view?.showSnackbar("Local data has been deleted.")
+                        view?.showMessage("Local data has been deleted.")
                     }
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
-                        view?.showSnackbar(
+                        view?.showMessage(
                                 "Oops :-( Something went wrong while trying to delete local cache.")
                     }
                 })
@@ -124,7 +124,7 @@ class ListPresenter : ListContract.ListPresenter {
 
                     override fun onError(e: Throwable) {
                         Log.e(logTag, "Error in getItems. ${e.message}")
-                        view?.showSnackbar("Error: can't receive data from local cache.")
+                        view?.showMessage("Error: can't receive data from local cache.")
                     }
 
                 })
@@ -154,12 +154,12 @@ class ListPresenter : ListContract.ListPresenter {
                             t.size == 1 -> "${t.size} new item received."
                             else -> "${t.size} new items received."
                         }
-                        view?.showSnackbar(message)
+                        view?.showMessage(message)
                     }
 
                     override fun onError(e: Throwable) {
                         Log.e(logTag, "Error in refreshData. ${e.message}")
-                        view?.showSnackbar("Error - can't refresh data.")
+                        view?.showMessage("Error - can't refresh data.")
                     }
                 })
     }
