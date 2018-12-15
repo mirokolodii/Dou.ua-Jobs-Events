@@ -48,6 +48,10 @@ class ListPresenter : ListContract.ListPresenter {
 
     }
 
+    /**
+     * Executes data refresh after 'initialRefreshInterval'
+     * and continue with regular refreshes with 'refreshInterval'.
+      */
     private fun initiateDataRefresh() {
         refreshRunnable = Runnable {
             if(view != null && view!!.hasNetwork()) {
@@ -56,8 +60,10 @@ class ListPresenter : ListContract.ListPresenter {
                 view?.showSnackbar("Can't refresh: no network access.")
             }
 
+            // Regular refreshes
             refreshHandler.postDelayed(refreshRunnable, refreshInterval)
         }
+        // First refresh
         refreshHandler.postDelayed(refreshRunnable, initialRefreshInterval)
     }
 
@@ -67,6 +73,10 @@ class ListPresenter : ListContract.ListPresenter {
         }
     }
 
+    /**
+     * Asks Data provider to delete all items from local db.
+     * Informs view to show a snackbar message with a result.
+     */
     override fun clearLocalData() {
         clearLocalDataDisposable = dataProvider!!.getDeleteLocalDataObservable()
                 .subscribeOn(Schedulers.io())
@@ -78,7 +88,8 @@ class ListPresenter : ListContract.ListPresenter {
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
-                        view?.showSnackbar("Oops :-( Something prevents from deleting local cache.")
+                        view?.showSnackbar(
+                                "Oops :-( Something went wrong while trying to delete local cache.")
                     }
                 })
         getItems()

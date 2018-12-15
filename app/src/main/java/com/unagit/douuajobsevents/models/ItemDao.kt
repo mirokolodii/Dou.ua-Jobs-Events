@@ -9,7 +9,6 @@ import androidx.room.*
 @Dao
 interface ItemDao{
 
-    //
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(item: Item)
 
