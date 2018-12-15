@@ -2,9 +2,14 @@ package com.unagit.douuajobsevents.models
 
 import androidx.room.*
 
+/**
+ * Room DAO for an Item.
+ * @see Item
+ */
 @Dao
 interface ItemDao{
 
+    //
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(item: Item)
 

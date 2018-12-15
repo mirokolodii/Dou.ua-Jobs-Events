@@ -22,6 +22,8 @@ interface DouAPIService {
     companion object {
         /**
          * Creates a new Retrofit call instance.
+         * A deprecated Xml converter 'SimpleXml' is used,
+         * because I was not able to find alternative one with required functionality.
          */
         fun create(): DouAPIService {
             val retrofit = Retrofit.Builder()

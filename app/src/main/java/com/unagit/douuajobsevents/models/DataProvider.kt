@@ -1,7 +1,6 @@
 package com.unagit.douuajobsevents.models
 
 import android.app.Application
-import android.util.Log
 import com.unagit.douuajobsevents.helpers.ItemType
 import io.reactivex.Completable
 import io.reactivex.Observable
