@@ -6,26 +6,26 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.*
 import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.contracts.ListContract
+import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
-import kotlinx.android.synthetic.main.activity_main.*
-import android.util.Pair as AndroidPair
-import android.util.Log
-import android.view.Menu
-import androidx.appcompat.widget.Toolbar
-import android.view.MenuItem
-import androidx.appcompat.widget.SearchView
-import androidx.work.*
-import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.workers.RefreshWorker
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.concurrent.TimeUnit
+import android.util.Pair as AndroidPair
 
 
 class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
@@ -104,6 +104,8 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
      * during last 15 minutes of each 8 hours interval.
      * @see RefreshWorker
      */
+    // TODO would be cool to move this method into some specific class.
+    // TODO It would help to keep single-responsibility for MainActivity.
     private fun scheduleRefreshWorkerTask() {
         // We want worker to run only with network connection available
         val workConstraints = Constraints
@@ -210,6 +212,9 @@ class MainActivity : AppCompatActivity(), ListContract.ListView, ItemAdapter.OnC
      * @return Boolean. True - has network, false - no network
      */
     override fun hasNetwork(): Boolean {
+        // TODO It's maybe worth to move this check to Application,
+        // TODO and make it subscription (BroadcastReceiver) instead of simple getter.
+        // TODO this way, you always gonna know, if your app is online, without additional calls
         val connectivityManager = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
         return (activeNetwork != null && activeNetwork.isConnected)
