@@ -11,13 +11,15 @@ import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.R.id.*
+import com.unagit.douuajobsevents.R.id.menu_add_to_calendar
+import com.unagit.douuajobsevents.R.id.menu_share
 import com.unagit.douuajobsevents.contracts.DetailsContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
 
 class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
+    // TODO no detach() method is called for presenter
     private val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
     private var item: Item? = null
 
