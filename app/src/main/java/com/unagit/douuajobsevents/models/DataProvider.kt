@@ -44,6 +44,8 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
      * @return Observable with a list of locally stored items.
      * @see Observable
      */
+    // TODO If you make just one onNext() call, you should use Single instead of Observable.
+    // TODO Observable should be used, if you will receive items one by one in some unpredictable amount of time.
     fun getItemsObservable(): Observable<List<Item>> {
         return Observable
                 .create<List<Item>> { emitter ->
@@ -61,9 +63,9 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
      * @see Single
      */
     fun getItemWithIdObservable(guid: String): Single<Item> {
-        return Single.create {emitter ->
-                val item = DB_INSTANCE!!.itemDao().getItemWithId(guid)
-                emitter.onSuccess(item)
+        return Single.create { emitter ->
+            val item = DB_INSTANCE!!.itemDao().getItemWithId(guid)
+            emitter.onSuccess(item)
         }
     }
 
@@ -90,7 +92,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                 // Extract ItemDataWrapper into a list of xml items.
                 .map {
                     it.xmlItems
-
+                            // TODO instead of using streams, you can use Rx methods (flatMap(), filter()) to achieve same result.
                             // Filter out those items, which are already in local DB
                             .filter { xmlItem ->
 
@@ -147,7 +149,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                 .append(title.substring(0, commaIndex))
                 .append("</b>")
                 .append(",<br>")
-                .append(title.substring(commaIndex+1).trim())
+                .append(title.substring(commaIndex + 1).trim())
                 .toString()
     }
 }

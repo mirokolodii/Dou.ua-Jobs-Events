@@ -20,8 +20,7 @@ object RoomConstants {
 }
 
 object WorkerConstants {
-    const val UNIQUE_REFRESH_WORKER_NAME
-            = "com.unagit.douuajobsevents.services.refreshworker_unique_name"
+    const val UNIQUE_REFRESH_WORKER_NAME = "com.unagit.douuajobsevents.services.refreshworker_unique_name"
 }
 
 /**
@@ -30,6 +29,7 @@ object WorkerConstants {
  *  2. Job (Vacancy) with value = 2
  *  @param value integer that represents value of ItemType.
  */
+// TODO you may use @IntDef instead of enum here. Enums are a bit heavier that ints.
 enum class ItemType(val value: Int) {
     EVENT(1),
     JOB(2)

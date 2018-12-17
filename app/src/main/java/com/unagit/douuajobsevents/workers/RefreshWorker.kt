@@ -1,21 +1,24 @@
 package com.unagit.douuajobsevents.workers
 
-import android.app.*
-import android.content.Intent
-import android.util.Log
-import com.unagit.douuajobsevents.models.DataProvider
-import com.unagit.douuajobsevents.models.Item
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.observers.DisposableObserver
-import io.reactivex.schedulers.Schedulers
-import androidx.core.app.NotificationCompat
-import com.unagit.douuajobsevents.views.MainActivity
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.NonNull
+import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.unagit.douuajobsevents.R
+import com.unagit.douuajobsevents.models.DataProvider
+import com.unagit.douuajobsevents.models.Item
+import com.unagit.douuajobsevents.views.MainActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
 
 
 class RefreshWorker(@NonNull appContext: Context,
@@ -28,6 +31,7 @@ class RefreshWorker(@NonNull appContext: Context,
         private const val NOTIFICATION_ID = 1
 
     }
+
     private var dataProvider: DataProvider? = null
 
 
@@ -81,7 +85,7 @@ class RefreshWorker(@NonNull appContext: Context,
         if (itemsCount == 0) {
             return
         }
-        val message = when(itemsCount) {
+        val message = when (itemsCount) {
             1 -> "$itemsCount new item received."
             else -> "$itemsCount new items received."
         }

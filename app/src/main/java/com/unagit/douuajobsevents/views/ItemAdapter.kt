@@ -1,13 +1,13 @@
 package com.unagit.douuajobsevents.views
 
 import android.util.Log
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.core.text.HtmlCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.Item
@@ -54,6 +54,8 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
         fun bind(item: Item, listener: OnClickListener) {
 
             // Transform html tags into formatted text
+            // TODO I'd prefer to parse text on lower level (e.g. when item object is created, or even on object receiving).
+            // TODO HtmlCompat.fromHtml() method is too heavy to use it on EACH row binding.
             itemView.itemTitle.text = HtmlCompat.fromHtml(item.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
             Picasso
@@ -72,8 +74,12 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
      * @param newItems a sub-list, which will be included into data set.
      * @param inPosition position, where sub-list will be inserted.
      */
+    // TODO Position is always 0 :)
+    // TODO Anyway, if it won't be 0, this method would not work, because filteredItems has different positions.
     fun insertData(newItems: List<Item>, inPosition: Int) {
         this.items.addAll(inPosition, newItems)
+        // TODO This is wrong - filtered items will have all new objects, even if search is applied in that moment.
+        // TODO better way is to perform filtering on this stage.
         this.filteredItems.addAll(inPosition, newItems)
         notifyItemRangeInserted(inPosition, newItems.size)
     }
@@ -81,6 +87,10 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
     /**
      * Implementation of Filterable interface.
      */
+    // TODO I believe, this is deprecated.
+    // TODO You can use filtered list as adapter field, without this old unusable wrapper.
+    // TODO Moreover, you're creating new Filter object each time on getFilter() call.
+    // TODO Just make filter() method in adapter, and move filtering logic to it.
     override fun getFilter(): Filter {
         return object : Filter() {
             /**
