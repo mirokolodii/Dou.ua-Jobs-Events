@@ -1,6 +1,7 @@
 package com.unagit.douuajobsevents.presenters
 
 import android.app.Application
+import android.util.Log
 import com.unagit.douuajobsevents.contracts.DetailsContract
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
@@ -26,18 +27,23 @@ class DetailsPresenter : DetailsContract.DetailsPresenter {
         this.view = null
     }
 
+    /**
+     * Asks Data provider for an Item with provided item guid.
+     * Shows Item in a view.
+     * @param id guid of an Item to be received.
+     */
     override fun requestItemFromId(id: String) {
-
         val observer = object : DisposableSingleObserver<Item>() {
-
             override fun onSuccess(item: Item) {
                 view?.showItem(item)
                 dispose()
-
             }
 
             override fun onError(e: Throwable) {
-
+                Log.e(
+                        this.javaClass.simpleName,
+                        e.message
+                )
             }
         }
 
@@ -47,11 +53,6 @@ class DetailsPresenter : DetailsContract.DetailsPresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(observer)
 
-
-
         compositeDisposable.add(single)
     }
-
-
-
 }
