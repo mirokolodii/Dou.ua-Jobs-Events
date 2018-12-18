@@ -12,4 +12,7 @@
     <string name="add_to_favourites">Add to favourites</string>
     <string name="menu_add_to_calendar">Add to calendar</string>
     <string name="menu_share">Share</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_clear_local_data">Clear local cache</string>
+    <string name="menu_search">Search</string>
 </resources>
