@@ -11,6 +11,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
+import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
@@ -90,21 +91,15 @@ class ListPresenter :
         val observable = dataProvider!!.getItemsObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableObserver<List<Item>>() {
-                    override fun onComplete() {
-                    }
-
-                    override fun onNext(t: List<Item>) {
-
+                .subscribeWith(object : DisposableSingleObserver<List<Item>>() {
+                    override fun onSuccess(t: List<Item>) {
                         view?.showLoading(false)
                         view?.showItems(t)
                     }
-
                     override fun onError(e: Throwable) {
                         Log.e(logTag, "Error in getItems. ${e.message}")
                         view?.showMessage("Error: can't receive data from local cache.")
                     }
-
                 })
         compositeDisposable.add(observable)
     }

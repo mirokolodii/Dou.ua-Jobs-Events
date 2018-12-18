@@ -36,22 +36,15 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         DB_INSTANCE = AppDatabase.getInstance(application!!)
     }
 
-    fun detach() {
-        this.application = null
-    }
-
     /**
      * @return Observable with a list of locally stored items.
      * @see Observable
      */
-    // TODO If you make just one onNext() call, you should use Single instead of Observable.
-    // TODO Observable should be used, if you will receive items one by one in some unpredictable amount of time.
-    fun getItemsObservable(): Observable<List<Item>> {
-        return Observable
+    fun getItemsObservable(): Single<List<Item>> {
+        return Single
                 .create<List<Item>> { emitter ->
                     val localItems = DB_INSTANCE!!.itemDao().getItems()
-                    emitter.onNext(localItems)
-                    emitter.onComplete()
+                    emitter.onSuccess(localItems)
                 }
 
     }
