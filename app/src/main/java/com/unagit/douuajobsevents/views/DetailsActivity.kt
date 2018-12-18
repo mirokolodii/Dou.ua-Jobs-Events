@@ -110,8 +110,14 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         showAsFavourite(item.isFavourite)
     }
 
-
+    /**
+     * Updates Item's isFavourite value with new one.
+     * Changes favourites icon.
+     * @param isFavourite new value of isFavourite.
+     * True - added to fav, false - removed from fav
+     */
     override fun showAsFavourite(isFavourite: Boolean) {
+        this.item?.isFavourite = isFavourite
         val favMenuItem = bottom_bar.menu.findItem(R.id.menu_favourites)
         if(isFavourite) {
             favMenuItem.setIcon(R.drawable.ic_favorite)

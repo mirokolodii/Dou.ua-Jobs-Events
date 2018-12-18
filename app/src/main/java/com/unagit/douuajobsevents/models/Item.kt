@@ -21,5 +21,5 @@ data class Item(
         @NonNull @ColumnInfo(name = "img_url") var imgUrl: String,
         @NonNull val description: String,
         @NonNull val timestamp: Long = Calendar.getInstance().timeInMillis,
-        @NonNull val isFavourite: Boolean = false
+        @NonNull var isFavourite: Boolean = false
 )
