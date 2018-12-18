@@ -33,8 +33,6 @@ interface DetailsContract {
          */
         fun requestItemFromId(id: String)
 
-        fun addToFavourites(guid: String)
-
-        fun removeFromFavourites(guid: String)
+        fun changeItemFavVal(item: Item)
     }
 }

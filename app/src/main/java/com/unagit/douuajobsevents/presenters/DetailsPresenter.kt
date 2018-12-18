@@ -7,6 +7,7 @@ import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
@@ -22,7 +23,7 @@ class DetailsPresenter : DetailsContract.DetailsPresenter {
     }
 
     override fun detach() {
-        if(!compositeDisposable.isDisposed) {
+        if (!compositeDisposable.isDisposed) {
             compositeDisposable.dispose()
         }
         this.view = null
@@ -58,31 +59,32 @@ class DetailsPresenter : DetailsContract.DetailsPresenter {
     }
 
     /**
-     * Sets Item with provided guid as favourite.
-     * @param guid of Item to be altered
-     * @see Item
-     */
-    override fun addToFavourites(guid: String) {
-        setAs(true, guid)
-    }
-
-    /**
-     * Removes Item with provided guid from favourites.
-     * @param guid of Item to be altered
-     * @see Item
-     */
-    override fun removeFromFavourites(guid: String) {
-        setAs(false, guid)
-    }
-
-    /**
-     * Asks DataProvider to set or remove from favourites.
+     * Requests DataProvider to reverse favourites value.
      * Once done, tells view to show a result.
      * @param favourite true - set as favourite, false - remove from favourites
      * guid of Item to be altered
      */
-    private fun setAs(favourite: Boolean, guid: String) {
-        //TODO: get Completable from dataProvider and show result in view
-        dataProvider!!.changeItemFavourite(favourite, guid)
+    override fun changeItemFavVal(item: Item) {
+        val newFavValue = !item.isFavourite
+
+        val observable = dataProvider!!.changeItemFavourite(newFavValue, item.guid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableCompletableObserver() {
+                    override fun onComplete() {
+                        view?.showAsFavourite(newFavValue)
+                        val message = when (newFavValue) {
+                            true -> "Item has been added to favourites"
+                            else -> "Item has been removed from favourites"
+                        }
+                        view?.showMessage(message)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        // Internal error, so we need to throw (and fix)
+                        throw(e)
+                    }
+                })
+        compositeDisposable.add(observable)
     }
 }

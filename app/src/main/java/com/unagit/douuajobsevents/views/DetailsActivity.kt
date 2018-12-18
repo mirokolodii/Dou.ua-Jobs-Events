@@ -10,8 +10,7 @@ import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.R.id.menu_add_to_calendar
-import com.unagit.douuajobsevents.R.id.menu_share
+import com.unagit.douuajobsevents.R.id.*
 import com.unagit.douuajobsevents.contracts.DetailsContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.DetailsPresenter
@@ -78,13 +77,18 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
                 menu_add_to_calendar -> {
                     addToCalendar()
                     true
-                } else -> super.onOptionsItemSelected(it)
+                }
+                menu_favourites -> {
+                    presenter.changeItemFavVal(this.item!!)
+                    true
+                }
+                else -> super.onOptionsItemSelected(it)
             }
         }
     }
 
     /**
-     * Showes Item, received from presenter, on the screen.
+     * Shows Item, received from presenter, on the screen.
      */
     override fun showItem(item: Item) {
         this.item = item
@@ -102,9 +106,8 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         // Set links in description to be clickable
         detailedItemDetails.movementMethod = LinkMovementMethod.getInstance()
 
-        // Set favourites icon drawable in menu from bottom bar
-        TODO("Change isFavourite value from hardcoded to one from Item")
-        showAsFavourite(true) //item.isFavourite)
+        // Set favourite menu icon, depending on whether or not item isFavourite
+        showAsFavourite(item.isFavourite)
     }
 
 

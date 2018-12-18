@@ -81,10 +81,9 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
         }
     }
 
-    fun changeItemFavourite(setAsFav: Boolean, guid: String): Completable {
+    fun changeItemFavourite(toBeFav: Boolean, guid: String): Completable {
         return Completable.create { emitter ->
-            // TODO: set/delete as favourite
-//            DB_INSTANCE!!.itemDao().deleteAll()
+            DB_INSTANCE!!.itemDao().setAsFav(toBeFav, guid)
             emitter.onComplete()
         }
     }

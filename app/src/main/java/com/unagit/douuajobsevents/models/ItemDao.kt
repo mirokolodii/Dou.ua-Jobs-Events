@@ -23,4 +23,7 @@ interface ItemDao{
 
     @Query("DELETE from entity_table")
     fun deleteAll()
+
+    @Query("UPDATE entity_table SET isFavourite = :toBeFav WHERE guid = :guid")
+    fun setAsFav(toBeFav: Boolean, guid: String)
 }
