@@ -4,6 +4,7 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 /**
  * Data model for an item.
@@ -19,6 +20,6 @@ data class Item(
         @NonNull val type: Int,
         @NonNull @ColumnInfo(name = "img_url") var imgUrl: String,
         @NonNull val description: String,
-        @NonNull val timestamp: Long
-
+        @NonNull val timestamp: Long = Calendar.getInstance().timeInMillis,
+        @NonNull val isFavourite: Boolean = false
 )
