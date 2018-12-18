@@ -17,7 +17,6 @@ import com.unagit.douuajobsevents.presenters.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
 
 class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
-    // TODO no detach() method is called for presenter
     private val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
     private var item: Item? = null
 
@@ -30,7 +29,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
 
-        presenter.attach(this, application)
+//        presenter.attach(this)
         presenter.requestItemFromId(guid)
 
         // FAB onClickListener:
@@ -49,6 +48,11 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
                 fab.hide()
             }
         }
+    }
+
+    override fun onDestroy() {
+        presenter.detach()
+        super.onDestroy()
     }
 
     /**

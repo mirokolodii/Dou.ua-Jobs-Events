@@ -36,7 +36,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         Log.d("Search", "onCreate triggered.")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter.attach(this, application)
+//        presenter.attach(this)
 
         // Ask presenter for items
         presenter.getItems()

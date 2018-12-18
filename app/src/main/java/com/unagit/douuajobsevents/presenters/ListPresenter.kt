@@ -1,56 +1,47 @@
 package com.unagit.douuajobsevents.presenters
 
-import android.app.Application
 import android.os.Handler
 import android.util.Log
+import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class ListPresenter : ListContract.ListPresenter {
-    private var view: ListContract.ListView? = null
-    private var dataProvider: DataProvider? = null
-    // TODO use CompositeDisposable to avoid fields boilerplate
-    private var localDataDisposable: Disposable? = null
-    private var clearLocalDataDisposable: Disposable? = null
-    private var refreshDataDisposable: Disposable? = null
+//    private var view: ListContract.ListView? = null
+//    private var dataProvider: DataProvider? = null
+
+    private val compositeDisposable = CompositeDisposable()
+
     private var refreshRunnable: Runnable? = null
-    private val initialRefreshInterval = 5 * 1000L /* 5 sec */ // TODO replace with TimeUnit.SECONDS.toMillis(5)
 
-    private val logTag = "ListPresenter"
-
-    // Fields used for data refresh from web with interval 'refreshInterval' msec.
-    private val refreshInterval = 60 * 5 * 1000L /* 5 min */ // TODO TimeUnit.MINUTES.toMillis(5)
+    // First refresh after 5 sec.
+    private val initialRefreshInterval = TimeUnit.SECONDS.toMillis(5)
+    // Refresh each 5 min.
+    private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
     private val refreshHandler = Handler()
 
-    override fun attach(view: ListContract.ListView, application: Application) {
-        this.view = view
-        this.dataProvider = DataProvider(application)
-        initiateDataRefresh()
-    }
+
+
+//    override fun attach(view: ListContract.ListView) {
+//        this.view = view
+//        this.dataProvider = MyApp.dataProviderInstance
+//        initiateDataRefresh()
+//    }
 
 
     override fun detach() {
-        stopDataRefresh()
-        localDataDisposable?.dispose()
-        refreshDataDisposable?.dispose()
-        clearLocalDataDisposable?.dispose()
+        if (!compositeDisposable.isDisposed) {
+            compositeDisposable.dispose()
+        }
         this.view = null
-
-        // TODO: Should I detach in DataProvider?
-        // -- yes: lost singleton
-        // -- no: memory leakage?
-        // TODO No need to detach data providers in view detach method - presenters are made to hold these cache during view rebuilding.
-        // TODO Link to dataProvider will die together with presenter itself.
-        // TODO That's why i'd recommend to not create data providers in presenter, but in application object.
-        // TODO In that case, you'd not have to bother about lost singleton.
-//        dataProvider?.detach()
-
     }
 
     /**
@@ -84,7 +75,7 @@ class ListPresenter : ListContract.ListPresenter {
      * Informs view to show a snackbar message with a result.
      */
     override fun clearLocalData() {
-        clearLocalDataDisposable = dataProvider!!.getDeleteLocalDataObservable()
+        val observable = dataProvider!!.getDeleteLocalDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
@@ -98,6 +89,7 @@ class ListPresenter : ListContract.ListPresenter {
                                 "Oops :-( Something went wrong while trying to delete local cache.")
                     }
                 })
+        compositeDisposable.add(observable)
 //        getItems()
 //        initiateDataRefresh()
 
@@ -113,9 +105,7 @@ class ListPresenter : ListContract.ListPresenter {
     override fun getItems() {
         view?.showLoading(true)
 
-        val itemsObservable = dataProvider!!.getItemsObservable()
-
-        localDataDisposable = itemsObservable
+        val observable = dataProvider!!.getItemsObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableObserver<List<Item>>() {
@@ -134,10 +124,8 @@ class ListPresenter : ListContract.ListPresenter {
                     }
 
                 })
-
-
+        compositeDisposable.add(observable)
     }
-
 
     /**
      * Asks Data provider to refresh a data from web.
@@ -146,7 +134,7 @@ class ListPresenter : ListContract.ListPresenter {
      * @see Item
      */
     override fun refreshData() {
-        refreshDataDisposable = dataProvider!!.getRefreshDataObservable()
+        val observable = dataProvider!!.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableObserver<List<Item>>() {
@@ -168,5 +156,6 @@ class ListPresenter : ListContract.ListPresenter {
                         view?.showMessage("Error - can't refresh data.")
                     }
                 })
+        compositeDisposable.add(observable)
     }
 }

@@ -28,7 +28,6 @@ interface DouAPIService {
         fun create(): DouAPIService {
             val retrofit = Retrofit.Builder()
                     .baseUrl(RetrofitConstants.DOU_UA_BASE_API_URL)
-                    // TODO Deprecated?
                     .addConverterFactory(SimpleXmlConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build()

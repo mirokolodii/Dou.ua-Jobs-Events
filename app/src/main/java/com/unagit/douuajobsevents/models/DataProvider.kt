@@ -133,6 +133,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
 
         // Get HTML paragraphs omitting first two
         val description = doc.select("body > :gt(1)").html()
+
         val type = ItemType.EVENT.value
 
         return Item(guid, title, type, imgUrl, description)

@@ -1,5 +1,8 @@
 package com.unagit.douuajobsevents.helpers
 
+import androidx.annotation.IntDef
+import java.lang.annotation.RetentionPolicy
+
 /**
  * Helpers with some constants and enums.
  * @author Myroslav Kolodii
@@ -29,7 +32,6 @@ object WorkerConstants {
  *  2. Job (Vacancy) with value = 2
  *  @param value integer that represents value of ItemType.
  */
-// TODO you may use @IntDef instead of enum here. Enums are a bit heavier that ints.
 enum class ItemType(val value: Int) {
     EVENT(1),
     JOB(2)

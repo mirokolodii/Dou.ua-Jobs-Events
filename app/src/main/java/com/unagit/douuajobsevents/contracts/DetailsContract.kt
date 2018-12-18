@@ -25,7 +25,7 @@ interface DetailsContract {
     }
 
     // Presenter
-    interface DetailsPresenter : BasePresenter<DetailsView> {
+    interface DetailsPresenter : BasePresenter<DetailsView>(view: <DetailsView>) {
         /**
          * Requests Item from repository by its id.
          * @param id of an item.

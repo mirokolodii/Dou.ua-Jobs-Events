@@ -2,6 +2,7 @@ package com.unagit.douuajobsevents.presenters
 
 import android.app.Application
 import android.util.Log
+import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.contracts.DetailsContract
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
@@ -13,14 +14,15 @@ import io.reactivex.schedulers.Schedulers
 
 class DetailsPresenter : DetailsContract.DetailsPresenter {
 
-    private var view: DetailsContract.DetailsView? = null
-    private var dataProvider: DataProvider? = null
     private val compositeDisposable = CompositeDisposable()
 
-    override fun attach(view: DetailsContract.DetailsView, application: Application) {
-        this.view = view
-        this.dataProvider = DataProvider(application)
-    }
+//    private var view: DetailsContract.DetailsView? = null
+//    private var dataProvider: DataProvider? = null
+//
+//    override fun attach(view: DetailsContract.DetailsView) {
+//        this.view = view
+//        this.dataProvider = MyApp.dataProviderInstance
+//    }
 
     override fun detach() {
         if (!compositeDisposable.isDisposed) {
@@ -61,8 +63,7 @@ class DetailsPresenter : DetailsContract.DetailsPresenter {
     /**
      * Requests DataProvider to reverse favourites value.
      * Once done, tells view to show a result.
-     * @param favourite true - set as favourite, false - remove from favourites
-     * guid of Item to be altered
+     * @param item which should be altered
      */
     override fun changeItemFavVal(item: Item) {
         val newFavValue = !item.isFavourite
