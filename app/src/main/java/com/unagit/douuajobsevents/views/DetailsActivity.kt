@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.provider.CalendarContract
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.squareup.picasso.Picasso
@@ -110,7 +109,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
 
 
     override fun showAsFavourite(isFavourite: Boolean) {
-        val favMenuItem = bottom_bar.menu.findItem(menu_favourites)
+        val favMenuItem = bottom_bar.menu.findItem(R.id.menu_favourites)
         if(isFavourite) {
             favMenuItem.setIcon(R.drawable.ic_favorite)
         } else {
