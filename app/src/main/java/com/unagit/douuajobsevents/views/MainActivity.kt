@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
+import com.unagit.douuajobsevents.ScheduleRefreshWorker
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.models.Item
@@ -31,6 +32,7 @@ import android.util.Pair as AndroidPair
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
+    private val refresher: ListContract.Refresher = ScheduleRefreshWorker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("Search", "onCreate triggered.")
@@ -46,7 +48,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
         // Initiate regular refreshment in background with Worker
         // (works even when app is closed)
-        scheduleRefreshWorkerTask()
+        refresher.scheduleRefresh()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -97,39 +99,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    /**
-     * Schedules a regular RefreshWorker task with help of WorkManager.
-     * Triggered only with network connection available
-     * during last 15 minutes of each 8 hours interval.
-     * @see RefreshWorker
-     */
-    // TODO would be cool to move this method into some specific class.
-    // TODO It would help to keep single-responsibility for MainActivity.
-    private fun scheduleRefreshWorkerTask() {
-        // We want worker to run only with network connection available
-        val workConstraints = Constraints
-                .Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-
-        val periodicRefreshRequest = PeriodicWorkRequest
-                .Builder(
-                        RefreshWorker::class.java,
-                        8,
-                        TimeUnit.HOURS,
-                        15,
-                        TimeUnit.MINUTES)
-                .setConstraints(workConstraints)
-                .build()
-        WorkManager.getInstance()
-                .enqueueUniquePeriodicWork(
-                        UNIQUE_REFRESH_WORKER_NAME,
-                        ExistingPeriodicWorkPolicy.KEEP,
-                        periodicRefreshRequest
-                )
-    }
-
 
     override fun onDestroy() {
         presenter.detach()

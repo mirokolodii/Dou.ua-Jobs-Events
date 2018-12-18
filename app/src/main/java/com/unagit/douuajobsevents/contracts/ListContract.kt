@@ -64,4 +64,9 @@ interface ListContract {
          */
         fun clearLocalData()
     }
+
+    interface Refresher {
+        fun scheduleRefresh()
+        fun stopRefresh()
+    }
 }
