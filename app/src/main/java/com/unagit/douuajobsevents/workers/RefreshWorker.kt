@@ -12,6 +12,7 @@ import androidx.annotation.NonNull
 import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
@@ -21,7 +22,7 @@ import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 
 
-class RefreshWorker(@NonNull appContext: Context,
+class RefreshWorker(@NonNull val appContext: Context,
                     @NonNull workerParams: WorkerParameters)
     : Worker(appContext, workerParams) {
 
@@ -34,19 +35,18 @@ class RefreshWorker(@NonNull appContext: Context,
 
     private var dataProvider: DataProvider? = null
 
-
-    override fun doWork(): Result {
+        override fun doWork(): Result {
         initializeFields()
 
         refreshData()
 
-        return Result.SUCCESS
+        return Result.success()
     }
 
     // Get instance of DataProvider
     private fun initializeFields() {
         if (dataProvider == null) {
-            dataProvider = DataProvider(applicationContext as Application)
+            dataProvider = MyApp.dataProvider
         }
     }
 
@@ -91,7 +91,7 @@ class RefreshWorker(@NonNull appContext: Context,
         }
 
         val notificationManager: NotificationManager =
-                this.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                this.appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val channelId = "channel_id"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -106,12 +106,12 @@ class RefreshWorker(@NonNull appContext: Context,
         }
 
         // Create a PendingIntent with MainActivity, which will be triggered on notification click
-        val mainActivityIntent = Intent(applicationContext, MainActivity::class.java)
+        val mainActivityIntent = Intent(appContext, MainActivity::class.java)
         val mainActivityPendingIntent =
-                PendingIntent.getActivity(applicationContext, 0, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getActivity(appContext, 0, mainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // Build notification
-        val mBuilder = NotificationCompat.Builder(applicationContext, channelId)
+        val mBuilder = NotificationCompat.Builder(appContext, channelId)
                 .setSmallIcon(R.drawable.abc_ic_menu_overflow_material)
                 .setContentTitle(message)
 //                .setSubText("subtext")

@@ -1,13 +1,12 @@
 package com.unagit.douuajobsevents.models
 
-import android.app.Application
+import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.helpers.ItemType
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import java.util.*
 
 /**
  * This class is responsible for providing data to the app from tho sources:
@@ -15,26 +14,12 @@ import java.util.*
  * 2. from web, using Retrofit.
  * @param application is required to create an instance of local db.
  */
-class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper> */ {
+class DataProvider(private val dbInstance: AppDatabase) {
 
     /**
      * Instance of Retrofit API service.
      */
     private val douApiService = DouAPIService.create()
-
-    // Constants
-    companion object {
-        /**
-         * Instance of local Room db.
-         */
-        private var DB_INSTANCE: AppDatabase? = null
-
-    }
-
-    init {
-        // Initialize local db instance
-        DB_INSTANCE = AppDatabase.getInstance(application!!)
-    }
 
     /**
      * @return Observable with a list of locally stored items.
@@ -43,7 +28,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
     fun getItemsObservable(): Single<List<Item>> {
         return Single
                 .create<List<Item>> { emitter ->
-                    val localItems = DB_INSTANCE!!.itemDao().getItems()
+                    val localItems = dbInstance.itemDao().getItems()
                     emitter.onSuccess(localItems)
                 }
 
@@ -57,7 +42,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
      */
     fun getItemWithIdObservable(guid: String): Single<Item> {
         return Single.create { emitter ->
-            val item = DB_INSTANCE!!.itemDao().getItemWithId(guid)
+            val item = dbInstance.itemDao().getItemWithId(guid)
             emitter.onSuccess(item)
         }
     }
@@ -69,14 +54,14 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
      */
     fun getDeleteLocalDataObservable(): Completable {
         return Completable.create { emitter ->
-            DB_INSTANCE!!.itemDao().deleteAll()
+            dbInstance.itemDao().deleteAll()
             emitter.onComplete()
         }
     }
 
     fun changeItemFavourite(toBeFav: Boolean, guid: String): Completable {
         return Completable.create { emitter ->
-            DB_INSTANCE!!.itemDao().setAsFav(toBeFav, guid)
+            dbInstance.itemDao().setAsFav(toBeFav, guid)
             emitter.onComplete()
         }
     }
@@ -97,7 +82,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                             .filter { xmlItem ->
 
                                 // Get a list of locally stored items
-                                val localItems = DB_INSTANCE!!.itemDao().getItems()
+                                val localItems = dbInstance.itemDao().getItems()
 
                                 // Return true, only if xmlItem IS NOT present in localItems
                                 !localItems.any { item ->
@@ -109,7 +94,7 @@ class DataProvider(var application: Application?) /* : Callback<ItemDataWrapper>
                             // return this item
                             .map { xmlItem ->
                                 val item = getItemFrom(xmlItem)
-                                DB_INSTANCE?.itemDao()?.insert(item)
+                                dbInstance.itemDao().insert(item)
                                 item
                             }
                 }
