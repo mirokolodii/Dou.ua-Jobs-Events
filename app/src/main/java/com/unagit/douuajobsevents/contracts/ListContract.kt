@@ -1,7 +1,6 @@
 package com.unagit.douuajobsevents.contracts
 
 import com.unagit.douuajobsevents.models.Item
-import com.unagit.douuajobsevents.presenters.BasePresenter
 
 /**
  * Contract between main view, listing all available items,
@@ -47,14 +46,16 @@ interface ListContract {
     }
 
     // Presenter
-    interface ListPresenter : BasePresenter<ListView> {
+    interface ListPresenter {
+        fun attach(view: ListView)
+        fun detach()
         /**
          * Initiates a call to repository to get a list of items.
          */
         fun getItems()
 
         /**
-         * Initiates refreshment process from web.
+         * Initiates refreshment process.
          */
         fun refreshData()
 

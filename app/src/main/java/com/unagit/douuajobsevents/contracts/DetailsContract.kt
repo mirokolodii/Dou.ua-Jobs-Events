@@ -1,7 +1,6 @@
 package com.unagit.douuajobsevents.contracts
 
 import com.unagit.douuajobsevents.models.Item
-import com.unagit.douuajobsevents.presenters.BasePresenter
 
 /**
  * Contract between DetailsView and DetailsPresenter.
@@ -25,14 +24,10 @@ interface DetailsContract {
     }
 
     // Presenter
-    interface DetailsPresenter : BasePresenter<DetailsView>(view: <DetailsView>) {
-        /**
-         * Requests Item from repository by its id.
-         * @param id of an item.
-         * @see Item
-         */
+    interface DetailsPresenter {
+        fun attach(view: DetailsView)
+        fun detach()
         fun requestItemFromId(id: String)
-
         fun changeItemFavVal(item: Item)
     }
 }

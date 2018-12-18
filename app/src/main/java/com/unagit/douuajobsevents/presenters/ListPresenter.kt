@@ -14,11 +14,9 @@ import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-class ListPresenter : ListContract.ListPresenter {
-//    private var view: ListContract.ListView? = null
-//    private var dataProvider: DataProvider? = null
-
-    private val compositeDisposable = CompositeDisposable()
+class ListPresenter :
+        ListContract.ListPresenter,
+        BasePresenter<ListContract.ListView>() {
 
     private var refreshRunnable: Runnable? = null
 
@@ -27,22 +25,6 @@ class ListPresenter : ListContract.ListPresenter {
     // Refresh each 5 min.
     private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
     private val refreshHandler = Handler()
-
-
-
-//    override fun attach(view: ListContract.ListView) {
-//        this.view = view
-//        this.dataProvider = MyApp.dataProviderInstance
-//        initiateDataRefresh()
-//    }
-
-
-    override fun detach() {
-        if (!compositeDisposable.isDisposed) {
-            compositeDisposable.dispose()
-        }
-        this.view = null
-    }
 
     /**
      * Executes data refresh after 'initialRefreshInterval'

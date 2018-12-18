@@ -36,9 +36,9 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         Log.d("Search", "onCreate triggered.")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        presenter.attach(this)
+        presenter.attach(this)
 
-        // Ask presenter for items
+        // Request for items
         presenter.getItems()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)

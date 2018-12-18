@@ -29,7 +29,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
 
-//        presenter.attach(this)
+        presenter.attach(this)
         presenter.requestItemFromId(guid)
 
         // FAB onClickListener:

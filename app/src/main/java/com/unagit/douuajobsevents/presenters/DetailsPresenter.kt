@@ -1,38 +1,19 @@
 package com.unagit.douuajobsevents.presenters
 
-import android.app.Application
 import android.util.Log
-import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.contracts.DetailsContract
-import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
-class DetailsPresenter : DetailsContract.DetailsPresenter {
-
-    private val compositeDisposable = CompositeDisposable()
-
-//    private var view: DetailsContract.DetailsView? = null
-//    private var dataProvider: DataProvider? = null
-//
-//    override fun attach(view: DetailsContract.DetailsView) {
-//        this.view = view
-//        this.dataProvider = MyApp.dataProviderInstance
-//    }
-
-    override fun detach() {
-        if (!compositeDisposable.isDisposed) {
-            compositeDisposable.dispose()
-        }
-        this.view = null
-    }
+class DetailsPresenter :
+        DetailsContract.DetailsPresenter,
+        BasePresenter<DetailsContract.DetailsView>() {
 
     /**
-     * Asks Data provider for an Item with provided item guid.
+     * Requests data provider for an Item with given item guid.
      * Shows Item in a view.
      * @param id guid of an Item to be received.
      */
@@ -61,7 +42,7 @@ class DetailsPresenter : DetailsContract.DetailsPresenter {
     }
 
     /**
-     * Requests DataProvider to reverse favourites value.
+     * Requests data provider to reverse favourites value.
      * Once done, tells view to show a result.
      * @param item which should be altered
      */
