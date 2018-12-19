@@ -41,7 +41,11 @@ class ScheduleRefreshWorker : ListContract.Refresher {
                 )
     }
 
+    /**
+     * Haven't been used (and tested) before.
+     * Cancels all work of RefreshWorker task.
+     */
     override fun stopRefresh() {
-
+        WorkManager.getInstance().cancelUniqueWork(WorkerConstants.UNIQUE_REFRESH_WORKER_NAME)
     }
 }
