@@ -1,8 +1,22 @@
 package com.unagit.douuajobsevents.presenters
 
-import android.app.Application
+import com.unagit.douuajobsevents.MyApp
+import io.reactivex.disposables.CompositeDisposable
 
-interface BasePresenter<V> {
-    fun attach(view: V, application: Application)
-    fun detach()
+abstract class BasePresenter<V> {
+    protected var view: V? = null
+    val dataProvider = MyApp.dataProvider
+    protected val compositeDisposable = CompositeDisposable()
+    protected val logTag: String = this.javaClass.simpleName
+
+    open fun attach(view: V) {
+        this.view = view
+
+    }
+    open fun detach() {
+        if (!compositeDisposable.isDisposed) {
+            compositeDisposable.dispose()
+        }
+        this.view = null
+    }
 }

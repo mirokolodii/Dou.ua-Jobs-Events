@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.provider.CalendarContract
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.squareup.picasso.Picasso
@@ -17,7 +16,7 @@ import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
 
-class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
+class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
     private val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
     private var item: Item? = null
 
@@ -30,17 +29,20 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
 
-        presenter.attach(this, application)
+        presenter.attach(this)
         presenter.requestItemFromId(guid)
 
-        // Open event in browser
+        // FAB onClickListener:
+        // Opens item's URL in a web browser
         fab.setOnClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(guid)))
         }
 
-        // Hide fab once scrolled to the bottom
-        nestedScrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            if (v != null && v.canScrollVertically(1)) {
+        // Hide fab once scrolled to the bottom,
+        // un-hide otherwise
+        nestedScrollView.setOnScrollChangeListener {
+            v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            if (v != null && v.canScrollVertically(1 /* positive direction means scrolling down*/)) {
                 fab.show()
             } else {
                 fab.hide()
@@ -48,19 +50,29 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         }
     }
 
+    override fun onDestroy() {
+        presenter.detach()
+        super.onDestroy()
+    }
+
+    /**
+     * Setup top and bottom bars.
+     * Top bar includes navigation,
+     * while bottom one includes menu elements.
+     */
     private fun setupBarsAndMenu() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) //remove title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // Need this code for reversed animation transition to work on back arrow pressed.
+        // Need this code for reversed animation transition to work on back arrow pressed
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
 
+        // Set bottom bar menu
         bottom_bar.inflateMenu(R.menu.details_bottom_menu)
         bottom_bar.setOnMenuItemClickListener {
-
             return@setOnMenuItemClickListener when(it.itemId) {
                 menu_share -> {
                     share()
@@ -69,11 +81,19 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
                 menu_add_to_calendar -> {
                     addToCalendar()
                     true
-                } else -> super.onOptionsItemSelected(it)
+                }
+                menu_favourites -> {
+                    presenter.changeItemFavVal(this.item!!)
+                    true
+                }
+                else -> super.onOptionsItemSelected(it)
             }
         }
     }
 
+    /**
+     * Shows Item, received from presenter, on the screen.
+     */
     override fun showItem(item: Item) {
         this.item = item
         detailedItemTitle.text = HtmlCompat.fromHtml(item.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
@@ -89,9 +109,30 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
 
         // Set links in description to be clickable
         detailedItemDetails.movementMethod = LinkMovementMethod.getInstance()
+
+        // Set favourite menu icon, depending on whether or not item isFavourite
+        showAsFavourite(item.isFavourite)
     }
 
+    /**
+     * Updates Item's isFavourite value with new one.
+     * Changes favourites icon.
+     * @param isFavourite new value of isFavourite.
+     * True - added to fav, false - removed from fav
+     */
+    override fun showAsFavourite(isFavourite: Boolean) {
+        this.item?.isFavourite = isFavourite
+        val favMenuItem = bottom_bar.menu.findItem(R.id.menu_favourites)
+        if(isFavourite) {
+            favMenuItem.setIcon(R.drawable.ic_favorite)
+        } else {
+            favMenuItem.setIcon(R.drawable.ic_favorite_border)
+        }
+    }
 
+    /**
+     * Setup and starts activity for add-to-calendar intent.
+     */
     private fun addToCalendar() {
         if(this.item == null) {
             Log.e(this.javaClass.simpleName, "Item is null.")
@@ -107,6 +148,9 @@ class DetailsActivity : AppCompatActivity(), DetailsContract.DetailsView {
         startActivity(intent)
     }
 
+    /**
+     * Setup and starts activity for 'share' intent.
+     */
     private fun share() {
         if(this.item == null) {
             Log.e(this.javaClass.simpleName, "Item is null.")

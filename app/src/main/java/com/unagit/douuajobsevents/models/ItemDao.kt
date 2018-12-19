@@ -2,6 +2,10 @@ package com.unagit.douuajobsevents.models
 
 import androidx.room.*
 
+/**
+ * Room DAO for an Item.
+ * @see Item
+ */
 @Dao
 interface ItemDao{
 
@@ -25,4 +29,7 @@ interface ItemDao{
 
     @Query("DELETE from entity_table")
     fun deleteAll()
+
+    @Query("UPDATE entity_table SET isFavourite = :toBeFav WHERE guid = :guid")
+    fun setAsFav(toBeFav: Boolean, guid: String)
 }

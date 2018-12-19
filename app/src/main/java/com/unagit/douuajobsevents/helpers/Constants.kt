@@ -1,26 +1,37 @@
 package com.unagit.douuajobsevents.helpers
 
-//object TabsObj {
-//    const val TABS_COUNT = 2
-//    const val TAB_BUNDLE_LABEL = "tabLabel"
-//
-//    enum class Tabs(val pos: Int, val title: String) {
-//        TAB_1(0, "Events"),
-//        TAB_2(1, "Jobs")
-//    }
-//}
+import androidx.annotation.IntDef
+import java.lang.annotation.RetentionPolicy
 
+/**
+ * Helpers with some constants and enums.
+ * @author Myroslav Kolodii
+ * @ver %I%
+ */
+
+/**
+ *  Base URLs that are used by Retrofit to receive data from web.
+ */
 object RetrofitConstants {
     const val DOU_UA_BASE_API_URL = "https://dou.ua/"
     const val DOU_UA_CALENDAR_API_URL = "https://dou.ua/calendar/feed/"
     const val DOU_UA_VACANCIES_API_URL = "https://jobs.dou.ua/vacancies/feeds/"
 }
 
-object WorkerConstants {
-    const val UNIQUE_REFRESH_WORKER_NAME
-            = "com.unagit.douuajobsevents.services.refreshworker_unique_name"
+object RoomConstants {
+    const val DB_NAME = "room db"
 }
 
+object WorkerConstants {
+    const val UNIQUE_REFRESH_WORKER_NAME = "com.unagit.douuajobsevents.services.refreshworker_unique_name"
+}
+
+/**
+ *  Represents two types of Item:
+ *  1. Event with value = 1
+ *  2. Job (Vacancy) with value = 2
+ *  @param value integer that represents value of ItemType.
+ */
 enum class ItemType(val value: Int) {
     EVENT(1),
     JOB(2)

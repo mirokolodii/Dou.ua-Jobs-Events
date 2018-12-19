@@ -1,12 +1,13 @@
 package com.unagit.douuajobsevents.presenters
 
-import android.app.Application
 import android.os.Handler
 import android.util.Log
+import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.models.DataProvider
+import com.unagit.douuajobsevents.models.Item
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,6 +18,7 @@ import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class ListPresenter : ListContract.ListPresenter {
     private var view: ListContract.ListView? = null
@@ -26,23 +28,25 @@ class ListPresenter : ListContract.ListPresenter {
 //    private var localDataDisposable: Disposable? = null
 //    private var clearLocalDataDisposable: Disposable? = null
 //    private var refreshDataDisposable: Disposable? = null
+class ListPresenter :
+        ListContract.ListPresenter,
+        BasePresenter<ListContract.ListView>() {
+
     private var refreshRunnable: Runnable? = null
-    private val initialRefreshInterval = 5 * 1000L /* 5 sec */
 
-    private val logTag = "ListPresenter"
-
-    // Fields used for data refresh from web with interval 'refreshInterval' msec.
-    private val refreshInterval = 60 * 5 * 1000L /* 5 min */
+    // First refresh after 5 sec.
+    private val initialRefreshInterval = TimeUnit.SECONDS.toMillis(5)
+    // Refresh each 5 min.
+    private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
     private val refreshHandler = Handler()
 
-    override fun attach(view: ListContract.ListView, application: Application) {
-        this.view = view
-        this.dataProvider = DataProvider(application)
+    override fun attach(view: ListContract.ListView) {
+        super.attach(view)
         initiateDataRefresh()
     }
 
-
     override fun detach() {
+        super.detach()
         stopDataRefresh()
         if(!compositeDisposable.isDisposed) {
             compositeDisposable.dispose()
@@ -59,40 +63,59 @@ class ListPresenter : ListContract.ListPresenter {
 
     }
 
+    /**
+     * Executes data refresh after 'initialRefreshInterval'
+     * and continue with regular refreshes with 'refreshInterval'.
+     */
     private fun initiateDataRefresh() {
         refreshRunnable = Runnable {
-            if(view != null && view!!.hasNetwork()) {
+            if (view != null && view!!.hasNetwork()) {
                 refreshData()
             } else {
-                view?.showSnackbar("Can't refresh: no network access.")
+                view?.showMessage("Can't refresh: no network access.")
             }
-
+            // Regular refreshes
+// TODO it's not the best (though not the worst) method to refresh data in specific period.
+// TODO You may use TimerTask instead.
             refreshHandler.postDelayed(refreshRunnable, refreshInterval)
         }
+        // First refresh
         refreshHandler.postDelayed(refreshRunnable, initialRefreshInterval)
     }
 
     private fun stopDataRefresh() {
-        if(refreshRunnable != null) {
+        if (refreshRunnable != null) {
             refreshHandler.removeCallbacksAndMessages(null)
         }
     }
 
+    /**
+     * Asks Data provider to delete all items from local db.
+     * Informs view to show a snackbar message with a result.
+     */
+    override fun clearLocalData() {
+        val observable = dataProvider!!.getDeleteLocalDataObservable()
     override fun clearLocalData(type: ItemType?) {
         val clearLocalDataDisposable = dataProvider!!.getDeleteLocalDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object: DisposableCompletableObserver() {
+                .subscribeWith(object : DisposableCompletableObserver() {
                     override fun onComplete() {
-                        view?.showSnackbar("Local data has been deleted.")
+                        view?.showMessage("Local data has been deleted.")
                     }
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
-                        view?.showSnackbar(
-                                "Oops :-( Error happened while trying to delete local cache.")
+                        view?.showMessage(
+                                "Oops :-( Something went wrong while trying to delete local cache.")
                     }
                 })
+        compositeDisposable.add(observable)
+//        getItems()
+//        initiateDataRefresh()
+
+        // Once local data is deleted, initiate a new refresh from web.
+        refreshData()
         compositeDisposable.add(clearLocalDataDisposable)
 
         if(type != null) {
@@ -103,6 +126,12 @@ class ListPresenter : ListContract.ListPresenter {
         initiateDataRefresh()
     }
 
+    /**
+     * Asks Data provider for all locally stored items
+     * and shows them in view.
+     * @see Item
+     */
+    override fun getItems() {
 
     override fun getItems(type: ItemType) {
         val observable = dataProvider!!.getItemsObservable(type)
@@ -117,46 +146,55 @@ class ListPresenter : ListContract.ListPresenter {
     private fun getItems(observable: Single<List<Item>>) {
         view?.showLoading(true)
 
+        val observable = dataProvider!!.getItemsObservable()
         val disposable = observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<List<Item>>() {
+                    override fun onSuccess(t: List<Item>) {
                 .subscribeWith(object: DisposableSingleObserver<List<Item>>() {
                     override fun onSuccess(t: List<Item>) {
                         view?.showLoading(false)
                         view?.showItems(t)
                     }
-
                     override fun onError(e: Throwable) {
                         view?.showLoading(false)
+                        Log.e(logTag, "Error in getItems. ${e.message}")
+                        view?.showMessage("Error: can't receive data from local cache.")
                     }
                 })
-        compositeDisposable.add(disposable)
+        compositeDisposable.add(observable)
     }
 
+    /**
+     * Asks Data provider to refresh a data from web.
+     * Inserts new items into view's list and shows snackbar message with
+     * a number of newly received items.
+     * @see Item
+     */
     override fun refreshData() {
-        val refreshDataDisposable = dataProvider!!.getRefreshDataObservable()
+        val observable = dataProvider!!.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object: DisposableObserver<List<Item>>() {
+                .subscribeWith(object : DisposableObserver<List<Item>>() {
                     override fun onComplete() {
                     }
 
                     override fun onNext(t: List<Item>) {
-//                        Log.d(logTag, "onNext in refreshData is triggered")
                         view?.insertNewItems(t)
                         val message = when {
                             t.isEmpty() -> "No new items."
                             t.size == 1 -> "${t.size} new item received."
                             else -> "${t.size} new items received."
                         }
-                        view?.showSnackbar(message)
+                        view?.showMessage(message)
                     }
 
                     override fun onError(e: Throwable) {
                         Log.e(logTag, "Error in refreshData. ${e.message}")
-                        view?.showSnackbar("Error - can't refresh data.")
+                        view?.showMessage("Error - can't refresh data.")
                     }
                 })
-        compositeDisposable.add(refreshDataDisposable)
+        compositeDisposable.add(observable)
     }
 }
