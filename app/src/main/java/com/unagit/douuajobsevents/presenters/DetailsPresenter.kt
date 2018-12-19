@@ -12,6 +12,11 @@ class DetailsPresenter :
         DetailsContract.DetailsPresenter,
         BasePresenter<DetailsContract.DetailsView>() {
 
+    companion object {
+        private const val MESSAGE_ADD_FAV = "Added to favourites"
+        private const val MESSAGE_REMOVE_FAV = "Removed from favourites"
+    }
+
     /**
      * Requests data provider for an Item with given item guid.
      * Shows Item in a view.
@@ -56,8 +61,8 @@ class DetailsPresenter :
                     override fun onComplete() {
                         view?.showAsFavourite(newFavValue)
                         val message = when (newFavValue) {
-                            true -> "Item has been added to favourites"
-                            else -> "Item has been removed from favourites"
+                            true -> MESSAGE_ADD_FAV
+                            else -> MESSAGE_REMOVE_FAV
                         }
                         view?.showMessage(message)
                     }
