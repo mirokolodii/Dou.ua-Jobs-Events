@@ -27,6 +27,16 @@ class ListPresenter :
     private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
     private val refreshHandler = Handler()
 
+    override fun attach(view: ListContract.ListView) {
+        super.attach(view)
+        initiateDataRefresh()
+    }
+
+    override fun detach() {
+        super.detach()
+        stopDataRefresh()
+    }
+
     /**
      * Executes data refresh after 'initialRefreshInterval'
      * and continue with regular refreshes with 'refreshInterval'.

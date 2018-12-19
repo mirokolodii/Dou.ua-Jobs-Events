@@ -9,11 +9,11 @@ abstract class BasePresenter<V> {
     protected val compositeDisposable = CompositeDisposable()
     protected val logTag: String = this.javaClass.simpleName
 
-    fun attach(view: V) {
+    open fun attach(view: V) {
         this.view = view
 
     }
-    fun detach() {
+    open fun detach() {
         if (!compositeDisposable.isDisposed) {
             compositeDisposable.dispose()
         }
