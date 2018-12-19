@@ -32,7 +32,6 @@ import android.util.Pair as AndroidPair
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
-    private val refresher: ListContract.Refresher = ScheduleRefreshWorker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("Search", "onCreate triggered.")
@@ -48,7 +47,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
         // Initiate regular refreshment in background with Worker
         // (works even when app is closed)
-        refresher.scheduleRefresh()
+        ScheduleRefreshWorker().scheduleRefresh()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

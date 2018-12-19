@@ -26,20 +26,18 @@ class RefreshWorker(@NonNull val appContext: Context,
                     @NonNull workerParams: WorkerParameters)
     : Worker(appContext, workerParams) {
 
+    private val logTag = this.javaClass.simpleName
+    private var dataProvider: DataProvider? = null
+
     companion object {
         private const val NOTIFICATION_CHANNEL_NAME = "General"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notifications about new items"
         private const val NOTIFICATION_ID = 1
-
     }
 
-    private var dataProvider: DataProvider? = null
-
-        override fun doWork(): Result {
+    override fun doWork(): Result {
         initializeFields()
-
         refreshData()
-
         return Result.success()
     }
 
@@ -49,7 +47,6 @@ class RefreshWorker(@NonNull val appContext: Context,
             dataProvider = MyApp.dataProvider
         }
     }
-
 
     /**
      * Asks DataProvider to refresh data from web and shows notification,
@@ -69,11 +66,10 @@ class RefreshWorker(@NonNull val appContext: Context,
 
                     override fun onError(e: Throwable) {
                         Log.e(
-                                this@RefreshWorker.javaClass.simpleName,
+                                logTag,
                                 e.message)
                     }
                 })
-
     }
 
     /**
@@ -82,9 +78,9 @@ class RefreshWorker(@NonNull val appContext: Context,
      */
     private fun showNotification(itemsCount: Int) {
         // Don't show notification when no new items received
-        if (itemsCount == 0) {
-            return
-        }
+//        if (itemsCount == 0) {
+//            return
+//        }
         val message = when (itemsCount) {
             1 -> "$itemsCount new item received."
             else -> "$itemsCount new items received."
