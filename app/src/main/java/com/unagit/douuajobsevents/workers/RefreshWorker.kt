@@ -53,15 +53,18 @@ class RefreshWorker(@NonNull val appContext: Context,
      * informing about number of newly received items.
      */
     private fun refreshData() {
+        val newItems = mutableListOf<Item>()
         dataProvider!!.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .blockingSubscribe(object : DisposableObserver<List<Item>>() {
 
-                    override fun onComplete() {}
+                    override fun onComplete() {
+                        showNotification(newItems.size)
+                    }
 
                     override fun onNext(t: List<Item>) {
-                        showNotification(t.size)
+                        newItems.addAll(t)
                     }
 
                     override fun onError(e: Throwable) {
