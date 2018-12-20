@@ -144,21 +144,25 @@ class ListPresenter :
      */
     override fun refreshData() {
         view?.showLoading(true)
+        val newItems = mutableListOf<Item>()
         val observer = dataProvider.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableObserver<List<Item>>() {
-                    override fun onComplete() {}
-
-                    override fun onNext(t: List<Item>) {
-                        view?.insertNewItems(t)
-                        val message = when {
-                            t.isEmpty() -> "No new items."
-                            t.size == 1 -> "${t.size} new item received."
-                            else -> "${t.size} new items received."
+                    override fun onComplete() {
+                        view?.insertNewItems(newItems)
+                        val size = newItems.size
+                        val message = when (size) {
+                            0 -> "No new items."
+                            1 -> "$size new item received."
+                            else -> "$size new items received."
                         }
                         view?.showLoading(false)
                         view?.showMessage(message)
+                    }
+
+                    override fun onNext(t: List<Item>) {
+                        newItems.addAll(t)
                     }
 
                     override fun onError(e: Throwable) {
