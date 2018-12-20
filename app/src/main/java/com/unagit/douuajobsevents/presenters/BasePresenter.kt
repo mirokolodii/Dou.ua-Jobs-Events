@@ -5,7 +5,7 @@ import io.reactivex.disposables.CompositeDisposable
 
 abstract class BasePresenter<V> {
     protected var view: V? = null
-    val dataProvider = MyApp.dataProvider
+    val dataProvider = MyApp.dataProvider!!
     protected val compositeDisposable = CompositeDisposable()
     protected val logTag: String = this.javaClass.simpleName
 

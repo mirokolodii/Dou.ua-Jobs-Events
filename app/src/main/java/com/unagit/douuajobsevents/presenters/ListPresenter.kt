@@ -7,7 +7,6 @@ import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.models.DataProvider
-import com.unagit.douuajobsevents.models.Item
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,14 +19,6 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-class ListPresenter : ListContract.ListPresenter {
-    private var view: ListContract.ListView? = null
-    private val compositeDisposable = CompositeDisposable()
-
-    private var dataProvider: DataProvider? = null
-//    private var localDataDisposable: Disposable? = null
-//    private var clearLocalDataDisposable: Disposable? = null
-//    private var refreshDataDisposable: Disposable? = null
 class ListPresenter :
         ListContract.ListPresenter,
         BasePresenter<ListContract.ListView>() {
@@ -48,19 +39,6 @@ class ListPresenter :
     override fun detach() {
         super.detach()
         stopDataRefresh()
-        if(!compositeDisposable.isDisposed) {
-            compositeDisposable.dispose()
-        }
-//        localDataDisposable?.dispose()
-//        refreshDataDisposable?.dispose()
-//        clearLocalDataDisposable?.dispose()
-        this.view = null
-
-        // TODO: Should I detach in DataProvider?
-        // -- yes: lost singleton
-        // -- no: memory leakage?
-//        dataProvider?.detach()
-
     }
 
     /**
@@ -94,9 +72,7 @@ class ListPresenter :
      * Informs view to show a snackbar message with a result.
      */
     override fun clearLocalData() {
-        val observable = dataProvider!!.getDeleteLocalDataObservable()
-    override fun clearLocalData(type: ItemType?) {
-        val clearLocalDataDisposable = dataProvider!!.getDeleteLocalDataObservable()
+        val observer = dataProvider.getDeleteLocalDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
@@ -110,60 +86,54 @@ class ListPresenter :
                                 "Oops :-( Something went wrong while trying to delete local cache.")
                     }
                 })
-        compositeDisposable.add(observable)
-//        getItems()
-//        initiateDataRefresh()
-
-        // Once local data is deleted, initiate a new refresh from web.
+        compositeDisposable.add(observer)
         refreshData()
-        compositeDisposable.add(clearLocalDataDisposable)
-
-        if(type != null) {
-            getItems(type)
-        } else {
-            getFavourites()
-        }
-        initiateDataRefresh()
     }
 
-    /**
-     * Asks Data provider for all locally stored items
-     * and shows them in view.
-     * @see Item
-     */
-    override fun getItems() {
+    override fun getEvents() {
+        getItems(ItemType.EVENT)
+    }
 
-    override fun getItems(type: ItemType) {
-        val observable = dataProvider!!.getItemsObservable(type)
-        getItems(observable)
+    override fun getVacancies() {
+        getItems(ItemType.JOB)
     }
 
     override fun getFavourites() {
-        val observable = dataProvider!!.getFavouritesObservable()
-        getItems(observable)
+        getItems()
     }
 
-    private fun getItems(observable: Single<List<Item>>) {
+    /**
+     * Requests locally stored items from data provider and shows them in view.
+     * @param type ItemType, which should be shown (either Event of Vacancy).
+     * If ItemType not provided, a default value of 'null' is used, which returns
+     * list of favourites.
+     * @see ItemType
+     */
+    private fun getItems(type: ItemType? = null) {
         view?.showLoading(true)
 
-        val observable = dataProvider!!.getItemsObservable()
-        val disposable = observable
+        val observable = when (type) {
+            ItemType.EVENT -> dataProvider.getEventsObservable()
+            ItemType.JOB -> dataProvider.getVacanciesObservable()
+            else -> dataProvider.getFavouritesObservable()
+        }
+
+        val observer = observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableSingleObserver<List<Item>>() {
                     override fun onSuccess(t: List<Item>) {
-                .subscribeWith(object: DisposableSingleObserver<List<Item>>() {
-                    override fun onSuccess(t: List<Item>) {
                         view?.showLoading(false)
                         view?.showItems(t)
                     }
+
                     override fun onError(e: Throwable) {
                         view?.showLoading(false)
                         Log.e(logTag, "Error in getItems. ${e.message}")
                         view?.showMessage("Error: can't receive data from local cache.")
                     }
                 })
-        compositeDisposable.add(observable)
+        compositeDisposable.add(observer)
     }
 
     /**
@@ -173,12 +143,12 @@ class ListPresenter :
      * @see Item
      */
     override fun refreshData() {
-        val observable = dataProvider!!.getRefreshDataObservable()
+        view?.showLoading(true)
+        val observer = dataProvider.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableObserver<List<Item>>() {
-                    override fun onComplete() {
-                    }
+                    override fun onComplete() {}
 
                     override fun onNext(t: List<Item>) {
                         view?.insertNewItems(t)
@@ -187,14 +157,16 @@ class ListPresenter :
                             t.size == 1 -> "${t.size} new item received."
                             else -> "${t.size} new items received."
                         }
+                        view?.showLoading(false)
                         view?.showMessage(message)
                     }
 
                     override fun onError(e: Throwable) {
                         Log.e(logTag, "Error in refreshData. ${e.message}")
                         view?.showMessage("Error - can't refresh data.")
+                        view?.showLoading(false)
                     }
                 })
-        compositeDisposable.add(observable)
+        compositeDisposable.add(observer)
     }
 }

@@ -53,8 +53,9 @@ interface ListContract {
         /**
          * Initiates a call to repository to get a list of items.
          */
-        fun getItems(type: ItemType)
-
+//        fun getItems()
+        fun getEvents()
+        fun getVacancies()
         fun getFavourites()
 
         /**
@@ -65,7 +66,7 @@ interface ListContract {
         /**
          * Initiates a process to clear all locally stored data.
          */
-        fun fun clearLocalData(type: ItemType?)
+        fun clearLocalData()
     }
 
     interface Refresher {

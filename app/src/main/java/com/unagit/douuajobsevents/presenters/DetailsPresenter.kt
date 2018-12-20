@@ -37,7 +37,7 @@ class DetailsPresenter :
             }
         }
 
-        val single = dataProvider!!
+        val single = dataProvider
                 .getItemWithIdObservable(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -54,7 +54,7 @@ class DetailsPresenter :
     override fun changeItemFavVal(item: Item) {
         val newFavValue = !item.isFavourite
 
-        val observable = dataProvider!!.changeItemFavourite(newFavValue, item.guid)
+        val observable = dataProvider.changeItemFavourite(newFavValue, item.guid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {

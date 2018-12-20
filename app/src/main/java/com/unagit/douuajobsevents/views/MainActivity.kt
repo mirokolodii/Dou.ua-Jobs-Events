@@ -43,7 +43,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         presenter.attach(this)
 
         // Request for items
-        presenter.getItems(ItemType.EVENT)
+        presenter.getEvents()
 
         initToolbar()
 
@@ -73,17 +73,16 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
     private fun initBottomNav() {
         bottom_nav.setOnNavigationItemSelectedListener { item ->
-            Log.e("bottom_nav", item.itemId.toString())
-            showSnackbar("Test message")
+            showMessage("Test message")
             when (item.itemId) {
                 R.id.navigation_events -> {
                     mTab = Tab.EVENTS
-                    presenter.getItems(ItemType.EVENT)
+                    presenter.getEvents()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_vacancies -> {
                     mTab = Tab.VACANCIES
-                    presenter.getItems(ItemType.JOB)
+                    presenter.getVacancies()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_favourites -> {
@@ -91,7 +90,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
                     presenter.getFavourites()
                     return@setOnNavigationItemSelectedListener true
                 }
-
             }
             return@setOnNavigationItemSelectedListener false
         }
@@ -135,12 +133,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
             R.id.menu_clear_cache -> {
                 // User's initiated local data cleanup
                 presenter.clearLocalData()
-                when (mTab) {
-                    Tab.EVENTS -> presenter.clearLocalData(ItemType.EVENT)
-                    Tab.VACANCIES -> presenter.clearLocalData(ItemType.JOB)
-                    Tab.FAVOURITES -> presenter.clearLocalData(null)
-                }
-
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -177,6 +169,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
      * Inserts new items to the list.
      * @param newItems to be inserted
      */
+    // TODO: Review this method
     override fun insertNewItems(newItems: List<Item>) {
         val filteredItems = when (mTab) {
             Tab.EVENTS -> {

@@ -8,6 +8,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import java.util.*
 
 /**
  * This class is responsible for providing data to the app from tho sources:
@@ -41,24 +42,27 @@ class DataProvider(private val dbInstance: AppDatabase) {
      * @see Item
      * @see Single
      */
-    fun getItemsObservable(ofType: ItemType): Single<List<Item>> {
+    private fun getItemsObservable(ofType: ItemType): Single<List<Item>> {
         return Single
                 .create<List<Item>> { emitter ->
-                    val localItems =
-                            if (ofType.value == ItemType.EVENT.value) {
-                                DB_INSTANCE!!.itemDao().getItems(ItemType.EVENT.value)
-                            } else {
-                                DB_INSTANCE!!.itemDao().getItems(ItemType.JOB.value)
-                            }
-                    emitter.onSuccess(localItems)
+                    val items = dbInstance.itemDao().getItems(ofType.value)
+                    emitter.onSuccess(items)
                 }
+    }
+
+    fun getEventsObservable(): Single<List<Item>> {
+        return getItemsObservable(ItemType.EVENT)
+    }
+
+    fun getVacanciesObservable(): Single<List<Item>> {
+        return getItemsObservable(ItemType.JOB)
     }
 
     fun getFavouritesObservable(): Single<List<Item>> {
         return Single
                 .create<List<Item>> { emitter ->
-                    val localItems = DB_INSTANCE!!.itemDao().getFavourites()
-                    emitter.onSuccess(localItems)
+                    val favs = dbInstance.itemDao().getFavourites()
+                    emitter.onSuccess(favs)
                 }
     }
 
@@ -95,19 +99,17 @@ class DataProvider(private val dbInstance: AppDatabase) {
      */
     fun getRefreshDataObservable(): Observable<List<Item>> {
 
+
         val eventsObservable = douApiService.getEventsObservable()
                 .map {
-                    Log.d(logTag, "received Observable from retrofit call with ${it.items.size} elements.")
-                    val localItems = DB_INSTANCE!!.itemDao().getItems()
-                    it.items
-
+                    val localItems = dbInstance.itemDao().getItems()
                     it.xmlItems
                             // TODO instead of using streams, you can use Rx methods (flatMap(), filter()) to achieve same result.
                             // Filter out those items, which are already in local DB
                             .filter { xmlItem ->
 
                                 // Get a list of locally stored items
-                                val localItems = dbInstance.itemDao().getItems()
+//                                val localItems = dbInstance.itemDao().getItems()
 
                                 // Return true, only if xmlItem IS NOT present in localItems
                                 !localItems.any { item ->
@@ -115,20 +117,18 @@ class DataProvider(private val dbInstance: AppDatabase) {
                                 }
                             }
 
-
                             // Convert XmlItem into Item
                             // and save Item into local DB
                             .map { xmlItem ->
                                 val item = getEventFrom(xmlItem)
-                                DB_INSTANCE?.itemDao()?.insert(item)
-                                Log.d(logTag, "Created item with imageUrl ${item.imgUrl}.")
+                                dbInstance.itemDao().insert(item)
                                 item
                             }
                 }
         val vacanciesObservable = douApiService.getVacanciesObservable()
                 .map {
-                    val localItems = DB_INSTANCE!!.itemDao().getItems()
-                    it.items
+                    val localItems = dbInstance.itemDao().getItems()
+                    it.xmlItems
                             .filter { xmlItem ->
                                 !localItems.any { item ->
                                     item.guid == xmlItem.guid
@@ -139,8 +139,7 @@ class DataProvider(private val dbInstance: AppDatabase) {
                             // return this item
                             .map { xmlItem ->
                                 val item = getJobFrom(xmlItem)
-                                DB_INSTANCE?.itemDao()?.insert(item)
-                                Log.d(logTag, "Created item with imageUrl ${item.imgUrl}.")
+                                dbInstance.itemDao().insert(item)
                                 item
                             }
                 }
@@ -159,26 +158,22 @@ class DataProvider(private val dbInstance: AppDatabase) {
     private fun getJobFrom(xmlItem: XmlItem): Item {
         val guid = xmlItem.guid
         val title = prepareHtmlTitle(xmlItem.title)
-        val timestamp = Calendar.getInstance().timeInMillis
         val type = ItemType.JOB.value
         val imgUrl = getImgUrlFromTitle(title)
-        val isFavourite = false
         val description = xmlItem.description
         return Item(
                 guid,
                 title,
                 type,
                 imgUrl,
-                description,
-                timestamp,
-                false
+                description
         )
     }
 
     private fun getImgUrlFromTitle(title: String): String {
         val languages = Language.values()
         languages.forEach {
-            if(title.contains(it.name,true)) {
+            if (title.contains(it.name, true)) {
                 return it.url
             }
         }
