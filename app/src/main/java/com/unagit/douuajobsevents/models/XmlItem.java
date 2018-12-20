@@ -47,7 +47,7 @@ class XmlItem {
     Item transformJobToItem() {
         return new Item(
                 this.guid,
-                this.title,
+                getHtmlTitle(),
                 ItemType.JOB.getValue(),
                 getImgUrlForJob(),
                 this.description,
@@ -65,8 +65,6 @@ class XmlItem {
      * @see Item
      */
     Item transformEventToItem() {
-        String title = prepareHtmlTitle();
-
         Document doc = Jsoup.parseBodyFragment(this.description);
         // Get image url from first paragraph
         String imgUrl = doc.body().selectFirst("p").selectFirst("img").attr("src");
@@ -76,7 +74,7 @@ class XmlItem {
 
         return new Item(
                 this.guid,
-                title,
+                getHtmlTitle(),
                 ItemType.EVENT.getValue(),
                 imgUrl,
                 description,
@@ -104,7 +102,7 @@ class XmlItem {
      * @code {val input = "A Java conference, 17th of December, Lviv"}
      * @code {prepareHtmlTitle(input)} // returns "<b>A Java conference</b><br>, 17th of December, Lviv"
      */
-    private String prepareHtmlTitle() {
+    private String getHtmlTitle() {
         return
                 // Bold text before first comma followed by new line
                 "<b>" + title.substring(0, title.indexOf(",")) + "</b>" + ",<br>" +
