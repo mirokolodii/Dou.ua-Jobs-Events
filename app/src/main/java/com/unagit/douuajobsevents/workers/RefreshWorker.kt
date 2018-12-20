@@ -78,9 +78,9 @@ class RefreshWorker(@NonNull val appContext: Context,
      */
     private fun showNotification(itemsCount: Int) {
         // Don't show notification when no new items received
-//        if (itemsCount == 0) {
-//            return
-//        }
+        if (itemsCount == 0) {
+            return
+        }
         val message = when (itemsCount) {
             1 -> "$itemsCount new item received."
             else -> "$itemsCount new items received."
