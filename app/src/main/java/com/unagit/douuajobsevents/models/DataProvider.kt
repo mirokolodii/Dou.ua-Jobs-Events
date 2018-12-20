@@ -1,14 +1,9 @@
 package com.unagit.douuajobsevents.models
 
-import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.helpers.ItemType
-import com.unagit.douuajobsevents.helpers.Language
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import java.util.*
 
 /**
  * This class is responsible for providing data to the app from tho sources:
@@ -22,19 +17,6 @@ class DataProvider(private val dbInstance: AppDatabase) {
      * Instance of Retrofit API service.
      */
     private val douApiService = DouAPIService.create()
-
-    /**
-     * @return Observable with a list of locally stored items.
-     * @see Observable
-     */
-    fun getItemsObservable(): Single<List<Item>> {
-        return Single
-                .create<List<Item>> { emitter ->
-                    val localItems = dbInstance.itemDao().getItems()
-                    emitter.onSuccess(localItems)
-                }
-
-    }
 
     /**
      * @param guid an ID of an Item to be returned.
@@ -120,7 +102,7 @@ class DataProvider(private val dbInstance: AppDatabase) {
                             // Convert XmlItem into Item
                             // and save Item into local DB
                             .map { xmlItem ->
-                                val item = getEventFrom(xmlItem)
+                                val item = xmlItem.transformEventToItem()
                                 dbInstance.itemDao().insert(item)
                                 item
                             }
@@ -138,92 +120,12 @@ class DataProvider(private val dbInstance: AppDatabase) {
                             // Convert XmlItem object into Item object and save item into local DB,
                             // return this item
                             .map { xmlItem ->
-                                val item = getJobFrom(xmlItem)
+                                val item = xmlItem.transformJobToItem()
                                 dbInstance.itemDao().insert(item)
                                 item
                             }
                 }
 
         return Observable.merge<List<Item>>(eventsObservable, vacanciesObservable)
-    }
-
-    /**
-     * Converts XmlItem into job as Item object.
-     * Parses html code in body, extracts img url and description.
-     * @param xmlItem XmlItem received from web
-     * @return Item, converted from xml.
-     * @see XmlItem
-     * @see Item
-     */
-    private fun getJobFrom(xmlItem: XmlItem): Item {
-        val guid = xmlItem.guid
-        val title = prepareHtmlTitle(xmlItem.title)
-        val type = ItemType.JOB.value
-        val imgUrl = getImgUrlFromTitle(title)
-        val description = xmlItem.description
-        return Item(
-                guid,
-                title,
-                type,
-                imgUrl,
-                description
-        )
-    }
-
-    private fun getImgUrlFromTitle(title: String): String {
-        val languages = Language.values()
-        languages.forEach {
-            if (title.contains(it.name, true)) {
-                return it.url
-            }
-        }
-
-        return Language.DEFAULT.url
-
-    }
-
-    /**
-     * Converts XmlItem into event as Item object.
-     * Parses html code in body, extracts img url and description.
-     * @param xmlItem XmlItem received from web
-     * @return Item, converted from xml.
-     * @see XmlItem
-     * @see Item
-     */
-    private fun getEventFrom(xmlItem: XmlItem): Item {
-        val guid = xmlItem.guid
-        val title = prepareHtmlTitle(xmlItem.title)
-        val doc: Document = Jsoup.parseBodyFragment(xmlItem.description)
-
-        // Get image url from first paragraph
-        val imgUrl = doc.body().selectFirst("p").selectFirst("img").attr("src")
-
-        // Get HTML paragraphs omitting first two
-        val description = doc.select("body > :gt(1)").html()
-
-        val type = ItemType.EVENT.value
-
-        return Item(guid, title, type, imgUrl, description)
-    }
-
-    /**
-     * Adds HTML bold tabs (<b></b>) to a part of title before first occurance of ',' symbol,
-     * followed by a 'new line' (<br>) tag.
-     * Example:
-     * @code {val input = "A Java conference, 17th of December, Lviv"}
-     * @code {prepareHtmlTitle(input)} // returns "<b>A Java conference</b><br>, 17th of December, Lviv"
-     * @param title to be changed.
-     * @return title with added HTML tags.
-     */
-    private fun prepareHtmlTitle(title: String): String {
-        val commaIndex = title.indexOf(",")
-
-        return StringBuilder()
-                .append("<b>")
-                .append(title.substring(0, commaIndex))
-                .append("</b>")
-                .append(",<br>")
-                .append(title.substring(commaIndex + 1).trim())
-                .toString()
     }
 }

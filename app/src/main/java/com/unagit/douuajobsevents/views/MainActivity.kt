@@ -73,7 +73,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
     private fun initBottomNav() {
         bottom_nav.setOnNavigationItemSelectedListener { item ->
-            showMessage("Test message")
             when (item.itemId) {
                 R.id.navigation_events -> {
                     mTab = Tab.EVENTS
