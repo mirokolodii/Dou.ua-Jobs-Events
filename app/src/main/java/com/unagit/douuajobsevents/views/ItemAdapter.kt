@@ -76,7 +76,6 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
      * @param inPosition position, where sub-list will be inserted.
      */
     fun insertData(newItems: List<Item>) {
-        Log.e("Refresh", "insertData in ItemAdapter triggered")
         val inPosition = 0
         this.items.addAll(inPosition, newItems)
         // TODO This is wrong - filtered items will have all new objects, even if search is applied in that moment.

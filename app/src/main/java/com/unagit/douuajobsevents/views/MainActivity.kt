@@ -126,7 +126,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         return when (item?.itemId) {
             R.id.menu_refresh -> {
                 // User's initiated data refreshment
-                Log.e("Refresh", "menu listener triggered")
                 presenter.refreshData()
                 true
             }
@@ -171,7 +170,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
      */
     // TODO: Review this method
     override fun insertNewItems(newItems: List<Item>) {
-        Log.e("Refresh", "insertNewItems triggered")
         val filteredItems = when (mTab) {
             Tab.EVENTS -> {
                 newItems.filter { it.type == ItemType.EVENT.value }
