@@ -14,6 +14,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
+import com.unagit.douuajobsevents.helpers.RefreshMessages
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.views.MainActivity
@@ -30,6 +31,7 @@ class RefreshWorker(@NonNull val appContext: Context,
     private var dataProvider: DataProvider? = null
 
     companion object {
+        private const val NOTIFICATION_CHANNEL_ID = "channel_id"
         private const val NOTIFICATION_CHANNEL_NAME = "General"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notifications about new items"
         private const val NOTIFICATION_ID = 1
@@ -81,15 +83,12 @@ class RefreshWorker(@NonNull val appContext: Context,
 //        if (itemsCount == 0) {
 //            return
 //        }
-        val message = when (itemsCount) {
-            1 -> "$itemsCount new item received."
-            else -> "$itemsCount new items received."
-        }
+        val message = RefreshMessages.getMessageForCount(itemsCount)
 
         val notificationManager: NotificationManager =
                 this.appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val channelId = "channel_id"
+        val channelId = NOTIFICATION_CHANNEL_ID
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = NOTIFICATION_CHANNEL_NAME
             val descriptionText = NOTIFICATION_CHANNEL_DESCRIPTION

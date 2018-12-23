@@ -4,6 +4,7 @@ import android.os.Handler
 import android.util.Log
 import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.contracts.ListContract
+import com.unagit.douuajobsevents.helpers.RefreshMessages
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -106,6 +107,7 @@ class ListPresenter :
                         view?.showLoading(false)
                         view?.showItems(t)
                     }
+
                     override fun onError(e: Throwable) {
                         Log.e(logTag, "Error in getItems. ${e.message}")
                         view?.showMessage("Error: can't receive data from local cache.")
@@ -130,11 +132,7 @@ class ListPresenter :
 
                     override fun onNext(t: List<Item>) {
                         view?.insertNewItems(t)
-                        val message = when {
-                            t.isEmpty() -> "No new items."
-                            t.size == 1 -> "${t.size} new item received."
-                            else -> "${t.size} new items received."
-                        }
+                        val message = RefreshMessages.getMessageForCount(t.size)
                         view?.showMessage(message)
                     }
 

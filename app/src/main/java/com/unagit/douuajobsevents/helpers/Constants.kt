@@ -26,6 +26,16 @@ object WorkerConstants {
     const val UNIQUE_REFRESH_WORKER_NAME = "com.unagit.douuajobsevents.services.refreshworker_unique_name"
 }
 
+object RefreshMessages {
+    fun getMessageForCount(count: Int): String {
+        return when (count) {
+            0 -> "No new items"
+            1 -> "$count new item received"
+            else -> "$count new items received"
+        }
+    }
+}
+
 /**
  *  Represents two types of Item:
  *  1. Event with value = 1
