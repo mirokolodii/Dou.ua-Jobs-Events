@@ -35,6 +35,7 @@ class RefreshWorker(@NonNull val appContext: Context,
         private const val NOTIFICATION_CHANNEL_NAME = "General"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notifications about new items"
         private const val NOTIFICATION_ID = 1
+        private const val NOTIFICATION_ICON_ID = R.drawable.ic_action_dou_je
     }
 
     override fun doWork(): Result {
@@ -107,7 +108,7 @@ class RefreshWorker(@NonNull val appContext: Context,
 
         // Build notification
         val mBuilder = NotificationCompat.Builder(appContext, channelId)
-                .setSmallIcon(R.drawable.abc_ic_menu_overflow_material)
+                .setSmallIcon(NOTIFICATION_ICON_ID)
                 .setContentTitle(message)
 //                .setSubText("subtext")
                 .setContentText("Tap to open in app.")
