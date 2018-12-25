@@ -35,7 +35,7 @@ class RefreshWorker(@NonNull val appContext: Context,
         private const val NOTIFICATION_CHANNEL_NAME = "General"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notifications about new items"
         private const val NOTIFICATION_ID = 1
-        private const val NOTIFICATION_ICON_ID = R.drawable.ic_action_dou_je
+        private const val NOTIFICATION_ICON_ID = R.drawable.ic_action_refresh
     }
 
     override fun doWork(): Result {
