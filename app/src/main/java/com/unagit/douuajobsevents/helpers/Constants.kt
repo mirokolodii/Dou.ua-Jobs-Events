@@ -1,8 +1,5 @@
 package com.unagit.douuajobsevents.helpers
 
-import androidx.annotation.IntDef
-import java.lang.annotation.RetentionPolicy
-
 /**
  * Helpers with some constants and enums.
  * @author Myroslav Kolodii

@@ -3,6 +3,7 @@ package com.unagit.douuajobsevents.models;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
+
 import java.util.List;
 
 /**
