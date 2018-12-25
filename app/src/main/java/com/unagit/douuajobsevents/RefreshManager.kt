@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit
 
 
 /**
- * Schedules a regular RefreshWorker task with help of WorkManager.
+ * Schedules a regular RefreshWorker task with WorkManager.
  * Triggered only with network connection available
- * during last 15 minutes of each 8 hours interval.
+ * during last hours of each 8 hours interval.
  * @see RefreshWorker
  */
 class RefreshManager : ListContract.Refresher {
@@ -22,6 +22,7 @@ class RefreshManager : ListContract.Refresher {
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
 
+        // Set request with time and interval
         val periodicRefreshRequest = PeriodicWorkRequest
                 .Builder(
                         RefreshWorker::class.java,
@@ -31,6 +32,8 @@ class RefreshManager : ListContract.Refresher {
                         TimeUnit.HOURS)
                 .setConstraints(workConstraints)
                 .build()
+
+        // Enqueue unique worker
         WorkManager.getInstance()
                 .enqueueUniquePeriodicWork(
                         WorkerConstants.UNIQUE_REFRESH_WORKER_NAME,

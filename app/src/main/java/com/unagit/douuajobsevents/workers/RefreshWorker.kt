@@ -1,6 +1,5 @@
 package com.unagit.douuajobsevents.workers
 
-import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -54,6 +53,8 @@ class RefreshWorker(@NonNull val appContext: Context,
     /**
      * Asks DataProvider to refresh data from web and shows notification,
      * informing about number of newly received items.
+     * Synchronous subscription is used instead of async, as we need to return
+     * from worker only after refresh is done.
      */
     private fun refreshData() {
         dataProvider!!.getRefreshDataObservable()
