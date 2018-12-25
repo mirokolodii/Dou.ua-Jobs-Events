@@ -11,21 +11,15 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.*
-import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.ScheduleRefreshWorker
+import com.unagit.douuajobsevents.RefreshManager
 import com.unagit.douuajobsevents.contracts.ListContract
-import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
-import com.unagit.douuajobsevents.workers.RefreshWorker
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.concurrent.TimeUnit
 import android.util.Pair as AndroidPair
 
 
@@ -47,7 +41,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
         // Initiate regular refreshment in background with Worker
         // (works even when app is closed)
-        ScheduleRefreshWorker().scheduleRefresh()
+        RefreshManager().scheduleRefresh()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

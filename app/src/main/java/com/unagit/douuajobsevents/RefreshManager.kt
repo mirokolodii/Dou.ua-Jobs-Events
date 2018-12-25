@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
  * during last 15 minutes of each 8 hours interval.
  * @see RefreshWorker
  */
-class ScheduleRefreshWorker : ListContract.Refresher {
+class RefreshManager : ListContract.Refresher {
     override fun scheduleRefresh() {
         // We want worker to run only with network connection available
         val workConstraints = Constraints
