@@ -11,7 +11,7 @@ import org.jsoup.nodes.Document
  * This class is responsible for providing data to the app from tho sources:
  * 1. from local db with help of Room,
  * 2. from web, using Retrofit.
- * @param application is required to create an instance of local db.
+ * @param dbInstance instance of local db.
  */
 class DataProvider(private val dbInstance: AppDatabase) {
 
