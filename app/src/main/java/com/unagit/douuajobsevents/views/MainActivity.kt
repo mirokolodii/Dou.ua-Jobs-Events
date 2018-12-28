@@ -45,6 +45,12 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         RefreshManager().scheduleRefresh()
     }
 
+    override fun onStart() {
+        super.onStart()
+        // TODO: move presenter.getItems here.
+        // TODO: verify whether presenter and adapter already set, otherwise initialize
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
