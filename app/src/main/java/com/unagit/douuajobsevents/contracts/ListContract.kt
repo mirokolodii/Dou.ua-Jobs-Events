@@ -43,6 +43,8 @@ interface ListContract {
          * @param newItems List of new items to be inserted.
          */
         fun insertNewItems(newItems: List<Item>)
+
+        fun onSwiped(position: Int)
     }
 
     // Presenter
@@ -63,6 +65,8 @@ interface ListContract {
          * Initiates a process to clear all locally stored data.
          */
         fun clearLocalData()
+
+        fun delete(item: Item)
     }
 
     interface Refresher {

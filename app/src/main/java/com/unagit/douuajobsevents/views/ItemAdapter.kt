@@ -125,4 +125,16 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
             }
         }
     }
+
+    fun removeAt(position: Int) {
+        this.items.removeAt(position)
+        this.filteredItems.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun getItemAt(position: Int): Item {
+        return this.items[position]
+    }
+
+
 }

@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
+    private val mAdapter: ItemAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("Search", "onCreate triggered.")
@@ -187,4 +188,11 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         Log.d("Search", "performSearch triggered.")
         showMessage(query)
     }
+
+    override fun onSwiped(position: Int) {
+        mAdapter?.removeAt(position)
+        val item = mAdapter?.getItemAt(position)
+        presenter.delete(item!!)
+    }
+
 }

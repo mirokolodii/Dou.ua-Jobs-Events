@@ -136,4 +136,11 @@ class DataProvider(private val dbInstance: AppDatabase) {
                 .append(title.substring(commaIndex + 1).trim())
                 .toString()
     }
+
+    fun getDeleteItemObservable(item: Item): Completable {
+        return Completable.create { emitter ->
+            dbInstance.itemDao().delete(item)
+            emitter.onComplete()
+        }
+    }
 }
