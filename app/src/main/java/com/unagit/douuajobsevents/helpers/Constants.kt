@@ -32,7 +32,6 @@ object Messages {
     const val LOCAL_ITEMS_GET_ERROR_MESSAGE = "Error: can't receive data"
     const val REFRESH_ERROR_MESSAGE = "Error - can't refresh data"
     const val REFRESH_NO_NETWORK_MESSAGE = "Can't refresh: no network access"
-    const val DELETE_COMPLETED_MESSAGE = "Item deleted"
     const val DELETE_ERROR_MESSAGE = "Internal error while trying to delete item"
 
     fun getMessageForCount(count: Int): String {

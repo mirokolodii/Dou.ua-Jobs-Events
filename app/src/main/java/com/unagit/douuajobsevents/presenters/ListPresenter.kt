@@ -168,7 +168,6 @@ class ListPresenter :
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
                     override fun onComplete() {
-                        view?.showMessage(Messages.DELETE_COMPLETED_MESSAGE)
                         view?.removeAt(position)
                     }
 
