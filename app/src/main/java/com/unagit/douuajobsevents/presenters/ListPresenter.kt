@@ -1,7 +1,6 @@
 package com.unagit.douuajobsevents.presenters
 
 import android.os.Handler
-import android.util.Log
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.Messages
 import com.unagit.douuajobsevents.helpers.ItemType
@@ -44,7 +43,7 @@ class ListPresenter :
             if (view != null && view!!.hasNetwork()) {
                 refreshData()
             } else {
-                view?.showMessage("Can't refresh: no network access.")
+                view?.showMessage(Messages.REFRESH_NO_NETWORK_MESSAGE)
             }
             // Regular refreshes
 // TODO it's not the best (though not the worst) method to refresh data in specific period.
@@ -71,13 +70,12 @@ class ListPresenter :
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
                     override fun onComplete() {
-                        view?.showMessage("Local data has been deleted.")
+                        view?.showMessage(Messages.LOCAL_ITEMS_DELETE_SUCCESS_MESSAGE)
                     }
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
-                        view?.showMessage(
-                                "Oops :-( Something went wrong while trying to delete local cache.")
+                        view?.showMessage(Messages.LOCAL_ITEMS_DELETE_ERROR_MESSAGE)
                     }
                 })
         compositeDisposable.add(observer)
@@ -124,7 +122,7 @@ class ListPresenter :
                     override fun onError(e: Throwable) {
                         view?.showLoading(false)
                         e.printStackTrace()
-                        view?.showMessage(Messages.LOCAL_ITEMS_ERROR_MESSAGE)
+                        view?.showMessage(Messages.LOCAL_ITEMS_GET_ERROR_MESSAGE)
                     }
                 })
         compositeDisposable.add(observer)
