@@ -103,11 +103,19 @@ class XmlItem {
      * @code {prepareHtmlTitle(input)} // returns "<b>A Java conference</b><br>, 17th of December, Lviv"
      */
     private String getHtmlTitle() {
-        return
-                // Bold text before first comma followed by new line
-                "<b>" + title.substring(0, title.indexOf(",")) + "</b>" + ",<br>" +
-                        // Normal text after first comma
-                        title.substring(title.indexOf(",") + 1).trim();
+        String result;
+        if (title.contains(",")) {
+            result =
+                    // Bold text before first comma followed by new line
+                    "<b>" + title.substring(0, title.indexOf(",")) + "</b>" + ",<br>" +
+                            // then normal text after first comma
+                            title.substring(title.indexOf(",") + 1).trim();
+
+        } else {
+            result = "<b>" + title + "</b>";
+
+        }
+        return result;
     }
 }
 

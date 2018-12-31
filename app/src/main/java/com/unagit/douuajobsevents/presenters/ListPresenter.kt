@@ -123,7 +123,7 @@ class ListPresenter :
 
                     override fun onError(e: Throwable) {
                         view?.showLoading(false)
-                        Log.e(logTag, "${e.message}")
+                        e.printStackTrace()
                         view?.showMessage(Messages.LOCAL_ITEMS_ERROR_MESSAGE)
                     }
                 })
@@ -156,7 +156,7 @@ class ListPresenter :
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(logTag, "${e.message}")
+                        e.printStackTrace()
                         view?.showMessage(Messages.REFRESH_ERROR_MESSAGE)
                         view?.showLoading(false)
                     }

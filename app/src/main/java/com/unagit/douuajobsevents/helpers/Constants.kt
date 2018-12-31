@@ -1,5 +1,8 @@
 package com.unagit.douuajobsevents.helpers
 
+import android.util.Log
+import java.lang.Exception
+
 /**
  * Helpers with some constants and enums.
  * @author Myroslav Kolodii
@@ -28,6 +31,7 @@ object Messages {
     const val REFRESH_ERROR_MESSAGE = "Error - can't refresh data"
     const val DELETE_COMPLETED_MESSAGE = "Item deleted"
     const val DELETE_ERROR_MESSAGE = "Internal error while trying to delete item"
+
     fun getMessageForCount(count: Int): String {
         return when (count) {
             0 -> "No new items"
@@ -35,6 +39,13 @@ object Messages {
             else -> "$count new items received"
         }
     }
+
+    fun printLogError(e: Throwable) {
+        val stackTrace = e.stackTrace[1]
+        val fileName = stackTrace.fileName
+        Log.e(fileName,"${e.message}. ${stackTrace.methodName}: ${stackTrace.lineNumber}")
+    }
+
 }
 
 /**
