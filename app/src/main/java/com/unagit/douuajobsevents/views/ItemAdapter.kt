@@ -48,7 +48,7 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
 
         // Set bottom margin on last item
         if(position == filteredItems.size - 1) {
-            val  margin = holder.itemView.resources.getDimension(R.dimen.list_item_margin) as Int
+            val  margin = holder.itemView.resources.getDimension(R.dimen.list_item_margin).toInt()
             val params = holder.itemView.layoutParams as ViewGroup.MarginLayoutParams
             params.setMargins(margin, margin, margin, margin)
             holder.itemView.requestLayout()

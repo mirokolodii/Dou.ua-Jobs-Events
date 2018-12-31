@@ -153,7 +153,7 @@ class ListPresenter :
                     override fun onComplete() {
                         view?.showLoading(false)
                         view?.insertNewItems(newItems)
-                        val message = RefreshMessages.getMessageForCount(t.size)
+                        val message = RefreshMessages.getMessageForCount(newItems.size)
                         view?.showMessage(message)
 
                     }
@@ -172,7 +172,7 @@ class ListPresenter :
     }
 
     override fun delete(item: Item) {
-        val observable = dataProvider!!.getDeleteItemObservable(item)
+        val observable = dataProvider.getDeleteItemObservable(item)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {

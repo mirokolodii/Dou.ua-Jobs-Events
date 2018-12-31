@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
-    private val mAdapter: ItemAdapter? = null
+    private var mAdapter: ItemAdapter? = null
     private var mTab = Tab.EVENTS
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +37,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         setContentView(R.layout.activity_main)
         presenter.attach(this)
 
-        // Request for items
-        presenter.getEvents()
 
         initToolbar()
 
@@ -53,9 +51,11 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
     override fun onStart() {
         super.onStart()
-        // TODO: move presenter.getItems here.
-        // TODO: verify whether presenter and adapter already set, otherwise initialize
-
+        when(mTab) {
+            Tab.EVENTS -> presenter.getEvents()
+            Tab.VACANCIES -> presenter.getVacancies()
+            Tab.FAVOURITES -> presenter.getFavourites()
+        }
     }
 
     private fun initToolbar() {
