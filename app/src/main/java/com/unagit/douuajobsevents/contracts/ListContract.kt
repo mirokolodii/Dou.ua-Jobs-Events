@@ -46,6 +46,8 @@ interface ListContract {
         fun insertNewItems(newItems: List<Item>)
 
         fun onSwiped(position: Int)
+
+        fun removeAt(position: Int)
     }
 
     // Presenter
@@ -70,7 +72,7 @@ interface ListContract {
          */
         fun clearLocalData()
 
-        fun delete(item: Item)
+        fun delete(item: Item, position: Int)
     }
 
     interface Refresher {

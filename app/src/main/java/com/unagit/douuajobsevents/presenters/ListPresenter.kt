@@ -162,19 +162,19 @@ class ListPresenter :
         compositeDisposable.add(observer)
     }
 
-    override fun delete(item: Item) {
+    override fun delete(item: Item, position: Int) {
         val observable = dataProvider.getDeleteItemObservable(item)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
                     override fun onComplete() {
                         view?.showMessage(Messages.DELETE_COMPLETED_MESSAGE)
+                        view?.removeAt(position)
                     }
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
-                        view?.showMessage(
-                                Messages.DELETE_ERROR_MESSAGE)
+                        view?.showMessage(Messages.DELETE_ERROR_MESSAGE)
                     }
                 })
         compositeDisposable.add(observable)

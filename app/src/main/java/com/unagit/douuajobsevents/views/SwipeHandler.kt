@@ -12,7 +12,6 @@ class SwipeHandler(
 
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        view.showMessage("Swiped position ${viewHolder.adapterPosition} at direction $direction")
         view.onSwiped(viewHolder.adapterPosition)
     }
 

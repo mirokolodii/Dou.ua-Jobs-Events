@@ -14,6 +14,7 @@ import android.view.View
 import android.util.Pair as AndroidPair
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.RefreshManager
@@ -70,6 +71,12 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
             adapter = ItemAdapter(emptyList<Item>().toMutableList(), this@MainActivity)
         }
         mAdapter = recyclerView.adapter as ItemAdapter
+        val swipeHandler = SwipeHandler(
+                this,
+                0,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     private fun initBottomNav() {
@@ -246,9 +253,12 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     }
 
     override fun onSwiped(position: Int) {
-        mAdapter?.removeAt(position)
         val item = mAdapter?.getItemAt(position)
-        presenter.delete(item!!)
+        presenter.delete(item!!, position)
+    }
+
+    override fun removeAt(position: Int) {
+        mAdapter?.removeAt(position)
     }
 
 }
