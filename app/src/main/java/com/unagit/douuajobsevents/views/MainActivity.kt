@@ -11,30 +11,25 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Pair as AndroidPair
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.*
-import com.google.android.material.snackbar.Snackbar
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.ScheduleRefreshWorker
+import com.unagit.douuajobsevents.RefreshManager
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
-import com.unagit.douuajobsevents.workers.RefreshWorker
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.concurrent.TimeUnit
-import android.util.Pair as AndroidPair
 
 
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
-    private var mAdapter: ItemAdapter? = null
+    private val mAdapter: ItemAdapter? = null
     private var mTab = Tab.EVENTS
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +48,13 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
         // Initiate regular refreshment in background with Worker
         // (works even when app is closed)
-        ScheduleRefreshWorker().scheduleRefresh()
+        RefreshManager().scheduleRefresh()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // TODO: move presenter.getItems here.
+        // TODO: verify whether presenter and adapter already set, otherwise initialize
 
     }
 
@@ -243,4 +244,11 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         Log.d("Search", "performSearch triggered.")
         showMessage(query)
     }
+
+    override fun onSwiped(position: Int) {
+        mAdapter?.removeAt(position)
+        val item = mAdapter?.getItemAt(position)
+        presenter.delete(item!!)
+    }
+
 }

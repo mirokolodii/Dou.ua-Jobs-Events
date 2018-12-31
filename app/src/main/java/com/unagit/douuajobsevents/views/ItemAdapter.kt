@@ -45,6 +45,15 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = filteredItems[position]
         holder.bind(item, listener)
+
+        // Set bottom margin on last item
+        if(position == filteredItems.size - 1) {
+            val  margin = holder.itemView.resources.getDimension(R.dimen.list_item_margin) as Int
+            val params = holder.itemView.layoutParams as ViewGroup.MarginLayoutParams
+            params.setMargins(margin, margin, margin, margin)
+            holder.itemView.requestLayout()
+
+        }
     }
 
     override fun getItemCount(): Int {
@@ -133,4 +142,16 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
             }
         }
     }
+
+    fun removeAt(position: Int) {
+        this.items.removeAt(position)
+        this.filteredItems.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun getItemAt(position: Int): Item {
+        return this.items[position]
+    }
+
+
 }

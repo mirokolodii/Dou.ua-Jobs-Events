@@ -4,8 +4,7 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
-
+import java.util.Calendar
 /**
  * Data model for an item.
  * '@Entity' annotation sets a Room Entity

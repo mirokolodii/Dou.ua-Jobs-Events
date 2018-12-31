@@ -4,6 +4,7 @@ import android.os.Handler
 import android.util.Log
 import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.contracts.ListContract
+import com.unagit.douuajobsevents.helpers.RefreshMessages
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.models.DataProvider
@@ -150,18 +151,14 @@ class ListPresenter :
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableObserver<List<Item>>() {
                     override fun onComplete() {
-                        view?.insertNewItems(newItems)
-                        val size = newItems.size
-                        val message = when (size) {
-                            0 -> "No new items."
-                            1 -> "$size new item received."
-                            else -> "$size new items received."
-                        }
                         view?.showLoading(false)
+                        view?.insertNewItems(newItems)
+                        val message = RefreshMessages.getMessageForCount(t.size)
                         view?.showMessage(message)
+
                     }
 
-                    override fun onNext(t: List<Item>) {
+                   override fun onNext(t: List<Item>) {
                         newItems.addAll(t)
                     }
 
@@ -172,5 +169,23 @@ class ListPresenter :
                     }
                 })
         compositeDisposable.add(observer)
+    }
+
+    override fun delete(item: Item) {
+        val observable = dataProvider!!.getDeleteItemObservable(item)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableCompletableObserver() {
+                    override fun onComplete() {
+                        view?.showMessage("Item deleted")
+                    }
+
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                        view?.showMessage(
+                                "Internal error while trying to delete item")
+                    }
+                })
+        compositeDisposable.add(observable)
     }
 }

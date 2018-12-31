@@ -4,8 +4,10 @@ import android.app.Application
 import com.unagit.douuajobsevents.models.AppDatabase
 import com.unagit.douuajobsevents.models.DataProvider
 
+/**
+ * Keeps app's singletons.
+ */
 class MyApp : Application() {
-
 
     companion object {
         var dataProvider : DataProvider? = null

@@ -1,6 +1,5 @@
 package com.unagit.douuajobsevents.workers
 
-import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -14,6 +13,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
+import com.unagit.douuajobsevents.helpers.RefreshMessages
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.views.MainActivity
@@ -30,9 +30,11 @@ class RefreshWorker(@NonNull val appContext: Context,
     private var dataProvider: DataProvider? = null
 
     companion object {
+        private const val NOTIFICATION_CHANNEL_ID = "channel_id"
         private const val NOTIFICATION_CHANNEL_NAME = "General"
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notifications about new items"
         private const val NOTIFICATION_ID = 1
+        private const val NOTIFICATION_ICON_ID = R.drawable.ic_action_refresh
     }
 
     override fun doWork(): Result {
@@ -51,6 +53,8 @@ class RefreshWorker(@NonNull val appContext: Context,
     /**
      * Asks DataProvider to refresh data from web and shows notification,
      * informing about number of newly received items.
+     * Synchronous subscription is used instead of async, as we need to return
+     * from worker only after refresh is done.
      */
     private fun refreshData() {
         val newItems = mutableListOf<Item>()
@@ -84,15 +88,12 @@ class RefreshWorker(@NonNull val appContext: Context,
         if (itemsCount == 0) {
             return
         }
-        val message = when (itemsCount) {
-            1 -> "$itemsCount new item received."
-            else -> "$itemsCount new items received."
-        }
+        val message = RefreshMessages.getMessageForCount(itemsCount)
 
         val notificationManager: NotificationManager =
                 this.appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val channelId = "channel_id"
+        val channelId = NOTIFICATION_CHANNEL_ID
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = NOTIFICATION_CHANNEL_NAME
             val descriptionText = NOTIFICATION_CHANNEL_DESCRIPTION
@@ -111,7 +112,7 @@ class RefreshWorker(@NonNull val appContext: Context,
 
         // Build notification
         val mBuilder = NotificationCompat.Builder(appContext, channelId)
-                .setSmallIcon(R.drawable.abc_ic_menu_overflow_material)
+                .setSmallIcon(NOTIFICATION_ICON_ID)
                 .setContentTitle(message)
 //                .setSubText("subtext")
                 .setContentText("Tap to open in app.")

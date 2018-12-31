@@ -1,8 +1,5 @@
 package com.unagit.douuajobsevents.helpers
 
-import androidx.annotation.IntDef
-import java.lang.annotation.RetentionPolicy
-
 /**
  * Helpers with some constants and enums.
  * @author Myroslav Kolodii
@@ -24,6 +21,16 @@ object RoomConstants {
 
 object WorkerConstants {
     const val UNIQUE_REFRESH_WORKER_NAME = "com.unagit.douuajobsevents.services.refreshworker_unique_name"
+}
+
+object RefreshMessages {
+    fun getMessageForCount(count: Int): String {
+        return when (count) {
+            0 -> "No new items"
+            1 -> "$count new item received"
+            else -> "$count new items received"
+        }
+    }
 }
 
 /**
