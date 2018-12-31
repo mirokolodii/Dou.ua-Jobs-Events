@@ -2,18 +2,11 @@ package com.unagit.douuajobsevents.presenters
 
 import android.os.Handler
 import android.util.Log
-import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.contracts.ListContract
-import com.unagit.douuajobsevents.helpers.RefreshMessages
+import com.unagit.douuajobsevents.helpers.Messages
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.Item
-import com.unagit.douuajobsevents.models.DataProvider
-import io.reactivex.Single
-import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
-import io.reactivex.internal.disposables.DisposableContainer
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.observers.DisposableSingleObserver
@@ -130,8 +123,8 @@ class ListPresenter :
 
                     override fun onError(e: Throwable) {
                         view?.showLoading(false)
-                        Log.e(logTag, "Error in getItems. ${e.message}")
-                        view?.showMessage("Error: can't receive data from local cache.")
+                        Log.e(logTag, "${e.message}")
+                        view?.showMessage(Messages.LOCAL_ITEMS_ERROR_MESSAGE)
                     }
                 })
         compositeDisposable.add(observer)
@@ -153,7 +146,7 @@ class ListPresenter :
                     override fun onComplete() {
                         view?.showLoading(false)
                         view?.insertNewItems(newItems)
-                        val message = RefreshMessages.getMessageForCount(newItems.size)
+                        val message = Messages.getMessageForCount(newItems.size)
                         view?.showMessage(message)
 
                     }
@@ -163,8 +156,8 @@ class ListPresenter :
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(logTag, "Error in refreshData. ${e.message}")
-                        view?.showMessage("Error - can't refresh data.")
+                        Log.e(logTag, "${e.message}")
+                        view?.showMessage(Messages.REFRESH_ERROR_MESSAGE)
                         view?.showLoading(false)
                     }
                 })
@@ -177,13 +170,13 @@ class ListPresenter :
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
                     override fun onComplete() {
-                        view?.showMessage("Item deleted")
+                        view?.showMessage(Messages.DELETE_COMPLETED_MESSAGE)
                     }
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
                         view?.showMessage(
-                                "Internal error while trying to delete item")
+                                Messages.DELETE_ERROR_MESSAGE)
                     }
                 })
         compositeDisposable.add(observable)

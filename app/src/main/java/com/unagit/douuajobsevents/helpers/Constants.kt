@@ -23,7 +23,11 @@ object WorkerConstants {
     const val UNIQUE_REFRESH_WORKER_NAME = "com.unagit.douuajobsevents.services.refreshworker_unique_name"
 }
 
-object RefreshMessages {
+object Messages {
+    const val LOCAL_ITEMS_ERROR_MESSAGE = "Error: can't receive data"
+    const val REFRESH_ERROR_MESSAGE = "Error - can't refresh data"
+    const val DELETE_COMPLETED_MESSAGE = "Item deleted"
+    const val DELETE_ERROR_MESSAGE = "Internal error while trying to delete item"
     fun getMessageForCount(count: Int): String {
         return when (count) {
             0 -> "No new items"

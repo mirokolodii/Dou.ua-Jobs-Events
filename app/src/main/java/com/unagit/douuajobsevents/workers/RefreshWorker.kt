@@ -13,7 +13,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.helpers.RefreshMessages
+import com.unagit.douuajobsevents.helpers.Messages
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.views.MainActivity
@@ -88,7 +88,7 @@ class RefreshWorker(@NonNull val appContext: Context,
         if (itemsCount == 0) {
             return
         }
-        val message = RefreshMessages.getMessageForCount(itemsCount)
+        val message = Messages.getMessageForCount(itemsCount)
 
         val notificationManager: NotificationManager =
                 this.appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
