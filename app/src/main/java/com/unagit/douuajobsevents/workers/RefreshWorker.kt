@@ -35,6 +35,7 @@ class RefreshWorker(@NonNull val appContext: Context,
         private const val NOTIFICATION_CHANNEL_DESCRIPTION = "Notifications about new items"
         private const val NOTIFICATION_ID = 1
         private const val NOTIFICATION_ICON_ID = R.drawable.ic_action_refresh
+        private const val NOTIFICATION_CONTENT_TEXT = "Tap to open in app"
     }
 
     override fun doWork(): Result {
@@ -115,7 +116,7 @@ class RefreshWorker(@NonNull val appContext: Context,
                 .setSmallIcon(NOTIFICATION_ICON_ID)
                 .setContentTitle(message)
 //                .setSubText("subtext")
-                .setContentText("Tap to open in app.")
+                .setContentText(NOTIFICATION_CONTENT_TEXT)
 //                .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 //                .setColor(Color.GREEN)
