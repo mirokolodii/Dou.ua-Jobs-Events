@@ -8,23 +8,19 @@
     android:layout_height="match_parent"
     android:transitionName="@string/transition_container_name"
     tools:context=".views.DetailsActivity">
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:visibility="invisible"
         android:theme="@style/AppTheme.AppBarOverlay">
-
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways"
             >
-
-
-
             <TextView
                 android:id="@+id/detailedItemTitle"
                 android:layout_width="match_parent"
@@ -39,8 +35,6 @@
                 android:textSize="20sp"
                 android:transitionName="@string/transition_title_name"
                 tools:ignore="HardcodedText" />
-
-
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 app:layout_collapseMode="pin"
@@ -49,13 +43,8 @@
                 android:layout_height="?attr/actionBarSize"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 />
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-
     </com.google.android.material.appbar.AppBarLayout>
-
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
@@ -66,13 +55,10 @@
         android:layout_marginBottom="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
-
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="match_parent">
-
-
             <ImageView
                 android:id="@+id/detailedItemImg"
                 android:layout_width="match_parent"
@@ -83,9 +69,6 @@
                 android:transitionName="@string/transition_img_name"
                 android:contentDescription="@string/detailed_image_desc"
                 tools:srcCompat="@tools:sample/backgrounds/scenic[6]" />
-
-
-
             <TextView
                 android:id="@+id/detailedItemDetails"
                 android:layout_width="match_parent"
@@ -96,10 +79,7 @@
                 android:layout_margin="8dp"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
-
-
     </androidx.core.widget.NestedScrollView>
-
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
@@ -110,7 +90,6 @@
         app:hideOnScroll="true"
         style="@style/Widget.MaterialComponents.BottomAppBar"
         />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         app:layout_anchor="@id/bottom_bar"
@@ -118,5 +97,4 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_open_in_browser_black_24dp"
         />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

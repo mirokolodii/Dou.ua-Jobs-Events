@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.transition.Fade
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -208,15 +209,15 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     override fun onItemClicked(parent: View, guid: String) {
         // Prepare transition animation.
         val imgView = parent.findViewById<View>(R.id.itemImg)
-        val titleView = parent.findViewById<View>(R.id.itemTitle)
+//        val titleView = parent.findViewById<View>(R.id.itemTitle)
         val transImgName = getString(R.string.transition_img_name)
-        val transTitleName = getString(R.string.transition_title_name)
-        val transContainerName = getString(R.string.transition_container_name)
+//        val transTitleName = getString(R.string.transition_title_name)
+//        val transContainerName = getString(R.string.transition_container_name)
         val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(
                 this@MainActivity,
-                AndroidPair.create(imgView, transImgName),
-                AndroidPair.create(titleView, transTitleName),
-                AndroidPair.create(parent, transContainerName)
+                AndroidPair.create(imgView, transImgName)
+//                AndroidPair.create(titleView, transTitleName)
+//                AndroidPair.create(parent, transContainerName)
         )
 
         // Start new DetailsActivity with transition animation and pass guid to it

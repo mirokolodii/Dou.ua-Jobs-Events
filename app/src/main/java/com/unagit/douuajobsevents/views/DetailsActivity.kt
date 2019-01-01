@@ -6,6 +6,11 @@ import android.os.Bundle
 import android.provider.CalendarContract
 import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.view.ViewAnimationUtils
+import android.view.View
+import android.transition.Transition
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.squareup.picasso.Picasso
@@ -15,6 +20,7 @@ import com.unagit.douuajobsevents.contracts.DetailsContract
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
+
 
 class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
     private val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
@@ -32,6 +38,14 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         presenter.attach(this)
         presenter.requestItemFromId(guid)
 
+        initFAB(guid)
+
+        addCircularRevealAnim()
+
+
+    }
+
+    private fun initFAB(guid: String) {
         // FAB onClickListener:
         // Opens item's URL in a web browser
         fab.setOnClickListener {
@@ -40,14 +54,52 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
 
         // Hide fab once scrolled to the bottom,
         // un-hide otherwise
-        nestedScrollView.setOnScrollChangeListener {
-            v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+        nestedScrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
             if (v != null && v.canScrollVertically(1 /* positive direction means scrolling down*/)) {
                 fab.show()
             } else {
                 fab.hide()
             }
         }
+    }
+
+    private fun addCircularRevealAnim() {
+        window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
+            override fun onTransitionEnd(transition: Transition?) {
+                enterReveal()
+                window.sharedElementEnterTransition.removeListener(this)
+            }
+            override fun onTransitionResume(transition: Transition?) {
+            }
+
+            override fun onTransitionPause(transition: Transition?) {
+            }
+
+            override fun onTransitionCancel(transition: Transition?) {
+            }
+
+            override fun onTransitionStart(transition: Transition?) {
+            }
+        })
+
+        window.returnTransition.addListener(object : Transition.TransitionListener {
+            override fun onTransitionStart(transition: Transition?) {
+                exitReveal()
+//                window.returnTransition.removeListener(this)
+
+            }
+            override fun onTransitionEnd(transition: Transition?) {
+            }
+
+            override fun onTransitionResume(transition: Transition?) {
+            }
+
+            override fun onTransitionPause(transition: Transition?) {
+            }
+
+            override fun onTransitionCancel(transition: Transition?) {
+            }
+        })
     }
 
     override fun onDestroy() {
@@ -73,7 +125,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         // Set bottom bar menu
         bottom_bar.inflateMenu(R.menu.details_bottom_menu)
         bottom_bar.setOnMenuItemClickListener {
-            return@setOnMenuItemClickListener when(it.itemId) {
+            return@setOnMenuItemClickListener when (it.itemId) {
                 menu_share -> {
                     share()
                     true
@@ -123,7 +175,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
     override fun showAsFavourite(isFavourite: Boolean) {
         this.item?.isFavourite = isFavourite
         val favMenuItem = bottom_bar.menu.findItem(R.id.menu_favourites)
-        if(isFavourite) {
+        if (isFavourite) {
             favMenuItem.setIcon(R.drawable.ic_favorite)
         } else {
             favMenuItem.setIcon(R.drawable.ic_favorite_border)
@@ -134,7 +186,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
      * Setup and starts activity for add-to-calendar intent.
      */
     private fun addToCalendar() {
-        if(this.item == null) {
+        if (this.item == null) {
             Log.e(this.javaClass.simpleName, "Item is null.")
             return
         }
@@ -152,7 +204,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
      * Setup and starts activity for 'share' intent.
      */
     private fun share() {
-        if(this.item == null) {
+        if (this.item == null) {
             Log.e(this.javaClass.simpleName, "Item is null.")
             return
         }
@@ -162,6 +214,45 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         intent.type = "text/plain"
         intent.putExtra(Intent.EXTRA_TEXT, "$title $guid")
         startActivity(Intent.createChooser(intent, "Share with"))
+    }
+
+    fun enterReveal() {
+        // get the center for the clipping circle
+        val cx = appbar.measuredWidth / 2
+        val cy = appbar.measuredHeight / 2
+
+        // get the final radius for the clipping circle
+        val finalRadius = Math.max(appbar.width, appbar.height) / 2
+
+        // create the animator for this view (the start radius is zero)
+        val anim = ViewAnimationUtils.createCircularReveal(appbar, cx, cy, 0f, finalRadius.toFloat())
+
+        // make the view visible and start the animation
+        appbar.visibility = View.VISIBLE
+        anim.start()
+    }
+
+    fun exitReveal() {
+        // get the center for the clipping circle
+        val cx = appbar.measuredWidth / 2
+        val cy = appbar.measuredHeight / 2
+
+        // get the final radius for the clipping circle
+        val initialRadius = Math.max(appbar.width, appbar.height) / 2
+
+        // create the animation (the final radius is zero)
+        val anim = ViewAnimationUtils.createCircularReveal(appbar, cx, cy, initialRadius.toFloat(), 0f)
+
+        // make the view invisible when the animation is done
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                appbar.visibility = View.INVISIBLE
+            }
+        })
+
+        // start the animation
+        anim.start()
     }
 }
 
