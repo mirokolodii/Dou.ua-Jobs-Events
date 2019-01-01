@@ -40,7 +40,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
 
         initFAB(guid)
 
-        addCircularRevealAnim()
+        addEnterAnim()
 
 
     }
@@ -63,7 +63,17 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         }
     }
 
-    private fun addCircularRevealAnim() {
+    override fun onDestroy() {
+        presenter.detach()
+        super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        addExitAnim()
+        super.onBackPressed()
+    }
+
+    private fun addEnterAnim() {
         window.sharedElementEnterTransition.addListener(object : Transition.TransitionListener {
             override fun onTransitionEnd(transition: Transition?) {
                 enterReveal()
@@ -82,10 +92,13 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
             }
         })
 
+    }
+
+    private fun addExitAnim() {
         window.returnTransition.addListener(object : Transition.TransitionListener {
             override fun onTransitionStart(transition: Transition?) {
                 exitReveal()
-//                window.returnTransition.removeListener(this)
+                window.returnTransition.removeListener(this)
 
             }
             override fun onTransitionEnd(transition: Transition?) {
@@ -100,11 +113,6 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
             override fun onTransitionCancel(transition: Transition?) {
             }
         })
-    }
-
-    override fun onDestroy() {
-        presenter.detach()
-        super.onDestroy()
     }
 
     /**
