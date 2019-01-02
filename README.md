@@ -14,6 +14,6 @@ MVP
 * Jsoup
 * Picasso
 
-<img src="https://user-images.githubusercontent.com/23655108/50587715-44d5ab80-0e7f-11e9-9c43-d18bb32cc98a.gif" />
+<img src="https://user-images.githubusercontent.com/23655108/50587715-44d5ab80-0e7f-11e9-9c43-d18bb32cc98a.gif" width="100" />
 
 
