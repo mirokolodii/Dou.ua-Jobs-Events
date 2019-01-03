@@ -1,8 +1,13 @@
 package com.unagit.douuajobsevents.presenters
 
 import com.google.common.truth.Truth.assertThat
+import com.unagit.douuajobsevents.contracts.ListContract
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mockito.*
+import org.mockito.junit.MockitoJUnitRunner
 
+//@RunWith(MockitoJUnitRunner::class)
 class ListPresenterTest {
 
 
@@ -10,31 +15,22 @@ class ListPresenterTest {
     fun `sum of 1 and 2 should equal 3`() {
         val sum = 1 + 2
         assertThat(sum).isEqualTo(3)
+    }
 
+    @Test(expected = RuntimeException::class)
+    fun `divide by zero should throw RuntimeException`() {
+        divide(1,0)
+    }
+
+    private fun divide(num: Int, num2: Int): Int {
+        return num / num2
     }
 
     @Test
-    fun attach() {
-        val result = 1 + 2
-    }
-
-    @Test
-    fun detach() {
-    }
-
-    @Test
-    fun clearLocalData() {
-    }
-
-    @Test
-    fun getItems() {
-    }
-
-    @Test
-    fun refreshData() {
-    }
-
-    @Test
-    fun delete() {
+    fun `attach should initiate data refresh`() {
+        val presenter = spy(ListPresenter::class.java)
+        val view = mock(ListContract.ListView::class.java)
+        presenter.attach(view)
+//        verify(presenter, times(1)).
     }
 }
