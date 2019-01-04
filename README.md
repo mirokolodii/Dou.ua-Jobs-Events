@@ -22,32 +22,24 @@ It uses publicly available rss feeds, provided by Dou.ua, to receive the data.
 
 # Tools and libraries
 ### Language:
-<img src="https://www.modeso.ch/wp-content/uploads/2018/08/Kotlin-A-New-Programming-Platform-For-Android-Developers.png" width="200" />
+<img src="https://www.modeso.ch/wp-content/uploads/2018/08/Kotlin-A-New-Programming-Platform-For-Android-Developers.png" width="150" />
 
 ### Architecture: 
 MVP
 
 ### Libraries:
 * Retrofit2
-* RxJava
+* RxJava2
 * Room
 * Jsoup
 * Picasso
+* JUnit with Truth
+* Mockito
 
+# Screenshots
 
-<table>
-  <tr>
-    <td width="50%">
-
-
-      
-      
- </td>
-    <td>
-      <img src="https://user-images.githubusercontent.com/23655108/50587715-44d5ab80-0e7f-11e9-9c43-d18bb32cc98a.gif" width="300" />
-    </td>
-    </tr>
-  </table>
+<img src="https://user-images.githubusercontent.com/23655108/50688432-c7986b00-1025-11e9-894d-2fef941d5efe.gif" />
+<img src="https://user-images.githubusercontent.com/23655108/50688440-cbc48880-1025-11e9-92b7-e7e356dd6fbd.gif" />
   
 # License
 ```
