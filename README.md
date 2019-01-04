@@ -22,7 +22,7 @@ It uses publicly available rss feeds, provided by Dou.ua, to receive the data.
 
 # Tools and libraries
 ### Language:
-<img src="https://www.modeso.ch/wp-content/uploads/2018/08/Kotlin-A-New-Programming-Platform-For-Android-Developers.png" width="50%" />
+<img src="https://www.modeso.ch/wp-content/uploads/2018/08/Kotlin-A-New-Programming-Platform-For-Android-Developers.png" width="200" />
 
 ### Architecture: 
 MVP
