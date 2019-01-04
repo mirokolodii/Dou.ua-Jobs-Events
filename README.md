@@ -1,4 +1,4 @@
-# Dou.ua Jobs&Events
+# Description
 <p>
   With this app you'll be able to list latest events and job postings from Dou.ua web service, with a possibility to manage them, i.e. add to favourites, show in web browser, add to calendar and share. 
 You'll get notifications about availability of new items as well.
@@ -10,18 +10,18 @@ You'll get notifications about availability of new items as well.
 This is a private, non-official application, which is not related to Dou.ua service in any way.
 It uses publicly available rss feeds, provided by Dou.ua, to receive the data.
 </p>
+
+#How to get
 <div>Application is available on</div>
 <div>
   <a href="https://play.google.com/store/apps/details?id=com.unagit.douuajobsevents">
     <img src="https://www.gstatic.com/android/market_images/web/play_prism_hlock_2x.png" width="40%" />
   </a>
 </div>
-<table>
-  <tr>
-    <td width="50%">
 
+#Tools and libraries
 ### Language:
-Kotlin
+<img src="https://www.modeso.ch/wp-content/uploads/2018/08/Kotlin-A-New-Programming-Platform-For-Android-Developers.png" width="50%" />
 
 ### Architecture: 
 MVP
@@ -32,6 +32,13 @@ MVP
 * Room
 * Jsoup
 * Picasso
+
+
+<table>
+  <tr>
+    <td width="50%">
+
+
       
       
  </td>
