@@ -1,10 +1,19 @@
 # Dou.ua Jobs&Events
-This Android app lists jobs and events from rss feed of Dou.ua, which is a popular ukrainian internet portal related to software development and information technology.
-
+<p>
+  With this app you'll be able to list latest events and job postings from Dou.ua web service, with a possibility to manage them, i.e. add to favourites, show in web browser, add to calendar and share. 
+You'll get notifications about availability of new items as well.
+  </p>
+<p>
+  <a href="https://dou.ua" target="_blank">Dou.ua</a> is a popular ukrainian internet portal related to software development and information technology.
+</p>
+<p>
+This is a private, non-official application, which is not related to Dou.ua service in any way.
+It uses publicly available rss feeds, provided by Dou.ua, to receive the data.
+</p>
 <div>Application is available on</div>
 <div>
   <a href="https://play.google.com/store/apps/details?id=com.unagit.douuajobsevents">
-    <img src="https://www.gstatic.com/android/market_images/web/play_prism_hlock_2x.png" width="20%" />
+    <img src="https://www.gstatic.com/android/market_images/web/play_prism_hlock_2x.png" width="40%" />
   </a>
 </div>
 <table>
