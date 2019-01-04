@@ -11,15 +11,16 @@ This is a private, non-official application, which is not related to Dou.ua serv
 It uses publicly available rss feeds, provided by Dou.ua, to receive the data.
 </p>
 
-#How to get
+# How to get
+
 <div>Application is available on</div>
 <div>
   <a href="https://play.google.com/store/apps/details?id=com.unagit.douuajobsevents">
-    <img src="https://www.gstatic.com/android/market_images/web/play_prism_hlock_2x.png" width="40%" />
+    <img src="https://www.gstatic.com/android/market_images/web/play_prism_hlock_2x.png" width="20%" />
   </a>
 </div>
 
-#Tools and libraries
+# Tools and libraries
 ### Language:
 <img src="https://www.modeso.ch/wp-content/uploads/2018/08/Kotlin-A-New-Programming-Platform-For-Android-Developers.png" width="50%" />
 
