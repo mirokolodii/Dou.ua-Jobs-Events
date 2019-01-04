@@ -16,7 +16,7 @@ It uses publicly available rss feeds, provided by Dou.ua, to receive the data.
 <div>Application is available on</div>
 <div>
   <a href="https://play.google.com/store/apps/details?id=com.unagit.douuajobsevents">
-    <img src="https://www.gstatic.com/android/market_images/web/play_prism_hlock_2x.png" width="20%" />
+    <img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="90"/>
   </a>
 </div>
 
