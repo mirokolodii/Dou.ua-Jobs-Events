@@ -18,6 +18,14 @@ class DataProvider(private val dbInstance: AppDatabase) {
      */
     private val douApiService = DouAPIService.create()
 
+    fun getEventsObservable(): Single<List<Item>> {
+        return getItemsObservable(ItemType.EVENT)
+    }
+
+    fun getVacanciesObservable(): Single<List<Item>> {
+        return getItemsObservable(ItemType.JOB)
+    }
+
     /**
      * @param guid an ID of an Item to be returned.
      * @return Single with a single Item from local db.
@@ -30,14 +38,6 @@ class DataProvider(private val dbInstance: AppDatabase) {
                     val items = dbInstance.itemDao().getItems(ofType.value)
                     emitter.onSuccess(items)
                 }
-    }
-
-    fun getEventsObservable(): Single<List<Item>> {
-        return getItemsObservable(ItemType.EVENT)
-    }
-
-    fun getVacanciesObservable(): Single<List<Item>> {
-        return getItemsObservable(ItemType.JOB)
     }
 
     fun getFavouritesObservable(): Single<List<Item>> {

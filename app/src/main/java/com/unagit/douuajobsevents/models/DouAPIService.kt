@@ -19,6 +19,9 @@ interface DouAPIService {
     @GET(RetrofitConstants.DOU_UA_CALENDAR_API_URL)
     fun getEventsObservable(): Observable<ItemDataWrapper>
 
+    /**
+     * Retrofit GET call to receive vacancies.
+     */
     @GET(RetrofitConstants.DOU_UA_VACANCIES_API_URL)
     fun getVacanciesObservable(): Observable<ItemDataWrapper>
 
