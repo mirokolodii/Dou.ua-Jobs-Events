@@ -128,6 +128,34 @@ class ListPresenter :
         compositeDisposable.add(observer)
     }
 
+    private fun getPagedItems(type: ItemType? = null) {
+        view?.showLoading(true)
+
+        val observable = when (type) {
+            ItemType.EVENT -> dataProvider.getPagedEventsObservable()
+            ItemType.JOB -> dataProvider.getPagedVacanciesObservable()
+            else -> dataProvider.getFavouritesObservable()
+        }
+
+        val observer = observable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<List<Item>>() {
+                    override fun onSuccess(t: List<Item>) {
+                        view?.showLoading(false)
+                        view?.showItems(t)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        view?.showLoading(false)
+                        e.printStackTrace()
+                        view?.showMessage(Messages.LOCAL_ITEMS_GET_ERROR_MESSAGE)
+                    }
+                })
+        compositeDisposable.add(observer)
+    }
+
+
     /**
      * Asks Data provider to refresh a data from web.
      * Inserts new items into view's list and shows snackbar message with

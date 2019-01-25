@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.models
 
+import androidx.paging.PagedList
 import com.unagit.douuajobsevents.helpers.ItemType
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -38,6 +39,18 @@ class DataProvider(private val dbInstance: AppDatabase) {
 
     fun getVacanciesObservable(): Single<List<Item>> {
         return getItemsObservable(ItemType.JOB)
+    }
+
+    private fun getPagedItemsObservable(ofType: ItemType): Single<PagedList<Item>> {
+        return Single.just(dbInstance.itemDao().getPagedItems(ofType.value))
+    }
+
+    fun getPagedEventsObservable(): Single<PagedList<Item>> {
+        return getPagedItemsObservable(ItemType.EVENT)
+    }
+
+    fun getPagedVacanciesObservable(): Single<PagedList<Item>> {
+        return getPagedItemsObservable(ItemType.JOB)
     }
 
     fun getFavouritesObservable(): Single<List<Item>> {

@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.models
 
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Delete
@@ -36,4 +37,8 @@ interface ItemDao{
 
     @Query("UPDATE entity_table SET isFavourite = :toBeFav WHERE guid = :guid")
     fun setAsFav(toBeFav: Boolean, guid: String)
+
+    @Query("SELECT * from entity_table WHERE type = :type ORDER BY timestamp DESC")
+    fun getPagedItems(type: Int): DataSource.Factory<Int, Item>
+
 }
