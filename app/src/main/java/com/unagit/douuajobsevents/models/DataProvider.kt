@@ -19,17 +19,18 @@ class DataProvider(private val dbInstance: AppDatabase) {
      * Instance of Retrofit API service.
      */
     private val douApiService = DouAPIService.create()
+
     companion object {
-        private final val DATABASE_PAGE_SIZE = 30
+        private const val DATABASE_PAGE_SIZE = 30
     }
 
     /**
-     * @param guid an ID of an Item to be returned.
-     * @return Single with a single Item from local db.
+     * @param ofType type of items to be returned.
+     * @return Single with a list of items with specified type.
      * @see Item
      * @see Single
      */
-    private fun getItemsObservable(ofType: ItemType): Single<List<Item>> {
+    private fun getItemsSingle(ofType: ItemType): Single<List<Item>> {
         return Single
                 .just(dbInstance.itemDao().getItems(ofType.value))
 //                .create<List<Item>> { emitter ->
@@ -38,19 +39,19 @@ class DataProvider(private val dbInstance: AppDatabase) {
 //                }
     }
 
-    fun getEventsObservable(): Single<List<Item>> {
-        return getItemsObservable(ItemType.EVENT)
+    fun getEventsSingle(): Single<List<Item>> {
+        return getItemsSingle(ItemType.EVENT)
     }
 
-    fun getVacanciesObservable(): Single<List<Item>> {
-        return getItemsObservable(ItemType.JOB)
+    fun getVacanciesSingle(): Single<List<Item>> {
+        return getItemsSingle(ItemType.JOB)
     }
 
     private fun getPagedItemsObservable(ofType: ItemType): Observable<PagedList<Item>> {
         val dataSourceFactory = dbInstance.itemDao().getPagedItems(ofType.value)
-        val data = RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
+        return RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
 //        return Single.just()
-        return data
+//        return data
     }
 
     fun getPagedEventsObservable(): Observable<PagedList<Item>> {
@@ -61,19 +62,20 @@ class DataProvider(private val dbInstance: AppDatabase) {
         return getPagedItemsObservable(ItemType.JOB)
     }
 
-    fun getFavouritesObservable(): Single<List<Item>> {
-        return Single
-                .create<List<Item>> { emitter ->
-                    val favs = dbInstance.itemDao().getFavourites()
-                    emitter.onSuccess(favs)
-                }
+    fun getFavouritesSingle(): Single<List<Item>> {
+        return Single.just(dbInstance.itemDao().getFavourites())
+//                .create<List<Item>> { emitter ->
+//                    val favs = dbInstance.itemDao().getFavourites()
+//                    emitter.onSuccess(favs)
+//                }
     }
 
-    fun getItemWithIdObservable(guid: String): Single<Item> {
-        return Single.create { emitter ->
-            val item = dbInstance.itemDao().getItemWithId(guid)
-            emitter.onSuccess(item)
-        }
+    fun getItemWithIdSingle(guid: String): Single<Item> {
+        return Single.just(dbInstance.itemDao().getItemWithId(guid))
+//                .create { emitter ->
+//            val item = dbInstance.itemDao().getItemWithId(guid)
+//            emitter.onSuccess(item)
+//        }
     }
 
     /**
@@ -81,14 +83,14 @@ class DataProvider(private val dbInstance: AppDatabase) {
      * @return Completable, once completed.
      * @see Completable
      */
-    fun getDeleteLocalDataObservable(): Completable {
+    fun getDeleteLocalDataCompletable(): Completable {
         return Completable.create { emitter ->
             dbInstance.itemDao().deleteAll()
             emitter.onComplete()
         }
     }
 
-    fun changeItemFavourite(toBeFav: Boolean, guid: String): Completable {
+    fun switchFavouriteState(toBeFav: Boolean, guid: String): Completable {
         return Completable.create { emitter ->
             dbInstance.itemDao().setAsFav(toBeFav, guid)
             emitter.onComplete()
@@ -150,7 +152,7 @@ class DataProvider(private val dbInstance: AppDatabase) {
         return Observable.merge<List<Item>>(eventsObservable, vacanciesObservable)
     }
 
-    fun getDeleteItemObservable(item: Item): Completable {
+    fun getDeleteItemCompletable(item: Item): Completable {
         return Completable.create { emitter ->
             dbInstance.itemDao().delete(item)
             emitter.onComplete()

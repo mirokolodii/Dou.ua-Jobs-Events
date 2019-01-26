@@ -65,7 +65,7 @@ class ListPresenter :
      * Informs view to show a snackbar message with a result.
      */
     override fun clearLocalData() {
-        val observer = dataProvider.getDeleteLocalDataObservable()
+        val observer = dataProvider.getDeleteLocalDataCompletable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
@@ -105,9 +105,9 @@ class ListPresenter :
         view?.showLoading(true)
 
         val observable = when (type) {
-            ItemType.EVENT -> dataProvider.getEventsObservable()
-            ItemType.JOB -> dataProvider.getVacanciesObservable()
-            else -> dataProvider.getFavouritesObservable()
+            ItemType.EVENT -> dataProvider.getEventsSingle()
+            ItemType.JOB -> dataProvider.getVacanciesSingle()
+            else -> dataProvider.getFavouritesSingle()
         }
 
         val observer = observable
@@ -134,7 +134,7 @@ class ListPresenter :
         val observable = when (type) {
             ItemType.EVENT -> dataProvider.getPagedEventsObservable()
             ItemType.JOB -> dataProvider.getPagedVacanciesObservable()
-            else -> dataProvider.getFavouritesObservable()
+            else -> dataProvider.getFavouritesSingle()
         }
 
         val observer = observable
@@ -191,7 +191,7 @@ class ListPresenter :
     }
 
     override fun delete(item: Item, position: Int) {
-        val observable = dataProvider.getDeleteItemObservable(item)
+        val observable = dataProvider.getDeleteItemCompletable(item)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
