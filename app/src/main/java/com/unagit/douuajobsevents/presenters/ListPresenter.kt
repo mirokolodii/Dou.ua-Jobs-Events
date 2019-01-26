@@ -1,7 +1,6 @@
 package com.unagit.douuajobsevents.presenters
 
 import android.os.Handler
-import android.util.Log
 import androidx.paging.PagedList
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.ItemType
@@ -97,7 +96,7 @@ class ListPresenter :
 
     private fun getItems(type: ItemType) {
         view?.showLoading(true)
-        disposables.clear()
+        disposables.clear() // Clear all previous PagedList observers
         val observable = when (type) {
             ItemType.EVENT -> dataProvider.getEventsObservable()
             ItemType.JOB -> dataProvider.getVacanciesObservable()
@@ -114,7 +113,6 @@ class ListPresenter :
                     }
 
                     override fun onComplete() {
-                        Log.e("Paging", "getPagedItems onComplete")
                     }
 
                     override fun onError(e: Throwable) {

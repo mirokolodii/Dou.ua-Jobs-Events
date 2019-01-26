@@ -1,6 +1,5 @@
 package com.unagit.douuajobsevents.models
 
-import android.util.Log
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
 import com.unagit.douuajobsevents.helpers.ItemType
@@ -41,13 +40,11 @@ class DataProvider(private val dbInstance: AppDatabase) {
      */
     private fun getItemsObservable(ofType: ItemType): Observable<PagedList<Item>> {
         val dataSourceFactory = dbInstance.itemDao().getPagedItems(ofType.value)
-        Log.e("Paging", "New ${ofType.name} PagedList is about to be created")
         return RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
     }
 
     fun getPagedFavouritesObservable(): Observable<PagedList<Item>> {
         val dataSourceFactory = dbInstance.itemDao().getPagedFavItems()
-        Log.e("Paging", "New ${ItemType.FAV.name} PagedList is about to be created")
         return RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
     }
 
@@ -87,8 +84,6 @@ class DataProvider(private val dbInstance: AppDatabase) {
      * @see Observable
      */
     fun getRefreshDataObservable(): Observable<List<Item>> {
-
-
         val eventsObservable = douApiService.getEventsObservable()
                 .map {
                     val localItems = dbInstance.itemDao().getItems()

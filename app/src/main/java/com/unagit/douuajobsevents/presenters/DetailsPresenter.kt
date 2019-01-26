@@ -12,11 +12,6 @@ class DetailsPresenter :
         DetailsContract.DetailsPresenter,
         BasePresenter<DetailsContract.DetailsView>() {
 
-//    companion object {
-//        private const val MESSAGE_ADD_FAV = "Added to favourites"
-//        private const val MESSAGE_REMOVE_FAV = "Removed from favourites"
-//    }
-
     /**
      * Requests data provider for an Item with given item guid.
      * Shows Item in a view.
@@ -42,7 +37,6 @@ class DetailsPresenter :
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(observer)
-
         disposables.add(single)
     }
 
@@ -60,11 +54,6 @@ class DetailsPresenter :
                 .subscribeWith(object : DisposableCompletableObserver() {
                     override fun onComplete() {
                         view?.showAsFavourite(newFavValue)
-//                        val message = when (newFavValue) {
-//                            true -> MESSAGE_ADD_FAV
-//                            else -> MESSAGE_REMOVE_FAV
-//                        }
-//                        view?.showMessage(message)
                     }
 
                     override fun onError(e: Throwable) {

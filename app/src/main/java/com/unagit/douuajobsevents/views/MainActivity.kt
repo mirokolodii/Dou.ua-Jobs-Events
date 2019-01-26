@@ -113,6 +113,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 //            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
+                    //TODO Implement search
                     Log.d("Search", "onQueryTextChange triggered with text = $newText. ${newText.isNullOrEmpty()}")
                     // Filter results based on search query.
 //                    mAdapter?.filter?.filter(newText)
@@ -213,7 +214,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
 
     override fun onSwiped(position: Int) {
-        val item = mAdapter?.getItemAt(position)
+        val item = mAdapter.getItemAt(position)
         presenter.delete(item!!, position)
     }
 }
