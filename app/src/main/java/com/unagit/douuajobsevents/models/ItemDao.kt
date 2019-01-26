@@ -40,5 +40,4 @@ interface ItemDao{
 
     @Query("SELECT * from entity_table WHERE type = :type ORDER BY timestamp DESC")
     fun getPagedItems(type: Int): DataSource.Factory<Int, Item>
-
 }

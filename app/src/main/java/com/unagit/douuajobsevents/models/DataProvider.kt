@@ -1,6 +1,7 @@
 package com.unagit.douuajobsevents.models
 
 import androidx.paging.PagedList
+import androidx.paging.RxPagedListBuilder
 import com.unagit.douuajobsevents.helpers.ItemType
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -18,6 +19,9 @@ class DataProvider(private val dbInstance: AppDatabase) {
      * Instance of Retrofit API service.
      */
     private val douApiService = DouAPIService.create()
+    companion object {
+        private final val DATABASE_PAGE_SIZE = 30
+    }
 
     /**
      * @param guid an ID of an Item to be returned.
@@ -27,10 +31,11 @@ class DataProvider(private val dbInstance: AppDatabase) {
      */
     private fun getItemsObservable(ofType: ItemType): Single<List<Item>> {
         return Single
-                .create<List<Item>> { emitter ->
-                    val items = dbInstance.itemDao().getItems(ofType.value)
-                    emitter.onSuccess(items)
-                }
+                .just(dbInstance.itemDao().getItems(ofType.value))
+//                .create<List<Item>> { emitter ->
+//                    val items = dbInstance.itemDao().getItems(ofType.value)
+//                    emitter.onSuccess(items)
+//                }
     }
 
     fun getEventsObservable(): Single<List<Item>> {
@@ -41,15 +46,18 @@ class DataProvider(private val dbInstance: AppDatabase) {
         return getItemsObservable(ItemType.JOB)
     }
 
-    private fun getPagedItemsObservable(ofType: ItemType): Single<PagedList<Item>> {
-        return Single.just(dbInstance.itemDao().getPagedItems(ofType.value))
+    private fun getPagedItemsObservable(ofType: ItemType): Observable<PagedList<Item>> {
+        val dataSourceFactory = dbInstance.itemDao().getPagedItems(ofType.value)
+        val data = RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
+//        return Single.just()
+        return data
     }
 
-    fun getPagedEventsObservable(): Single<PagedList<Item>> {
+    fun getPagedEventsObservable(): Observable<PagedList<Item>> {
         return getPagedItemsObservable(ItemType.EVENT)
     }
 
-    fun getPagedVacanciesObservable(): Single<PagedList<Item>> {
+    fun getPagedVacanciesObservable(): Observable<PagedList<Item>> {
         return getPagedItemsObservable(ItemType.JOB)
     }
 

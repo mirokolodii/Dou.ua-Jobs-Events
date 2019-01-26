@@ -39,7 +39,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         setContentView(R.layout.activity_main)
         presenter.attach(this)
 
-
         initToolbar()
 
         initBottomNav()
