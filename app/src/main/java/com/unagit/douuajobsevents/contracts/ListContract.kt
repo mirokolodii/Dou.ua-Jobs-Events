@@ -1,6 +1,6 @@
 package com.unagit.douuajobsevents.contracts
 
-import com.unagit.douuajobsevents.helpers.ItemType
+import androidx.paging.PagedList
 import com.unagit.douuajobsevents.models.Item
 
 /**
@@ -24,7 +24,7 @@ interface ListContract {
          * @param items List of items to be shown.
          * @see Item
          */
-        fun showItems(items: List<Item>)
+        fun showItems(items: PagedList<Item>)
 
         /**
          * Displays a message in a snackbar to the user.
@@ -38,16 +38,7 @@ interface ListContract {
          */
         fun hasNetwork(): Boolean
 
-        /**
-         * Informs view to insert new items, which have been received
-         * during refreshment from web.
-         * @param newItems List of new items to be inserted.
-         */
-        fun insertNewItems(newItems: List<Item>)
-
         fun onSwiped(position: Int)
-
-        fun removeAt(position: Int)
     }
 
     // Presenter

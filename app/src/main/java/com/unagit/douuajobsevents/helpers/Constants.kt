@@ -1,7 +1,6 @@
 package com.unagit.douuajobsevents.helpers
 
 import android.util.Log
-import java.lang.Exception
 
 /**
  * Helpers with some constants and enums.
@@ -58,7 +57,8 @@ object Messages {
  */
 enum class ItemType(val value: Int) {
     EVENT(1),
-    JOB(2)
+    JOB(2),
+    FAV(3)
 }
 
 enum class Tab {

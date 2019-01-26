@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.models
 
+import android.util.Log
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
 import com.unagit.douuajobsevents.helpers.ItemType
@@ -24,58 +25,34 @@ class DataProvider(private val dbInstance: AppDatabase) {
         private const val DATABASE_PAGE_SIZE = 30
     }
 
+    fun getEventsObservable(): Observable<PagedList<Item>> {
+        return getItemsObservable(ItemType.EVENT)
+    }
+
+    fun getVacanciesObservable(): Observable<PagedList<Item>> {
+        return getItemsObservable(ItemType.JOB)
+    }
+
     /**
      * @param ofType type of items to be returned.
      * @return Single with a list of items with specified type.
      * @see Item
      * @see Single
      */
-    private fun getItemsSingle(ofType: ItemType): Single<List<Item>> {
-        return Single
-                .just(dbInstance.itemDao().getItems(ofType.value))
-//                .create<List<Item>> { emitter ->
-//                    val items = dbInstance.itemDao().getItems(ofType.value)
-//                    emitter.onSuccess(items)
-//                }
-    }
-
-    fun getEventsSingle(): Single<List<Item>> {
-        return getItemsSingle(ItemType.EVENT)
-    }
-
-    fun getVacanciesSingle(): Single<List<Item>> {
-        return getItemsSingle(ItemType.JOB)
-    }
-
-    private fun getPagedItemsObservable(ofType: ItemType): Observable<PagedList<Item>> {
+    private fun getItemsObservable(ofType: ItemType): Observable<PagedList<Item>> {
         val dataSourceFactory = dbInstance.itemDao().getPagedItems(ofType.value)
+        Log.e("Paging", "New ${ofType.name} PagedList is about to be created")
         return RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
-//        return Single.just()
-//        return data
     }
 
-    fun getPagedEventsObservable(): Observable<PagedList<Item>> {
-        return getPagedItemsObservable(ItemType.EVENT)
-    }
-
-    fun getPagedVacanciesObservable(): Observable<PagedList<Item>> {
-        return getPagedItemsObservable(ItemType.JOB)
-    }
-
-    fun getFavouritesSingle(): Single<List<Item>> {
-        return Single.just(dbInstance.itemDao().getFavourites())
-//                .create<List<Item>> { emitter ->
-//                    val favs = dbInstance.itemDao().getFavourites()
-//                    emitter.onSuccess(favs)
-//                }
+    fun getPagedFavouritesObservable(): Observable<PagedList<Item>> {
+        val dataSourceFactory = dbInstance.itemDao().getPagedFavItems()
+        Log.e("Paging", "New ${ItemType.FAV.name} PagedList is about to be created")
+        return RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
     }
 
     fun getItemWithIdSingle(guid: String): Single<Item> {
-        return Single.just(dbInstance.itemDao().getItemWithId(guid))
-//                .create { emitter ->
-//            val item = dbInstance.itemDao().getItemWithId(guid)
-//            emitter.onSuccess(item)
-//        }
+        return dbInstance.itemDao().getItemWithId(guid)
     }
 
     /**
@@ -93,6 +70,13 @@ class DataProvider(private val dbInstance: AppDatabase) {
     fun switchFavouriteState(toBeFav: Boolean, guid: String): Completable {
         return Completable.create { emitter ->
             dbInstance.itemDao().setAsFav(toBeFav, guid)
+            emitter.onComplete()
+        }
+    }
+
+    fun getDeleteItemCompletable(item: Item): Completable {
+        return Completable.create { emitter ->
+            dbInstance.itemDao().delete(item)
             emitter.onComplete()
         }
     }
@@ -150,12 +134,5 @@ class DataProvider(private val dbInstance: AppDatabase) {
                 }
 
         return Observable.merge<List<Item>>(eventsObservable, vacanciesObservable)
-    }
-
-    fun getDeleteItemCompletable(item: Item): Completable {
-        return Completable.create { emitter ->
-            dbInstance.itemDao().delete(item)
-            emitter.onComplete()
-        }
     }
 }

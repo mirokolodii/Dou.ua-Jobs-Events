@@ -7,31 +7,29 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
-import android.transition.Fade
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.util.Pair as AndroidPair
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.RefreshManager
 import com.unagit.douuajobsevents.contracts.ListContract
-import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.helpers.Tab
-import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
+import android.util.Pair as AndroidPair
 
 
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private val presenter: ListContract.ListPresenter = ListPresenter()
-    private var mAdapter: ItemAdapter? = null
+    private lateinit var mAdapter: ItemAdapter
     private var mTab = Tab.EVENTS
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +66,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     private fun initRecycleView() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(emptyList<Item>().toMutableList(), this@MainActivity)
+            adapter = ItemAdapter(this@MainActivity)
         }
         mAdapter = recyclerView.adapter as ItemAdapter
         val swipeHandler = SwipeHandler(
@@ -117,7 +115,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
                 override fun onQueryTextChange(newText: String?): Boolean {
                     Log.d("Search", "onQueryTextChange triggered with text = $newText. ${newText.isNullOrEmpty()}")
                     // Filter results based on search query.
-                    mAdapter?.filter?.filter(newText)
+//                    mAdapter?.filter?.filter(newText)
 
                     return true
                 }
@@ -167,33 +165,8 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
      * Shows a list of received items from on the screen.
      * @param items to be shown
      */
-    override fun showItems(items: List<Item>) {
-        mAdapter?.setNewData(items)
-
-    }
-
-    /**
-     * Inserts new items to the list.
-     * @param newItems to be inserted
-     */
-    // TODO: Review this method
-    override fun insertNewItems(newItems: List<Item>) {
-        val filteredItems = when (mTab) {
-            Tab.EVENTS -> {
-                newItems.filter { it.type == ItemType.EVENT.value }
-
-            }
-            Tab.VACANCIES -> {
-                newItems.filter { it.type == ItemType.JOB.value }
-            }
-            else -> return
-        }
-
-        if (!filteredItems.isEmpty()) {
-            mAdapter?.insertData(filteredItems)
-            // Scroll to beginning of list
-            recyclerView.scrollToPosition(0)
-        }
+    override fun showItems(items: PagedList<Item>) {
+        mAdapter.submitList(items)
     }
 
     /**
@@ -238,27 +211,9 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         return (activeNetwork != null && activeNetwork.isConnected)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        Log.d("Search", "onNewIntent triggered.")
-        super.onNewIntent(intent)
-        if (Intent.ACTION_SEARCH == intent?.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
-            performSearch(query)
-        }
-    }
-
-    private fun performSearch(query: String) {
-        Log.d("Search", "performSearch triggered.")
-        showMessage(query)
-    }
 
     override fun onSwiped(position: Int) {
         val item = mAdapter?.getItemAt(position)
         presenter.delete(item!!, position)
     }
-
-    override fun removeAt(position: Int) {
-        mAdapter?.removeAt(position)
-    }
-
 }

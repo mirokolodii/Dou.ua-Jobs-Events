@@ -1,11 +1,8 @@
 package com.unagit.douuajobsevents.models
 
 import androidx.paging.DataSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Delete
-import androidx.room.Query
-import androidx.room.OnConflictStrategy
+import androidx.room.*
+import io.reactivex.Single
 
 /**
  * Room DAO for an Item.
@@ -30,7 +27,7 @@ interface ItemDao{
     fun getFavourites(): List<Item>
 
     @Query("SELECT * from entity_table WHERE guid = :guid LIMIT 1")
-    fun getItemWithId(guid: String): Item
+    fun getItemWithId(guid: String): Single<Item>
 
     @Query("DELETE from entity_table")
     fun deleteAll()
@@ -40,4 +37,7 @@ interface ItemDao{
 
     @Query("SELECT * from entity_table WHERE type = :type ORDER BY timestamp DESC")
     fun getPagedItems(type: Int): DataSource.Factory<Int, Item>
+
+    @Query("SELECT * from entity_table WHERE isFavourite = 1 ORDER BY timestamp DESC")
+    fun getPagedFavItems(): DataSource.Factory<Int, Item>
 }

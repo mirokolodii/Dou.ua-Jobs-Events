@@ -61,7 +61,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version" // !use kapt for Kotlin
     // optional - RxJava support for Room
-//    implementation "androidx.room:room-rxjava2:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
 
     //RxJava2
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'

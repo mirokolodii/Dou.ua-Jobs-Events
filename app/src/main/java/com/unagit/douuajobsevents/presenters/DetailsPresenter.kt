@@ -43,7 +43,7 @@ class DetailsPresenter :
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(observer)
 
-        compositeDisposable.add(single)
+        disposables.add(single)
     }
 
     /**
@@ -72,6 +72,6 @@ class DetailsPresenter :
                         throw(e)
                     }
                 })
-        compositeDisposable.add(observable)
+        disposables.add(observable)
     }
 }
