@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.unagit.douuajobsevents.BuildConfig
+import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.RefreshManager
 import com.unagit.douuajobsevents.contracts.ListContract
@@ -32,7 +33,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
-    private val presenter: ListContract.ListPresenter = ListPresenter()
+    private val presenter: ListContract.ListPresenter = ListPresenter(MyApp.dataProvider!!)
     private var mAdapter: ItemAdapter? = null
     private var mTab = Tab.EVENTS
 

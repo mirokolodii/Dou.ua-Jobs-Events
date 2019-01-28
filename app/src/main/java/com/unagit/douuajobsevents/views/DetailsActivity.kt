@@ -14,6 +14,7 @@ import android.animation.AnimatorListenerAdapter
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.squareup.picasso.Picasso
+import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.R.id.*
 import com.unagit.douuajobsevents.contracts.DetailsContract
@@ -23,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_details.*
 
 
 class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
-    private val presenter: DetailsContract.DetailsPresenter = DetailsPresenter()
+    private val presenter: DetailsContract.DetailsPresenter = DetailsPresenter(MyApp.dataProvider!!)
     private var item: Item? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

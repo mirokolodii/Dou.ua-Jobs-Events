@@ -4,6 +4,7 @@ import android.os.Handler
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.Messages
 import com.unagit.douuajobsevents.helpers.ItemType
+import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableCompletableObserver
@@ -12,9 +13,9 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-class ListPresenter :
+class ListPresenter(dataProvider: DataProvider) :
         ListContract.ListPresenter,
-        BasePresenter<ListContract.ListView>() {
+        BasePresenter<ListContract.ListView>(dataProvider) {
 
     private var refreshRunnable: Runnable? = null
 
