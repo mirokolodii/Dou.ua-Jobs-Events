@@ -53,7 +53,7 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
             params.setMargins(margin, margin, margin, margin)
             holder.itemView.requestLayout()
 
-        }
+        } //TODO: do we need else here?
     }
 
     override fun getItemCount(): Int {
@@ -94,8 +94,10 @@ class ItemAdapter(private var items: MutableList<Item>, private val listener: On
     }
 
     fun setNewData(newItems: List<Item>) {
-        this.items.clear()
-        this.items.addAll(newItems)
+        this.items.apply {
+            clear()
+            addAll(newItems)
+        }
         this.filteredItems.clear()
         this.filteredItems.addAll(newItems)
         notifyDataSetChanged()

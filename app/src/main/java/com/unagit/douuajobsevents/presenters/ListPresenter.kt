@@ -62,7 +62,7 @@ class ListPresenter :
 
     /**
      * Asks Data provider to delete all items from local db.
-     * Informs view to show a snackbar message with a result.
+     * Informs view to show a message with a result.
      */
     override fun clearLocalData() {
         val observer = dataProvider.getDeleteLocalDataObservable()
@@ -130,8 +130,8 @@ class ListPresenter :
 
     /**
      * Asks Data provider to refresh a data from web.
-     * Inserts new items into view's list and shows snackbar message with
-     * a number of newly received items.
+     * Inserts new items into view's list and requests view to show message
+     * with a count of new items.
      * @see Item
      */
     override fun refreshData() {

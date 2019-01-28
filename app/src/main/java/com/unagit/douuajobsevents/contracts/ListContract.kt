@@ -52,19 +52,19 @@ interface ListContract {
 
     // Presenter
     interface ListPresenter {
+        /*
+         * Handles lifecycle.
+         */
         fun attach(view: ListView)
         fun detach()
-        /**
+
+        /*
          * Initiates a call to repository to get a list of items.
          */
-//        fun getItems()
         fun getEvents()
         fun getVacancies()
         fun getFavourites()
 
-        /**
-         * Initiates refreshment process.
-         */
         fun refreshData()
 
         /**
@@ -72,6 +72,9 @@ interface ListContract {
          */
         fun clearLocalData()
 
+        /**
+         * Request to delete single item on a specified position.
+         */
         fun delete(item: Item, position: Int)
     }
 

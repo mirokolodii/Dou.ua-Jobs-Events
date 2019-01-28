@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.os.Build
 import android.os.Bundle
 import android.transition.Fade
 import android.util.Log
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.unagit.douuajobsevents.BuildConfig
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.RefreshManager
 import com.unagit.douuajobsevents.contracts.ListContract
@@ -46,14 +48,14 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
         initRecycleView()
 
-        // Initiate regular refreshment in background with Worker
-        // (works even when app is closed)
-        RefreshManager().scheduleRefresh()
+        // Initiate regular refreshment in background
+        val refresher: ListContract.Refresher = RefreshManager()
+        refresher.scheduleRefresh()
     }
 
     override fun onStart() {
         super.onStart()
-        when(mTab) {
+        when (mTab) {
             Tab.EVENTS -> presenter.getEvents()
             Tab.VACANCIES -> presenter.getVacancies()
             Tab.FAVOURITES -> presenter.getFavourites()
@@ -116,7 +118,10 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 //            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    Log.d("Search", "onQueryTextChange triggered with text = $newText. ${newText.isNullOrEmpty()}")
+                    if (BuildConfig.DEBUG) {
+                        Log.d("Search",
+                                "onQueryTextChange triggered with text = $newText. ${newText.isNullOrEmpty()}")
+                    }
                     // Filter results based on search query.
                     mAdapter?.filter?.filter(newText)
 
@@ -239,19 +244,19 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         return (activeNetwork != null && activeNetwork.isConnected)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        Log.d("Search", "onNewIntent triggered.")
-        super.onNewIntent(intent)
-        if (Intent.ACTION_SEARCH == intent?.action) {
-            val query = intent.getStringExtra(SearchManager.QUERY)
-            performSearch(query)
-        }
-    }
-
-    private fun performSearch(query: String) {
-        Log.d("Search", "performSearch triggered.")
-        showMessage(query)
-    }
+//    override fun onNewIntent(intent: Intent?) {
+//        Log.d("Search", "onNewIntent triggered.")
+//        super.onNewIntent(intent)
+//        if (Intent.ACTION_SEARCH == intent?.action) {
+//            val query = intent.getStringExtra(SearchManager.QUERY)
+//            performSearch(query)
+//        }
+//    }
+//
+//    private fun performSearch(query: String) {
+//        Log.d("Search", "performSearch triggered.")
+//        showMessage(query)
+//    }
 
     override fun onSwiped(position: Int) {
         val item = mAdapter?.getItemAt(position)
