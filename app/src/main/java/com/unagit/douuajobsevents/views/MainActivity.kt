@@ -33,14 +33,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
-    private val presenter: ListContract.ListPresenter = ListPresenter(MyApp.dataProvider!!)
+    private lateinit var presenter: ListContract.ListPresenter
     private var mAdapter: ItemAdapter? = null
     private var mTab = Tab.EVENTS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter.attach(this)
+        presenter =  ListPresenter(this, MyApp.dataProvider!!)
+//        presenter.attach(this)
 
 
         initToolbar()

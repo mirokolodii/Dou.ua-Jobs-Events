@@ -13,9 +13,9 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-class ListPresenter(dataProvider: DataProvider) :
+class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
         ListContract.ListPresenter,
-        BasePresenter<ListContract.ListView>(dataProvider) {
+        BasePresenter<ListContract.ListView>(view, dataProvider) {
 
     private var refreshRunnable: Runnable? = null
 
@@ -25,10 +25,13 @@ class ListPresenter(dataProvider: DataProvider) :
     private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
     private val refreshHandler = Handler()
 
-    override fun attach(view: ListContract.ListView) {
-        super.attach(view)
+    init {
         initiateDataRefresh()
     }
+
+//    override fun attach(view: ListContract.ListView) {
+//        super.attach(view)
+//    }
 
     override fun detach() {
         super.detach()

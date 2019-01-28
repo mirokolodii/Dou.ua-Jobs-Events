@@ -9,9 +9,9 @@ import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
-class DetailsPresenter(dataProvider: DataProvider) :
+class DetailsPresenter(view: DetailsContract.DetailsView, dataProvider: DataProvider) :
         DetailsContract.DetailsPresenter,
-        BasePresenter<DetailsContract.DetailsView>(dataProvider) {
+        BasePresenter<DetailsContract.DetailsView>(view, dataProvider) {
 
 //    companion object {
 //        private const val MESSAGE_ADD_FAV = "Added to favourites"

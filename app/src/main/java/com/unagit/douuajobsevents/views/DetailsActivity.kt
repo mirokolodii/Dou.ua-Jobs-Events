@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_details.*
 
 
 class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
-    private val presenter: DetailsContract.DetailsPresenter = DetailsPresenter(MyApp.dataProvider!!)
+    private lateinit var presenter: DetailsContract.DetailsPresenter
     private var item: Item? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +36,8 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
 
-        presenter.attach(this)
+        presenter = DetailsPresenter(this, MyApp.dataProvider!!)
+//        presenter.attach(this)
         presenter.requestItemFromId(guid)
 
         initFAB(guid)

@@ -55,7 +55,7 @@ interface ListContract {
         /*
          * Handles lifecycle.
          */
-        fun attach(view: ListView)
+//        fun attach(view: ListView)
         fun detach()
 
         /*
