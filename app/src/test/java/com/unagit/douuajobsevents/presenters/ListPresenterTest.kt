@@ -1,7 +1,10 @@
 package com.unagit.douuajobsevents.presenters
 
+import android.util.Log
 import com.google.common.truth.Truth.assertThat
 import com.unagit.douuajobsevents.contracts.ListContract
+import com.unagit.douuajobsevents.models.DataProvider
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
@@ -9,6 +12,19 @@ import org.mockito.junit.MockitoJUnitRunner
 
 //@RunWith(MockitoJUnitRunner::class)
 class ListPresenterTest {
+
+    private lateinit var presenter: ListPresenter
+
+    @Before
+    fun init() {
+        val view = mock(ListContract.ListView::class.java)
+        val dataProvider = mock(DataProvider::class.java)
+        presenter = spy(ListPresenter(view, dataProvider))
+        Log.d("test", "init triggered with @Before")
+
+    }
+
+
 
 
     @Test
@@ -28,9 +44,8 @@ class ListPresenterTest {
 
     @Test
     fun `attach should initiate data refresh`() {
-        val presenter = spy(ListPresenter::class.java)
-        val view = mock(ListContract.ListView::class.java)
-        presenter.attach(view)
+
+//        presenter.attach(view)
 //        verify(presenter, times(1)).
     }
 }

@@ -11,6 +11,7 @@ import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
@@ -20,13 +21,25 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
     private var refreshRunnable: Runnable? = null
 
     // First refresh after 5 sec.
-    private val initialRefreshInterval = TimeUnit.SECONDS.toMillis(5)
+    private val initialRefreshDelay = TimeUnit.SECONDS.toMillis(5)
     // Refresh each 5 min.
     private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
-    private val refreshHandler = Handler()
+//    private val refreshHandler = Handler()
+
+    private val timer = Timer()
 
     init {
-        initiateDataRefresh()
+//        initiateDataRefresh()
+
+        val refreshTask = object: TimerTask() {
+            override fun run() {
+                initiateDataRefresh()
+            }
+
+        }
+
+        timer.schedule(refreshTask, initialRefreshDelay, refreshInterval)
+
     }
 
 //    override fun attach(view: ListContract.ListView) {
@@ -39,29 +52,23 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
     }
 
     /**
-     * Executes data refresh after 'initialRefreshInterval'
+     * Executes data refresh after 'initialRefreshDelay'
      * and continue with regular refreshes with 'refreshInterval'.
      */
     private fun initiateDataRefresh() {
-        refreshRunnable = Runnable {
-            if (view != null && view!!.hasNetwork()) {
-                refreshData()
-            } else {
-                view?.showMessage(Messages.REFRESH_NO_NETWORK_MESSAGE)
-            }
-            // Regular refreshes
-// TODO it's not the best (though not the worst) method to refresh data in specific period.
-// TODO You may use TimerTask instead.
-            refreshHandler.postDelayed(refreshRunnable, refreshInterval)
+        if (view != null && view!!.hasNetwork()) {
+            refreshData()
+        } else {
+            view?.showMessage(Messages.REFRESH_NO_NETWORK_MESSAGE)
         }
-        // First refresh
-        refreshHandler.postDelayed(refreshRunnable, initialRefreshInterval)
     }
 
+
     private fun stopDataRefresh() {
-        if (refreshRunnable != null) {
-            refreshHandler.removeCallbacksAndMessages(null)
-        }
+//        if (refreshRunnable != null) {
+//            refreshHandler.removeCallbacksAndMessages(null)
+//        }
+        timer.cancel()
     }
 
     /**
