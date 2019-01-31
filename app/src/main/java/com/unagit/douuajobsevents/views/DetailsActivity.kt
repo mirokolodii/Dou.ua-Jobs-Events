@@ -38,7 +38,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
 
         presenter = DetailsPresenter(this, MyApp.dataProvider!!)
 //        presenter.attach(this)
-        presenter.requestItemFromId(guid)
+        presenter.requestItemWithId(guid)
 
         initFAB(guid)
 
@@ -57,7 +57,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         // Hide fab once scrolled to the bottom,
         // un-hide otherwise
         nestedScrollView.setOnScrollChangeListener { v: NestedScrollView?, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            if (v != null && v.canScrollVertically(1 /* positive direction means scrolling down*/)) {
+            if (v != null && v.canScrollVertically(1 /* positive direction means scrolling down */)) {
                 fab.show()
             } else {
                 fab.hide()

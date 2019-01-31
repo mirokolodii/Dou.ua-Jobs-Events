@@ -1,6 +1,5 @@
 package com.unagit.douuajobsevents.presenters
 
-import android.os.Handler
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.Messages
 import com.unagit.douuajobsevents.helpers.ItemType
@@ -18,7 +17,7 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
         ListContract.ListPresenter,
         BasePresenter<ListContract.ListView>(view, dataProvider) {
 
-    private var refreshRunnable: Runnable? = null
+//    private var refreshRunnable: Runnable? = null
 
     // First refresh after 5 sec.
     private val initialRefreshDelay = TimeUnit.SECONDS.toMillis(5)
@@ -29,17 +28,12 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
     private val timer = Timer()
 
     init {
-//        initiateDataRefresh()
-
         val refreshTask = object: TimerTask() {
             override fun run() {
                 initiateDataRefresh()
             }
-
         }
-
         timer.schedule(refreshTask, initialRefreshDelay, refreshInterval)
-
     }
 
 //    override fun attach(view: ListContract.ListView) {

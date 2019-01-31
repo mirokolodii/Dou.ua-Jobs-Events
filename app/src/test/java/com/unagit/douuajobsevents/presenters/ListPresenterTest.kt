@@ -1,27 +1,26 @@
 package com.unagit.douuajobsevents.presenters
 
-import android.util.Log
 import com.google.common.truth.Truth.assertThat
 import com.unagit.douuajobsevents.contracts.ListContract
+import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.DataProvider
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mockito.*
-import org.mockito.junit.MockitoJUnitRunner
 
 //@RunWith(MockitoJUnitRunner::class)
 class ListPresenterTest {
 
     private lateinit var presenter: ListPresenter
+//    private lateinit var view: ListContract.ListView
 
     @Before
-    fun init() {
-        val view = mock(ListContract.ListView::class.java)
-        val dataProvider = mock(DataProvider::class.java)
-        presenter = spy(ListPresenter(view, dataProvider))
-        Log.d("test", "init triggered with @Before")
-
+    fun setUp() {
+        System.out.println("init triggered")
+        val mockView = mock(ListContract.ListView::class.java)
+        val mockDataProvider = mock(DataProvider::class.java)
+        presenter = spy(ListPresenter(mockView, mockDataProvider))
     }
 
 
@@ -47,5 +46,16 @@ class ListPresenterTest {
 
 //        presenter.attach(view)
 //        verify(presenter, times(1)).
+
+    }
+
+    @Test
+    fun `getEvents should trigger getItems with ItemType equal to Event`() {
+        presenter.getEvents()
+        val type = ItemType.EVENT
+
+        fail("test failed")
+
+//        verify(presenter, times(1)).getItems
     }
 }

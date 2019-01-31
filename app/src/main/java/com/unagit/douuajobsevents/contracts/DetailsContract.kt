@@ -27,7 +27,7 @@ interface DetailsContract {
     interface DetailsPresenter {
 //        fun attach(view: DetailsView)
         fun detach()
-        fun requestItemFromId(id: String)
+        fun requestItemWithId(id: String)
         fun changeItemFavVal(item: Item)
     }
 }
