@@ -76,6 +76,8 @@ interface ListContract {
          * Request to delete single item on a specified position.
          */
         fun delete(item: Item, position: Int)
+
+        fun initiateDataRefresh()
     }
 
     interface Refresher {

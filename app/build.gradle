@@ -26,8 +26,8 @@ android {
 
 dependencies {
     def retrofit_version = "2.4.0"
-    def room_version = "2.1.0-alpha03"
-    def work_version = "1.0.0-beta01"
+    def room_version = "2.1.0-alpha04"
+    def work_version = "1.0.0-beta03"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.2'
@@ -50,7 +50,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version" // !use kapt for Kotlin
 
     // optional - RxJava support for Room
-    //    implementation "androidx.room:room-rxjava2:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
 
     //RxJava2
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
@@ -62,9 +62,10 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.23.4'
     testImplementation 'org.mockito:mockito-inline:2.23.4' /* required to mock final Kotlin classes */
     testImplementation "androidx.room:room-testing:$room_version"
+
     // androidTests
-    //    androidTestImplementation 'androidx.test:runner:1.1.1'
-    //    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-//    androidTestImplementation 'org.mockito:mockito-android:2.23.4'
+    androidTestImplementation 'org.mockito:mockito-android:2.23.4'
 }

@@ -29,6 +29,8 @@ import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
@@ -37,10 +39,16 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     private var mAdapter: ItemAdapter? = null
     private var mTab = Tab.EVENTS
 
+    // First refresh after 5 sec.
+    private val initialRefreshDelay = TimeUnit.SECONDS.toMillis(5)
+    // Refresh each 5 min.
+    private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
+    private val timer = Timer()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter =  ListPresenter(this, MyApp.dataProvider!!)
+        presenter = ListPresenter(this, MyApp.dataProvider!!)
 //        presenter.attach(this)
 
 
@@ -50,9 +58,22 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
         initRecycleView()
 
+        initRefresh()
+
         // Initiate regular refreshment in background
         val refresher: ListContract.Refresher = RefreshManager()
         refresher.scheduleRefresh()
+    }
+
+    private fun initRefresh() {
+        val refreshTask = object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    presenter.initiateDataRefresh()
+                }
+            }
+        }
+        timer.schedule(refreshTask, initialRefreshDelay, refreshInterval)
     }
 
     override fun onStart() {
@@ -155,6 +176,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     }
 
     override fun onDestroy() {
+        timer.cancel()
         presenter.detach()
         super.onDestroy()
     }

@@ -10,8 +10,6 @@ import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
         ListContract.ListPresenter,
@@ -20,36 +18,36 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
 //    private var refreshRunnable: Runnable? = null
 
     // First refresh after 5 sec.
-    private val initialRefreshDelay = TimeUnit.SECONDS.toMillis(5)
-    // Refresh each 5 min.
-    private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
-//    private val refreshHandler = Handler()
-
-    private val timer = Timer()
-
-    init {
-        val refreshTask = object: TimerTask() {
-            override fun run() {
-                initiateDataRefresh()
-            }
-        }
-        timer.schedule(refreshTask, initialRefreshDelay, refreshInterval)
-    }
+//    private val initialRefreshDelay = TimeUnit.SECONDS.toMillis(5)
+//    // Refresh each 5 min.
+//    private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
+////    private val refreshHandler = Handler()
+//
+//    private val timer = Timer()
+//
+//    init {
+//        val refreshTask = object: TimerTask() {
+//            override fun run() {
+//                initiateDataRefresh()
+//            }
+//        }
+//        timer.schedule(refreshTask, initialRefreshDelay, refreshInterval)
+//    }
 
 //    override fun attach(view: ListContract.ListView) {
 //        super.attach(view)
 //    }
 
-    override fun detach() {
-        super.detach()
-        stopDataRefresh()
-    }
+//    override fun detach() {
+//        super.detach()
+////        stopDataRefresh()
+//    }
 
     /**
      * Executes data refresh after 'initialRefreshDelay'
      * and continue with regular refreshes with 'refreshInterval'.
      */
-    private fun initiateDataRefresh() {
+    override fun initiateDataRefresh() {
         if (view != null && view!!.hasNetwork()) {
             refreshData()
         } else {
@@ -58,12 +56,12 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
     }
 
 
-    private fun stopDataRefresh() {
-//        if (refreshRunnable != null) {
-//            refreshHandler.removeCallbacksAndMessages(null)
-//        }
-        timer.cancel()
-    }
+//    private fun stopDataRefresh() {
+////        if (refreshRunnable != null) {
+////            refreshHandler.removeCallbacksAndMessages(null)
+////        }
+//        timer.cancel()
+//    }
 
     /**
      * Asks Data provider to delete all items from local db.
