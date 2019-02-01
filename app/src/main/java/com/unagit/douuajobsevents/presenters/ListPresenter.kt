@@ -3,7 +3,6 @@ package com.unagit.douuajobsevents.presenters
 import android.os.Handler
 import androidx.paging.PagedList
 import com.unagit.douuajobsevents.contracts.ListContract
-import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.helpers.Messages
 import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.models.Item
@@ -45,7 +44,7 @@ class ListPresenter :
     private fun initiateDataRefresh() {
         refreshRunnable = Runnable {
             if (view != null && view!!.hasNetwork()) {
-                refreshData()
+                refresh()
             } else {
                 view?.showMessage(Messages.REFRESH_NO_NETWORK_MESSAGE)
             }
@@ -83,7 +82,7 @@ class ListPresenter :
                     }
                 })
         disposables.add(observer)
-        refreshData()
+        refresh()
     }
 
     override fun getEvents() {
@@ -99,10 +98,10 @@ class ListPresenter :
     }
 
     override fun search(value: String, tab: Tab) {
-        if(value.length < minSearchLength)
+        if (value.length < minSearchLength)
             return
 
-        when(tab) {
+        when (tab) {
             Tab.EVENTS -> getItems(dataProvider.getSearchEventsObservable(value))
             Tab.VACANCIES -> getItems(dataProvider.getSearchVacanciesObservable(value))
             Tab.FAVOURITES -> getItems(dataProvider.getSearchFavObservable(value))
@@ -134,14 +133,7 @@ class ListPresenter :
         disposables.add(observer)
     }
 
-
-    /**
-     * Asks Data provider to refresh a data from web.
-     * Inserts new items into view's list and shows snackbar message with
-     * a number of newly received items.
-     * @see Item
-     */
-    override fun refreshData() {
+    override fun refresh() {
         view?.showLoading(true)
         val newItems = mutableListOf<Item>()
         val observer = dataProvider.getRefreshDataObservable()
@@ -152,10 +144,9 @@ class ListPresenter :
                         view?.showLoading(false)
                         val message = Messages.getMessageForCount(newItems.size)
                         view?.showMessage(message)
-
                     }
 
-                   override fun onNext(t: List<Item>) {
+                    override fun onNext(t: List<Item>) {
                         newItems.addAll(t)
                     }
 
@@ -175,7 +166,6 @@ class ListPresenter :
                 .subscribeWith(object : DisposableCompletableObserver() {
                     override fun onComplete() {
                     }
-
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
                         view?.showMessage(Messages.DELETE_ERROR_MESSAGE)

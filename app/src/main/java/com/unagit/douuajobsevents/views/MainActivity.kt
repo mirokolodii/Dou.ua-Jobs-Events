@@ -129,7 +129,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         return when (item?.itemId) {
             R.id.menu_refresh -> {
                 // User's initiated data refreshment
-                presenter.refreshData()
+                presenter.refresh()
                 true
             }
             R.id.menu_clear_cache -> {
@@ -207,7 +207,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
         return (activeNetwork != null && activeNetwork.isConnected)
     }
-
 
     override fun onSwiped(position: Int) {
         val item = mAdapter.getItemAt(position)

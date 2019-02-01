@@ -8,17 +8,8 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
-/**
- * This class is responsible for providing data to the app from tho sources:
- * 1. from local db with help of Room,
- * 2. from web, using Retrofit.
- * @param dbInstance instance of local db.
- */
 class DataProvider(private val dbInstance: AppDatabase) {
 
-    /**
-     * Instance of Retrofit API service.
-     */
     private val douApiService = DouAPIService.create()
 
     companion object {
@@ -55,17 +46,6 @@ class DataProvider(private val dbInstance: AppDatabase) {
         return getObservableWith(factory)
     }
 
-    /**
-     * @param ofType type of items to be returned.
-     * @return Single with a list of items with specified type.
-     * @see Item
-     * @see Single
-     */
-    private fun getItemsObservable(ofType: ItemType): Observable<PagedList<Item>> {
-        val dataSourceFactory = dbInstance.itemDao().getPagedItems(ofType.value)
-        return RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
-    }
-
     private fun getObservableWith(factory: DataSource.Factory<Int, Item>): Observable<PagedList<Item>>{
         return RxPagedListBuilder(factory, DATABASE_PAGE_SIZE).buildObservable()
     }
@@ -74,11 +54,6 @@ class DataProvider(private val dbInstance: AppDatabase) {
         return dbInstance.itemDao().getItemWithId(guid)
     }
 
-    /**
-     * Deletes all items from local db.
-     * @return Completable, once completed.
-     * @see Completable
-     */
     fun getDeleteLocalDataCompletable(): Completable {
         return Completable.create { emitter ->
             dbInstance.itemDao().deleteAll()
@@ -100,11 +75,6 @@ class DataProvider(private val dbInstance: AppDatabase) {
         }
     }
 
-
-    /**
-     * @return Observable with a list of new Items, which are not yet available in local db.
-     * @see Observable
-     */
     fun getRefreshDataObservable(): Observable<List<Item>> {
         val eventsObservable = douApiService.getEventsObservable()
                 .map {
