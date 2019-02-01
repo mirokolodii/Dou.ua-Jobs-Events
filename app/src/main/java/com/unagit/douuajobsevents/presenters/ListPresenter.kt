@@ -5,7 +5,9 @@ import androidx.paging.PagedList
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.helpers.Messages
+import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.models.Item
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
@@ -23,6 +25,8 @@ class ListPresenter :
     // Refresh each 5 min.
     private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
     private val refreshHandler = Handler()
+
+    private val minSearchLength = 3
 
     override fun attach(view: ListContract.ListView) {
         super.attach(view)
@@ -83,25 +87,31 @@ class ListPresenter :
     }
 
     override fun getEvents() {
-        getItems(ItemType.EVENT)
+        getItems(dataProvider.getEventsObservable())
     }
 
     override fun getVacancies() {
-        getItems(ItemType.JOB)
+        getItems(dataProvider.getVacanciesObservable())
     }
 
     override fun getFavourites() {
-        getItems(ItemType.FAV)
+        getItems(dataProvider.getFavouritesObservable())
     }
 
-    private fun getItems(type: ItemType) {
-        view?.showLoading(true)
-        disposables.clear() // Clear all previous PagedList observers
-        val observable = when (type) {
-            ItemType.EVENT -> dataProvider.getEventsObservable()
-            ItemType.JOB -> dataProvider.getVacanciesObservable()
-            ItemType.FAV -> dataProvider.getPagedFavouritesObservable()
+    override fun search(value: String, tab: Tab) {
+        if(value.length < minSearchLength)
+            return
+
+        when(tab) {
+            Tab.EVENTS -> getItems(dataProvider.getSearchEventsObservable(value))
+            Tab.VACANCIES -> getItems(dataProvider.getSearchVacanciesObservable(value))
+            Tab.FAVOURITES -> getItems(dataProvider.getSearchFavObservable(value))
         }
+    }
+
+    private fun getItems(observable: Observable<PagedList<Item>>) {
+        view?.showLoading(true)
+        disposables.clear() // This is important -> clear all previous PagedList observers
 
         val observer = observable
                 .subscribeOn(Schedulers.io())
@@ -123,6 +133,7 @@ class ListPresenter :
                 })
         disposables.add(observer)
     }
+
 
     /**
      * Asks Data provider to refresh a data from web.

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -113,11 +112,8 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 //            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    //TODO Implement search
-                    Log.d("Search", "onQueryTextChange triggered with text = $newText. ${newText.isNullOrEmpty()}")
-                    // Filter results based on search query.
-//                    mAdapter?.filter?.filter(newText)
-
+                    if (newText != null)
+                        presenter.search(newText, mTab)
                     return true
                 }
 

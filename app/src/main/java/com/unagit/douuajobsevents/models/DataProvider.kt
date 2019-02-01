@@ -1,5 +1,6 @@
 package com.unagit.douuajobsevents.models
 
+import androidx.paging.DataSource
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
 import com.unagit.douuajobsevents.helpers.ItemType
@@ -25,11 +26,33 @@ class DataProvider(private val dbInstance: AppDatabase) {
     }
 
     fun getEventsObservable(): Observable<PagedList<Item>> {
-        return getItemsObservable(ItemType.EVENT)
+        val factory = dbInstance.itemDao().getPagedItems(ItemType.EVENT.value)
+        return getObservableWith(factory)
     }
 
     fun getVacanciesObservable(): Observable<PagedList<Item>> {
-        return getItemsObservable(ItemType.JOB)
+        val factory = dbInstance.itemDao().getPagedItems(ItemType.JOB.value)
+        return getObservableWith(factory)
+    }
+
+    fun getFavouritesObservable(): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedFavItems()
+        return getObservableWith(factory)
+    }
+
+    fun getSearchEventsObservable(value: String): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedSearchItems(value, ItemType.EVENT.value)
+        return getObservableWith(factory)
+    }
+
+    fun getSearchVacanciesObservable(value: String): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedSearchItems(value, ItemType.JOB.value)
+        return getObservableWith(factory)
+    }
+
+    fun getSearchFavObservable(value: String): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedSearchFavItems(value)
+        return getObservableWith(factory)
     }
 
     /**
@@ -43,9 +66,8 @@ class DataProvider(private val dbInstance: AppDatabase) {
         return RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
     }
 
-    fun getPagedFavouritesObservable(): Observable<PagedList<Item>> {
-        val dataSourceFactory = dbInstance.itemDao().getPagedFavItems()
-        return RxPagedListBuilder(dataSourceFactory, DATABASE_PAGE_SIZE).buildObservable()
+    private fun getObservableWith(factory: DataSource.Factory<Int, Item>): Observable<PagedList<Item>>{
+        return RxPagedListBuilder(factory, DATABASE_PAGE_SIZE).buildObservable()
     }
 
     fun getItemWithIdSingle(guid: String): Single<Item> {

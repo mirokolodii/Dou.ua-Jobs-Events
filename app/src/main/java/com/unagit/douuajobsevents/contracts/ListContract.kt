@@ -1,6 +1,7 @@
 package com.unagit.douuajobsevents.contracts
 
 import androidx.paging.PagedList
+import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.models.Item
 
 /**
@@ -64,6 +65,7 @@ interface ListContract {
         fun clearLocalData()
 
         fun delete(item: Item, position: Int)
+        fun search(value: String, tab: Tab)
     }
 
     interface Refresher {
