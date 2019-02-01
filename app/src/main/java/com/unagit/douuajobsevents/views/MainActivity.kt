@@ -30,6 +30,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     private val presenter: ListContract.ListPresenter = ListPresenter()
     private lateinit var mAdapter: ItemAdapter
     private var mTab = Tab.EVENTS
+    private var searchMenuItem: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +79,8 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
     private fun initBottomNav() {
         bottom_nav.setOnNavigationItemSelectedListener { item ->
+            collapseSearchView()
+
             when (item.itemId) {
                 R.id.navigation_events -> {
                     mTab = Tab.EVENTS
@@ -99,14 +102,18 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         }
     }
 
+    private fun collapseSearchView() {
+        searchMenuItem?.onActionViewCollapsed()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
 
         // Get the SearchView and set the searchable configuration
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchMenuItem = menu?.findItem(R.id.menu_search)?.actionView as SearchView
-        searchMenuItem.apply {
+        searchMenuItem = menu?.findItem(R.id.menu_search)?.actionView as SearchView
+        searchMenuItem?.apply {
             // Assumes current activity is the searchable activity
             setSearchableInfo(searchManager.getSearchableInfo(componentName))
 //            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
