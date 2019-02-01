@@ -1,12 +1,12 @@
 package com.unagit.douuajobsevents.views
 
 import android.app.ActivityOptions
-import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,6 +23,8 @@ import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Pair as AndroidPair
+
+
 
 
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
@@ -50,7 +52,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
     override fun onStart() {
         super.onStart()
-        when(mTab) {
+        when (mTab) {
             Tab.EVENTS -> presenter.getEvents()
             Tab.VACANCIES -> presenter.getVacancies()
             Tab.FAVOURITES -> presenter.getFavourites()
@@ -103,7 +105,13 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     }
 
     private fun collapseSearchView() {
-        searchMenuItem?.onActionViewCollapsed()
+        if (!searchMenuItem?.isIconified!!) {
+            searchMenuItem?.apply {
+//                searchMenuItem?.isIconified = true
+//                setQuery("", false)
+                onActionViewCollapsed()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -111,16 +119,18 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         inflater.inflate(R.menu.main_menu, menu)
 
         // Get the SearchView and set the searchable configuration
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+//        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchMenuItem = menu?.findItem(R.id.menu_search)?.actionView as SearchView
         searchMenuItem?.apply {
+            setIconifiedByDefault(true)
             // Assumes current activity is the searchable activity
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-//            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
+//            setSearchableInfo(searchManager.getSearchableInfo(componentName))
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    if (newText != null)
+                    if (newText != null) {
+                        Log.e("Search", "search string: $newText")
                         presenter.search(newText, mTab)
+                    }
                     return true
                 }
 
@@ -128,6 +138,12 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
                     return false
                 }
             })
+
+            setOnCloseListener {
+                Log.e("Search", "closed")
+                false
+            }
+
         }
         return true
     }
