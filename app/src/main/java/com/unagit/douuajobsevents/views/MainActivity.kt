@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,7 +22,7 @@ import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.Timer
+import java.util.*
 import java.util.concurrent.TimeUnit
 import android.util.Pair as AndroidPair
 
@@ -45,7 +44,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         presenter = ListPresenter(this, MyApp.dataProvider!!)
-//        presenter.attach(this)
 
         initToolbar()
 
@@ -131,8 +129,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         val inflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
 
-        // Get the SearchView and set the searchable configuration
-//        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchMenuItem = menu?.findItem(R.id.menu_search)
         searchMenuItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
@@ -148,8 +144,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         searchView = searchMenuItem?.actionView as SearchView
         searchView?.apply {
             setIconifiedByDefault(true)
-            // Assumes current activity is the searchable activity
-//            setSearchableInfo(searchManager.getSearchableInfo(componentName))
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
                     if (newText != null) {
@@ -178,7 +172,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         return when (item?.itemId) {
             R.id.menu_refresh -> {
                 // User's initiated data refreshment
-                presenter.refresh()
+                presenter.initiateDataRefresh()
                 true
             }
             R.id.menu_clear_cache -> {

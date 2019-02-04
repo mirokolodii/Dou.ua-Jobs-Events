@@ -1,11 +1,9 @@
 package com.unagit.douuajobsevents.presenters
 
-import android.os.Handler
 import androidx.paging.PagedList
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.Messages
 import com.unagit.douuajobsevents.helpers.Tab
-import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
 import io.reactivex.Observable
@@ -18,36 +16,7 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
         ListContract.ListPresenter,
         BasePresenter<ListContract.ListView>(view, dataProvider) {
 
-//    private var refreshRunnable: Runnable? = null
-
-    // First refresh after 5 sec.
-//    private val initialRefreshDelay = TimeUnit.SECONDS.toMillis(5)
-//    // Refresh each 5 min.
-//    private val refreshInterval = TimeUnit.MINUTES.toMillis(5)
-////    private val refreshHandler = Handler()
-//
-//    private val timer = Timer()
-//
-//    init {
-//        val refreshTask = object: TimerTask() {
-//            override fun run() {
-//                initiateDataRefresh()
-//            }
-//        }
-//        timer.schedule(refreshTask, initialRefreshDelay, refreshInterval)
-//    }
-
     private val minSearchLength = 3
-
-
-//    override fun attach(view: ListContract.ListView) {
-//        super.attach(view)
-//    }
-
-//    override fun detach() {
-//        super.detach()
-////        stopDataRefresh()
-//    }
 
     /**
      * Executes data refresh after 'initialRefreshDelay'
@@ -60,14 +29,6 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
             view?.showMessage(Messages.REFRESH_NO_NETWORK_MESSAGE)
         }
     }
-
-
-//    private fun stopDataRefresh() {
-////        if (refreshRunnable != null) {
-////            refreshHandler.removeCallbacksAndMessages(null)
-////        }
-//        timer.cancel()
-//    }
 
     /**
      * Asks Data provider to delete all items from local db.
@@ -139,7 +100,7 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
         disposables.add(observer)
     }
 
-    override fun refresh() {
+    private fun refresh() {
         view?.showLoading(true)
         val newItems = mutableListOf<Item>()
         val observer = dataProvider.getRefreshDataObservable()

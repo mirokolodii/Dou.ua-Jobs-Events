@@ -14,12 +14,11 @@ interface ListContract {
     }
 
     interface ListPresenter {
-        fun attach(view: ListView)
         fun detach()
         fun getEvents()
         fun getVacancies()
         fun getFavourites()
-        fun refresh()
+        fun initiateDataRefresh()
         fun clearLocalData()
         fun search(value: String, tab: Tab)
         fun delete(item: Item, position: Int)
