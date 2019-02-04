@@ -32,7 +32,8 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     private val presenter: ListContract.ListPresenter = ListPresenter()
     private lateinit var mAdapter: ItemAdapter
     private var mTab = Tab.EVENTS
-    private var searchMenuItem: SearchView? = null
+    private var searchMenuItem: MenuItem? = null
+    private var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,12 +106,14 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     }
 
     private fun collapseSearchView() {
-        if (!searchMenuItem?.isIconified!!) {
-            searchMenuItem?.apply {
-//                searchMenuItem?.isIconified = true
+        if (!searchView?.isIconified!!) {
+            searchView?.apply {
+//                searchView?.isIconified = true
 //                setQuery("", false)
-                onActionViewCollapsed()
+//                onActionViewCollapsed()
             }
+            searchMenuItem?.collapseActionView()
+
         }
     }
 
@@ -120,8 +123,9 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
         // Get the SearchView and set the searchable configuration
 //        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchMenuItem = menu?.findItem(R.id.menu_search)?.actionView as SearchView
-        searchMenuItem?.apply {
+        searchMenuItem = menu?.findItem(R.id.menu_search)
+        searchView = searchMenuItem?.actionView as SearchView
+        searchView?.apply {
             setIconifiedByDefault(true)
             // Assumes current activity is the searchable activity
 //            setSearchableInfo(searchManager.getSearchableInfo(componentName))
