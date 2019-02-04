@@ -1,43 +1,39 @@
 package com.unagit.douuajobsevents.views
 
 import android.app.ActivityOptions
-import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.os.Build
 import android.os.Bundle
-import android.transition.Fade
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.util.Pair as AndroidPair
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.unagit.douuajobsevents.BuildConfig
 import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.RefreshManager
 import com.unagit.douuajobsevents.contracts.ListContract
-import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.helpers.Tab
-import com.unagit.douuajobsevents.helpers.WorkerConstants.UNIQUE_REFRESH_WORKER_NAME
 import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
+import java.util.Timer
 import java.util.concurrent.TimeUnit
-
+import android.util.Pair as AndroidPair
 
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
     private lateinit var presenter: ListContract.ListPresenter
-    private var mAdapter: ItemAdapter? = null
+    private lateinit var mAdapter: ItemAdapter
     private var mTab = Tab.EVENTS
+    private var searchMenuItem: MenuItem? = null
+    private var searchView: SearchView? = null
 
     // First refresh after 5 sec.
     private val initialRefreshDelay = TimeUnit.SECONDS.toMillis(5)
@@ -51,7 +47,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         presenter = ListPresenter(this, MyApp.dataProvider!!)
 //        presenter.attach(this)
 
-
         initToolbar()
 
         initBottomNav()
@@ -60,9 +55,9 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
         initRefresh()
 
-        // Initiate regular refreshment in background
-        val refresher: ListContract.Refresher = RefreshManager()
-        refresher.scheduleRefresh()
+        // Initiate regular refreshment in background with Worker
+        // (works even when app is closed)
+        RefreshManager().scheduleRefresh()
     }
 
     private fun initRefresh() {
@@ -78,11 +73,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
     override fun onStart() {
         super.onStart()
-        when (mTab) {
-            Tab.EVENTS -> presenter.getEvents()
-            Tab.VACANCIES -> presenter.getVacancies()
-            Tab.FAVOURITES -> presenter.getFavourites()
-        }
+        requestItems()
     }
 
     private fun initToolbar() {
@@ -94,7 +85,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     private fun initRecycleView() {
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = ItemAdapter(emptyList<Item>().toMutableList(), this@MainActivity)
+            adapter = ItemAdapter(this@MainActivity)
         }
         mAdapter = recyclerView.adapter as ItemAdapter
         val swipeHandler = SwipeHandler(
@@ -107,25 +98,33 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
     private fun initBottomNav() {
         bottom_nav.setOnNavigationItemSelectedListener { item ->
+            collapseSearchView()
+
             when (item.itemId) {
                 R.id.navigation_events -> {
                     mTab = Tab.EVENTS
-                    presenter.getEvents()
+                    requestItems()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_vacancies -> {
                     mTab = Tab.VACANCIES
-                    presenter.getVacancies()
+                    requestItems()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_favourites -> {
                     mTab = Tab.FAVOURITES
-                    presenter.getFavourites()
+                    requestItems()
                     return@setOnNavigationItemSelectedListener true
                 }
             }
+
             return@setOnNavigationItemSelectedListener false
         }
+    }
+
+    private fun collapseSearchView() {
+        if (!searchView?.isIconified!!)
+            searchMenuItem?.collapseActionView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -133,21 +132,29 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         inflater.inflate(R.menu.main_menu, menu)
 
         // Get the SearchView and set the searchable configuration
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchMenuItem = menu?.findItem(R.id.menu_search)?.actionView as SearchView
-        searchMenuItem.apply {
+//        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchMenuItem = menu?.findItem(R.id.menu_search)
+        searchMenuItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                requestItems()
+                return true
+            }
+
+        })
+        searchView = searchMenuItem?.actionView as SearchView
+        searchView?.apply {
+            setIconifiedByDefault(true)
             // Assumes current activity is the searchable activity
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-//            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
+//            setSearchableInfo(searchManager.getSearchableInfo(componentName))
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    if (BuildConfig.DEBUG) {
-                        Log.d("Search",
-                                "onQueryTextChange triggered with text = $newText. ${newText.isNullOrEmpty()}")
+                    if (newText != null) {
+                        presenter.search(newText, mTab)
                     }
-                    // Filter results based on search query.
-                    mAdapter?.filter?.filter(newText)
-
                     return true
                 }
 
@@ -159,11 +166,19 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         return true
     }
 
+    private fun requestItems() {
+        when(mTab) {
+            Tab.EVENTS -> presenter.getEvents()
+            Tab.FAVOURITES -> presenter.getFavourites()
+            Tab.VACANCIES -> presenter.getVacancies()
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             R.id.menu_refresh -> {
                 // User's initiated data refreshment
-                presenter.refreshData()
+                presenter.refresh()
                 true
             }
             R.id.menu_clear_cache -> {
@@ -197,45 +212,12 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
      * Shows a list of received items from on the screen.
      * @param items to be shown
      */
-    override fun showItems(items: List<Item>) {
-        mAdapter?.setNewData(items)
-
+    override fun showItems(items: PagedList<Item>) {
+        mAdapter.submitList(items)
     }
 
-    /**
-     * Inserts new items to the list.
-     * @param newItems to be inserted
-     */
-    // TODO: Review this method
-    override fun insertNewItems(newItems: List<Item>) {
-        val filteredItems = when (mTab) {
-            Tab.EVENTS -> {
-                newItems.filter { it.type == ItemType.EVENT.value }
-
-            }
-            Tab.VACANCIES -> {
-                newItems.filter { it.type == ItemType.JOB.value }
-            }
-            else -> return
-        }
-
-        if (!filteredItems.isEmpty()) {
-            mAdapter?.insertData(filteredItems)
-            // Scroll to beginning of list
-            recyclerView.scrollToPosition(0)
-        }
-    }
-
-    /**
-     * Callback method, triggered from ItemAdapter once user clicked on an item from the list.
-     * Initiates a transition animation and passes guid of clicked item to DetailsActivity via intent.
-     * @param parent view of an item, from which other sub-views are received for animation needs.
-     * @param guid ID of an Item to be shown in DetailsActivity.
-     * @see Item
-     * @see DetailsActivity
-     * @see ItemAdapter
-     */
-    override fun onItemClicked(parent: View, guid: String) {
+    override fun onItemClick(parent: View, position: Int) {
+        val guid = mAdapter.getItemAt(position)?.guid
         // Prepare transition animation.
         val imgView = parent.findViewById<View>(R.id.itemImg)
 //        val titleView = parent.findViewById<View>(R.id.itemTitle)
@@ -268,27 +250,8 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         return (activeNetwork != null && activeNetwork.isConnected)
     }
 
-//    override fun onNewIntent(intent: Intent?) {
-//        Log.d("Search", "onNewIntent triggered.")
-//        super.onNewIntent(intent)
-//        if (Intent.ACTION_SEARCH == intent?.action) {
-//            val query = intent.getStringExtra(SearchManager.QUERY)
-//            performSearch(query)
-//        }
-//    }
-//
-//    private fun performSearch(query: String) {
-//        Log.d("Search", "performSearch triggered.")
-//        showMessage(query)
-//    }
-
     override fun onSwiped(position: Int) {
-        val item = mAdapter?.getItemAt(position)
+        val item = mAdapter.getItemAt(position)
         presenter.delete(item!!, position)
     }
-
-    override fun removeAt(position: Int) {
-        mAdapter?.removeAt(position)
-    }
-
 }

@@ -1,87 +1,81 @@
 package com.unagit.douuajobsevents.models
 
+import androidx.paging.DataSource
+import androidx.paging.PagedList
+import androidx.paging.RxPagedListBuilder
 import com.unagit.douuajobsevents.helpers.ItemType
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
-/**
- * This class is responsible for providing data to the app from tho sources:
- * 1. from local db with help of Room,
- * 2. from web, using Retrofit.
- * @param dbInstance instance of local db.
- */
 class DataProvider(private val dbInstance: AppDatabase) {
 
-    /**
-     * Instance of Retrofit API service.
-     */
     private val douApiService = DouAPIService.create()
 
-    fun getEventsObservable(): Single<List<Item>> {
-        return getItemsObservable(ItemType.EVENT)
+    companion object {
+        private const val DATABASE_PAGE_SIZE = 30
     }
 
-    fun getVacanciesObservable(): Single<List<Item>> {
-        return getItemsObservable(ItemType.JOB)
+    fun getEventsObservable(): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedItems(ItemType.EVENT.value)
+        return getObservableWith(factory)
     }
 
-    /**
-     * @param guid an ID of an Item to be returned.
-     * @return Single with a single Item from local db.
-     * @see Item
-     * @see Single
-     */
-    private fun getItemsObservable(ofType: ItemType): Single<List<Item>> {
-        return Single
-                .create<List<Item>> { emitter ->
-                    val items = dbInstance.itemDao().getItems(ofType.value)
-                    emitter.onSuccess(items)
-                }
+    fun getVacanciesObservable(): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedItems(ItemType.JOB.value)
+        return getObservableWith(factory)
     }
 
-    fun getFavouritesObservable(): Single<List<Item>> {
-        return Single
-                .create<List<Item>> { emitter ->
-                    val favs = dbInstance.itemDao().getFavourites()
-                    emitter.onSuccess(favs)
-                }
+    fun getFavouritesObservable(): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedFavItems()
+        return getObservableWith(factory)
     }
 
-    fun getItemWithIdObservable(guid: String): Single<Item> {
-        return Single.create { emitter ->
-            val item = dbInstance.itemDao().getItemWithId(guid)
-            emitter.onSuccess(item)
-        }
+    fun getSearchEventsObservable(value: String): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedSearchItems(value, ItemType.EVENT.value)
+        return getObservableWith(factory)
     }
 
-    /**
-     * Deletes all items from local db.
-     * @return Completable, once completed.
-     * @see Completable
-     */
-    fun getDeleteLocalDataObservable(): Completable {
+    fun getSearchVacanciesObservable(value: String): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedSearchItems(value, ItemType.JOB.value)
+        return getObservableWith(factory)
+    }
+
+    fun getSearchFavObservable(value: String): Observable<PagedList<Item>> {
+        val factory = dbInstance.itemDao().getPagedSearchFavItems(value)
+        return getObservableWith(factory)
+    }
+
+    private fun getObservableWith(factory: DataSource.Factory<Int, Item>): Observable<PagedList<Item>>{
+        return RxPagedListBuilder(factory, DATABASE_PAGE_SIZE).buildObservable()
+    }
+
+    fun getItemWithIdSingle(guid: String): Single<Item> {
+        return dbInstance.itemDao().getItemWithId(guid)
+    }
+
+    fun getDeleteLocalDataCompletable(): Completable {
         return Completable.create { emitter ->
             dbInstance.itemDao().deleteAll()
             emitter.onComplete()
         }
     }
 
-    fun changeItemFavourite(toBeFav: Boolean, guid: String): Completable {
+    fun switchFavouriteState(toBeFav: Boolean, guid: String): Completable {
         return Completable.create { emitter ->
             dbInstance.itemDao().setAsFav(toBeFav, guid)
             emitter.onComplete()
         }
     }
 
+    fun getDeleteItemCompletable(item: Item): Completable {
+        return Completable.create { emitter ->
+            dbInstance.itemDao().delete(item)
+            emitter.onComplete()
+        }
+    }
 
-    /**
-     * @return Observable with a list of new Items, which are not yet available in local db.
-     * @see Observable
-     */
     fun getRefreshDataObservable(): Observable<List<Item>> {
-
-
         val eventsObservable = douApiService.getEventsObservable()
                 .map {
                     val localItems = dbInstance.itemDao().getItems()
@@ -127,12 +121,5 @@ class DataProvider(private val dbInstance: AppDatabase) {
                 }
 
         return Observable.merge<List<Item>>(eventsObservable, vacanciesObservable)
-    }
-
-    fun getDeleteItemObservable(item: Item): Completable {
-        return Completable.create { emitter ->
-            dbInstance.itemDao().delete(item)
-            emitter.onComplete()
-        }
     }
 }

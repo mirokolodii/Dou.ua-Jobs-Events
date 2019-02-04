@@ -1,14 +1,17 @@
 package com.unagit.douuajobsevents.presenters
 
+import android.os.Handler
+import androidx.paging.PagedList
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.Messages
+import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.models.DataProvider
 import com.unagit.douuajobsevents.models.Item
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
-import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
 class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
@@ -34,6 +37,9 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
 //        timer.schedule(refreshTask, initialRefreshDelay, refreshInterval)
 //    }
 
+    private val minSearchLength = 3
+
+
 //    override fun attach(view: ListContract.ListView) {
 //        super.attach(view)
 //    }
@@ -49,7 +55,7 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
      */
     override fun initiateDataRefresh() {
         if (view != null && view!!.hasNetwork()) {
-            refreshData()
+            refresh()
         } else {
             view?.showMessage(Messages.REFRESH_NO_NETWORK_MESSAGE)
         }
@@ -68,7 +74,7 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
      * Informs view to show a message with a result.
      */
     override fun clearLocalData() {
-        val observer = dataProvider.getDeleteLocalDataObservable()
+        val observer = dataProvider.getDeleteLocalDataCompletable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
@@ -81,45 +87,47 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
                         view?.showMessage(Messages.LOCAL_ITEMS_DELETE_ERROR_MESSAGE)
                     }
                 })
-        compositeDisposable.add(observer)
-        refreshData()
+        disposables.add(observer)
+        refresh()
     }
 
     override fun getEvents() {
-        getItems(ItemType.EVENT)
+        getItems(dataProvider.getEventsObservable())
     }
 
     override fun getVacancies() {
-        getItems(ItemType.JOB)
+        getItems(dataProvider.getVacanciesObservable())
     }
 
     override fun getFavourites() {
-        getItems()
+        getItems(dataProvider.getFavouritesObservable())
     }
 
-    /**
-     * Requests locally stored items from data provider and shows them in view.
-     * @param type ItemType, which should be shown (either Event of Vacancy).
-     * If ItemType not provided, a default value of 'null' is used, which returns
-     * list of favourites.
-     * @see ItemType
-     */
-    private fun getItems(type: ItemType? = null) {
-        view?.showLoading(true)
+    override fun search(value: String, tab: Tab) {
+        if (value.length < minSearchLength)
+            return
 
-        val observable = when (type) {
-            ItemType.EVENT -> dataProvider.getEventsObservable()
-            ItemType.JOB -> dataProvider.getVacanciesObservable()
-            else -> dataProvider.getFavouritesObservable()
+        when (tab) {
+            Tab.EVENTS -> getItems(dataProvider.getSearchEventsObservable(value))
+            Tab.VACANCIES -> getItems(dataProvider.getSearchVacanciesObservable(value))
+            Tab.FAVOURITES -> getItems(dataProvider.getSearchFavObservable(value))
         }
+    }
+
+    private fun getItems(observable: Observable<PagedList<Item>>) {
+        view?.showLoading(true)
+        disposables.clear() // This is important -> clear all previous PagedList observers
 
         val observer = observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<List<Item>>() {
-                    override fun onSuccess(t: List<Item>) {
-                        view?.showLoading(false)
+                .subscribeWith(object : DisposableObserver<PagedList<Item>>() {
+                    override fun onNext(t: PagedList<Item>) {
                         view?.showItems(t)
+                        view?.showLoading(false)
+                    }
+
+                    override fun onComplete() {
                     }
 
                     override fun onError(e: Throwable) {
@@ -128,16 +136,10 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
                         view?.showMessage(Messages.LOCAL_ITEMS_GET_ERROR_MESSAGE)
                     }
                 })
-        compositeDisposable.add(observer)
+        disposables.add(observer)
     }
 
-    /**
-     * Asks Data provider to refresh a data from web.
-     * Inserts new items into view's list and requests view to show message
-     * with a count of new items.
-     * @see Item
-     */
-    override fun refreshData() {
+    override fun refresh() {
         view?.showLoading(true)
         val newItems = mutableListOf<Item>()
         val observer = dataProvider.getRefreshDataObservable()
@@ -146,13 +148,11 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
                 .subscribeWith(object : DisposableObserver<List<Item>>() {
                     override fun onComplete() {
                         view?.showLoading(false)
-                        view?.insertNewItems(newItems)
                         val message = Messages.getMessageForCount(newItems.size)
                         view?.showMessage(message)
-
                     }
 
-                   override fun onNext(t: List<Item>) {
+                    override fun onNext(t: List<Item>) {
                         newItems.addAll(t)
                     }
 
@@ -162,23 +162,21 @@ class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
                         view?.showLoading(false)
                     }
                 })
-        compositeDisposable.add(observer)
+        disposables.add(observer)
     }
 
     override fun delete(item: Item, position: Int) {
-        val observable = dataProvider.getDeleteItemObservable(item)
+        val observable = dataProvider.getDeleteItemCompletable(item)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
                     override fun onComplete() {
-                        view?.removeAt(position)
                     }
-
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
                         view?.showMessage(Messages.DELETE_ERROR_MESSAGE)
                     }
                 })
-        compositeDisposable.add(observable)
+        disposables.add(observable)
     }
 }

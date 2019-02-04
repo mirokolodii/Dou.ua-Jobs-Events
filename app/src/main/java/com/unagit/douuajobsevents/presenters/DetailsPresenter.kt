@@ -27,12 +27,11 @@ class DetailsPresenter(view: DetailsContract.DetailsView,
             }
         }
         val single = dataProvider
-                .getItemWithIdObservable(id)
+                .getItemWithIdSingle(id)
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.ui())
                 .subscribeWith(observer)
-
-        compositeDisposable.add(single)
+        disposables.add(single)
     }
 
     /**
@@ -43,7 +42,7 @@ class DetailsPresenter(view: DetailsContract.DetailsView,
     override fun changeItemFavVal(item: Item) {
         val newFavValue = !item.isFavourite
 
-        val observable = dataProvider.changeItemFavourite(newFavValue, item.guid)
+        val observable = dataProvider.switchFavouriteState(newFavValue, item.guid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
@@ -56,6 +55,6 @@ class DetailsPresenter(view: DetailsContract.DetailsView,
                         throw(e)
                     }
                 })
-        compositeDisposable.add(observable)
+        disposables.add(observable)
     }
 }

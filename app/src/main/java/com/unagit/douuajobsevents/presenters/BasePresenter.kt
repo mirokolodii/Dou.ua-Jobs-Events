@@ -7,16 +7,20 @@ import io.reactivex.disposables.CompositeDisposable
 abstract class BasePresenter<V>(protected var view: V?, val dataProvider: DataProvider) {
 //    protected var view: V? = null
 //    val dataProvider = MyApp.dataProvider!!
-    protected val compositeDisposable = CompositeDisposable()
+    protected val disposables = CompositeDisposable()
     protected val logTag: String = this.javaClass.simpleName
 
 //    open fun attach(view: V) {
 //        this.view = view
 //    }
     open fun detach() {
-        if (!compositeDisposable.isDisposed) {
-            compositeDisposable.dispose()
-        }
+        dispose()
         this.view = null
+    }
+
+    private fun dispose() {
+        if (!disposables.isDisposed) {
+            disposables.dispose()
+        }
     }
 }
