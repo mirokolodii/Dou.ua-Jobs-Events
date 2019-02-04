@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -195,16 +196,8 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         mAdapter.submitList(items)
     }
 
-    /**
-     * Callback method, triggered from ItemAdapter once user clicked on an item from the list.
-     * Initiates a transition animation and passes guid of clicked item to DetailsActivity via intent.
-     * @param parent view of an item, from which other sub-views are received for animation needs.
-     * @param guid ID of an Item to be shown in DetailsActivity.
-     * @see Item
-     * @see DetailsActivity
-     * @see ItemAdapter
-     */
-    override fun onItemClicked(parent: View, guid: String) {
+    override fun onItemClick(parent: View, position: Int) {
+        val guid = mAdapter.getItemAt(position)?.guid
         // Prepare transition animation.
         val imgView = parent.findViewById<View>(R.id.itemImg)
 //        val titleView = parent.findViewById<View>(R.id.itemTitle)

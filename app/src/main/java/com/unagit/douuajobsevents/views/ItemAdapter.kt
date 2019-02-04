@@ -29,23 +29,22 @@ class ItemAdapter(private val listener: OnClickListener)
      * A listener of a RecyclerView item's click.
      */
     interface OnClickListener {
-        /**
-         * @param parent a ViewHolder view, which is clicked
-         * @param guid {@link Item}'s guid
-         * @see Item
-         */
-        fun onItemClicked(parent: View, guid: String)
+        fun onItemClick(parent: View, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.list_item, parent, false)
-        return ViewHolder(itemView)
+        val vh = ViewHolder(itemView)
+        itemView.setOnClickListener {
+            listener.onItemClick(itemView, vh.adapterPosition)
+        }
+        return vh
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item, listener)
+        holder.bind(item)
 
         // Set bottom margin on last item
         val margin = holder.itemView.resources.getDimension(R.dimen.list_item_margin).toInt()
@@ -59,14 +58,15 @@ class ItemAdapter(private val listener: OnClickListener)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: Item?, listener: OnClickListener) {
+
+        fun bind(item: Item?) {
+            if (item == null) {
+                return
+            }
 
             // Transform html tags into formatted text
             // TODO I'd prefer to parse text on lower level (e.g. when item object is created, or even on object receiving).
             // TODO HtmlCompat.fromHtml() method is too heavy to use it on EACH row binding.
-            if (item == null) {
-                return
-            }
             itemView.itemTitle.text = HtmlCompat.fromHtml(item.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
             Picasso
@@ -75,8 +75,6 @@ class ItemAdapter(private val listener: OnClickListener)
 //                    .resize(200, 150)
 //                    .centerInside()
                     .into(itemView.itemImg)
-
-            itemView.setOnClickListener { listener.onItemClicked(itemView, item.guid) }
         }
     }
 
