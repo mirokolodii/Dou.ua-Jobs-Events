@@ -12,11 +12,6 @@ class DetailsPresenter :
         DetailsContract.DetailsPresenter,
         BasePresenter<DetailsContract.DetailsView>() {
 
-//    companion object {
-//        private const val MESSAGE_ADD_FAV = "Added to favourites"
-//        private const val MESSAGE_REMOVE_FAV = "Removed from favourites"
-//    }
-
     /**
      * Requests data provider for an Item with given item guid.
      * Shows Item in a view.
@@ -38,12 +33,11 @@ class DetailsPresenter :
         }
 
         val single = dataProvider
-                .getItemWithIdObservable(id)
+                .getItemWithIdSingle(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(observer)
-
-        compositeDisposable.add(single)
+        disposables.add(single)
     }
 
     /**
@@ -54,17 +48,12 @@ class DetailsPresenter :
     override fun changeItemFavVal(item: Item) {
         val newFavValue = !item.isFavourite
 
-        val observable = dataProvider.changeItemFavourite(newFavValue, item.guid)
+        val observable = dataProvider.switchFavouriteState(newFavValue, item.guid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(object : DisposableCompletableObserver() {
                     override fun onComplete() {
                         view?.showAsFavourite(newFavValue)
-//                        val message = when (newFavValue) {
-//                            true -> MESSAGE_ADD_FAV
-//                            else -> MESSAGE_REMOVE_FAV
-//                        }
-//                        view?.showMessage(message)
                     }
 
                     override fun onError(e: Throwable) {
@@ -72,6 +61,6 @@ class DetailsPresenter :
                         throw(e)
                     }
                 })
-        compositeDisposable.add(observable)
+        disposables.add(observable)
     }
 }
