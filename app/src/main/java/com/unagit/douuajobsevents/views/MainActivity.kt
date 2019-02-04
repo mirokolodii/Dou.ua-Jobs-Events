@@ -50,11 +50,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
     override fun onStart() {
         super.onStart()
-        when (mTab) {
-            Tab.EVENTS -> presenter.getEvents()
-            Tab.VACANCIES -> presenter.getVacancies()
-            Tab.FAVOURITES -> presenter.getFavourites()
-        }
+        requestItems()
     }
 
     private fun initToolbar() {
