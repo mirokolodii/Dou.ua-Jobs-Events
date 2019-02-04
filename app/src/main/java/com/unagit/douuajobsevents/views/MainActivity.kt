@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,9 +22,6 @@ import com.unagit.douuajobsevents.models.Item
 import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 import android.util.Pair as AndroidPair
-
-
-
 
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
@@ -87,34 +83,28 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
             when (item.itemId) {
                 R.id.navigation_events -> {
                     mTab = Tab.EVENTS
-                    presenter.getEvents()
+                    requestItems()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_vacancies -> {
                     mTab = Tab.VACANCIES
-                    presenter.getVacancies()
+                    requestItems()
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_favourites -> {
                     mTab = Tab.FAVOURITES
-                    presenter.getFavourites()
+                    requestItems()
                     return@setOnNavigationItemSelectedListener true
                 }
             }
+
             return@setOnNavigationItemSelectedListener false
         }
     }
 
     private fun collapseSearchView() {
-        if (!searchView?.isIconified!!) {
-            searchView?.apply {
-//                searchView?.isIconified = true
-//                setQuery("", false)
-//                onActionViewCollapsed()
-            }
+        if (!searchView?.isIconified!!)
             searchMenuItem?.collapseActionView()
-
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -124,6 +114,17 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         // Get the SearchView and set the searchable configuration
 //        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchMenuItem = menu?.findItem(R.id.menu_search)
+        searchMenuItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
+                return true
+            }
+
+            override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
+                requestItems()
+                return true
+            }
+
+        })
         searchView = searchMenuItem?.actionView as SearchView
         searchView?.apply {
             setIconifiedByDefault(true)
@@ -132,7 +133,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextChange(newText: String?): Boolean {
                     if (newText != null) {
-                        Log.e("Search", "search string: $newText")
                         presenter.search(newText, mTab)
                     }
                     return true
@@ -142,14 +142,16 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
                     return false
                 }
             })
-
-            setOnCloseListener {
-                Log.e("Search", "closed")
-                false
-            }
-
         }
         return true
+    }
+
+    private fun requestItems() {
+        when(mTab) {
+            Tab.EVENTS -> presenter.getEvents()
+            Tab.FAVOURITES -> presenter.getFavourites()
+            Tab.VACANCIES -> presenter.getVacancies()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
