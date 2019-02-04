@@ -36,7 +36,7 @@ class ItemAdapter(private val listener: OnClickListener)
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.list_item, parent, false)
         val vh = ViewHolder(itemView)
-        itemView.setOnClickListener {
+        vh.itemView.setOnClickListener {
             listener.onItemClick(itemView, vh.adapterPosition)
         }
         return vh
