@@ -1,7 +1,6 @@
 package com.unagit.douuajobsevents.presenters
 
 import com.unagit.douuajobsevents.contracts.DetailsContract
-import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.helpers.SchedulerProvider
 import com.unagit.douuajobsevents.models.DataProvider
@@ -13,7 +12,6 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 import org.mockito.Mockito.*
-import java.util.*
 
 class DetailsPresenterTest {
 
@@ -46,7 +44,7 @@ class DetailsPresenterTest {
 
         // 4. Return stub
         doReturn(Single.just(item))
-                .`when`(mockDataProvider).getItemWithIdObservable(ArgumentMatchers.anyString())
+                .`when`(mockDataProvider).getItemWithIdSingle(ArgumentMatchers.anyString())
 
         doReturn(Schedulers.trampoline()).`when`(mockScheduler).io()
         doReturn(Schedulers.trampoline()).`when`(mockScheduler).ui()
