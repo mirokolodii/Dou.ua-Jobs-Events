@@ -26,7 +26,7 @@ class MainActivityTest {
     var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
     @Test
-    fun mainActivityTest() {
+    fun mainActivityTest1() {
 
         val bottomNavigationItemView = onView((withId(R.id.navigation_events)))
 
