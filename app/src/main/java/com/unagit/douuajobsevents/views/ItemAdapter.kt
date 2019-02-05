@@ -3,6 +3,8 @@ package com.unagit.douuajobsevents.views
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -58,6 +60,8 @@ class ItemAdapter(private val listener: OnClickListener)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val title: TextView = itemView.itemTitle
+        val image: ImageView = itemView.itemImg
 
         fun bind(item: Item?) {
             if (item == null) {
@@ -67,14 +71,14 @@ class ItemAdapter(private val listener: OnClickListener)
             // Transform html tags into formatted text
             // TODO I'd prefer to parse text on lower level (e.g. when item object is created, or even on object receiving).
             // TODO HtmlCompat.fromHtml() method is too heavy to use it on EACH row binding.
-            itemView.itemTitle.text = HtmlCompat.fromHtml(item.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            title.text = HtmlCompat.fromHtml(item.title, HtmlCompat.FROM_HTML_MODE_COMPACT)
 
             Picasso
                     .get()
                     .load(item.imgUrl)
 //                    .resize(200, 150)
 //                    .centerInside()
-                    .into(itemView.itemImg)
+                    .into(image)
         }
     }
 
