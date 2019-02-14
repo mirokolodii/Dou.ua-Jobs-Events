@@ -14,6 +14,7 @@ interface ListContract {
     }
 
     interface ListPresenter {
+        fun attach(view: ListView)
         fun detach()
         fun getEvents()
         fun getVacancies()

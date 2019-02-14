@@ -8,12 +8,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class DetailsPresenter(view: DetailsContract.DetailsView,
-                       dataProvider: DataProvider,
-                       private val schedulerProvider: SchedulerProvider = SchedulerProvider()) :
+class DetailsPresenter @Inject constructor(
+        dataProvider: DataProvider,
+        private val schedulerProvider: SchedulerProvider = SchedulerProvider()) :
         DetailsContract.DetailsPresenter,
-        BasePresenter<DetailsContract.DetailsView>(view, dataProvider) {
+        BasePresenter<DetailsContract.DetailsView>(dataProvider) {
 
     override fun requestItemWithId(id: String) {
         val observer = object : DisposableSingleObserver<Item>() {

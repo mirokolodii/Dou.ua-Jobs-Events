@@ -1,16 +1,16 @@
 package com.unagit.douuajobsevents.views
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.text.method.LinkMovementMethod
-import android.util.Log
-import android.view.ViewAnimationUtils
-import android.view.View
 import android.transition.Transition
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
+import android.util.Log
+import android.view.View
+import android.view.ViewAnimationUtils
 import androidx.core.text.HtmlCompat
 import androidx.core.widget.NestedScrollView
 import com.squareup.picasso.Picasso
@@ -19,12 +19,13 @@ import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.R.id.*
 import com.unagit.douuajobsevents.contracts.DetailsContract
 import com.unagit.douuajobsevents.models.Item
-import com.unagit.douuajobsevents.presenters.DetailsPresenter
 import kotlinx.android.synthetic.main.activity_details.*
+import javax.inject.Inject
 
 
 class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
-    private lateinit var presenter: DetailsContract.DetailsPresenter
+    @Inject
+    lateinit var presenter: DetailsContract.DetailsPresenter
     private var item: Item? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,9 +37,12 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
 
-        presenter = DetailsPresenter(this, MyApp.dataProvider!!)
+//        presenter = DetailsPresenter(this, MyApp.dataProvider!!)
 //        presenter.attach(this)
+        (application as MyApp).appComponent.inject(this)
+        presenter.attach(this)
         presenter.requestItemWithId(guid)
+
 
         initFAB(guid)
 

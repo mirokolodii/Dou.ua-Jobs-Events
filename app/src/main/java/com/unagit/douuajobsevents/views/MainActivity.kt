@@ -20,15 +20,20 @@ import com.unagit.douuajobsevents.RefreshManager
 import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.models.Item
-import com.unagit.douuajobsevents.presenters.ListPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import android.util.Pair as AndroidPair
 
 class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickListener {
 
-    private lateinit var presenter: ListContract.ListPresenter
+    @Inject
+    lateinit var presenter: ListContract.ListPresenter
+
+//    @Inject
+//    lateinit var dataProvider: DataProvider
+
     private lateinit var mAdapter: ItemAdapter
     private var mTab = Tab.EVENTS
     private var searchMenuItem: MenuItem? = null
@@ -43,8 +48,12 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter = ListPresenter(this, MyApp.dataProvider!!)
 
+//        presenter = ListPresenter(this, MyApp.dataProvider!!)
+        (application as MyApp).appComponent.inject(this)
+//        presenter = ListPresenter(this, dataProvider)
+
+        presenter.attach(this)
         initToolbar()
 
         initBottomNav()
@@ -161,7 +170,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     }
 
     private fun requestItems() {
-        when(mTab) {
+        when (mTab) {
             Tab.EVENTS -> presenter.getEvents()
             Tab.FAVOURITES -> presenter.getFavourites()
             Tab.VACANCIES -> presenter.getVacancies()

@@ -11,10 +11,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class ListPresenter(view: ListContract.ListView, dataProvider: DataProvider) :
+class ListPresenter @Inject constructor(dataProvider: DataProvider) :
         ListContract.ListPresenter,
-        BasePresenter<ListContract.ListView>(view, dataProvider) {
+        BasePresenter<ListContract.ListView>(dataProvider) {
 
     private val minSearchLength = 3
 

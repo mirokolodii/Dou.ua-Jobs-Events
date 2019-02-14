@@ -24,14 +24,14 @@ abstract class AppDatabase : RoomDatabase() {
          * @return an instance of app's Room database.
          * @see Room
          */
-        fun getInstance(context: Context): AppDatabase? {
+        fun getInstance(context: Context): AppDatabase {
             if(INSTANCE == null) {
                 synchronized(AppDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, DB_NAME)
                             .build()
                 }
             }
-            return INSTANCE
+            return INSTANCE!!
         }
 
     }

@@ -20,6 +20,7 @@ import com.unagit.douuajobsevents.views.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 
 class RefreshWorker(@NonNull val appContext: Context,
@@ -27,7 +28,9 @@ class RefreshWorker(@NonNull val appContext: Context,
     : Worker(appContext, workerParams) {
 
     private val logTag = this.javaClass.simpleName
-    private var dataProvider: DataProvider? = null
+    @Inject
+    lateinit var dataProvider: DataProvider
+//    private var dataProvider: DataProvider? = null
 
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "channel_id"
@@ -39,17 +42,18 @@ class RefreshWorker(@NonNull val appContext: Context,
     }
 
     override fun doWork(): Result {
-        initializeFields()
+        (applicationContext as MyApp).appComponent.inject(this)
+//        initializeFields()
         refreshData()
         return Result.success()
     }
 
     // Get instance of DataProvider
-    private fun initializeFields() {
-        if (dataProvider == null) {
-            dataProvider = MyApp.dataProvider
-        }
-    }
+//    private fun initializeFields() {
+//        if (dataProvider == null) {
+//            dataProvider = MyApp.dataProvider
+//        }
+//    }
 
     /**
      * Asks DataProvider to refresh data from web and shows notification,
@@ -59,7 +63,7 @@ class RefreshWorker(@NonNull val appContext: Context,
      */
     private fun refreshData() {
         val newItems = mutableListOf<Item>()
-        dataProvider!!.getRefreshDataObservable()
+        dataProvider.getRefreshDataObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .blockingSubscribe(object : DisposableObserver<List<Item>>() {
