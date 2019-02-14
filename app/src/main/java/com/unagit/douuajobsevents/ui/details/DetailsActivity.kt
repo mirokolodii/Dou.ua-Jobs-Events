@@ -1,4 +1,4 @@
-package com.unagit.douuajobsevents.views
+package com.unagit.douuajobsevents.ui.details
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -17,8 +17,8 @@ import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.R.id.*
-import com.unagit.douuajobsevents.contracts.DetailsContract
-import com.unagit.douuajobsevents.models.Item
+import com.unagit.douuajobsevents.model.Item
+import com.unagit.douuajobsevents.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_details.*
 import javax.inject.Inject
 

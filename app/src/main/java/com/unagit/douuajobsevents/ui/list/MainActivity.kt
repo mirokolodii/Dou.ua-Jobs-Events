@@ -1,4 +1,4 @@
-package com.unagit.douuajobsevents.views
+package com.unagit.douuajobsevents.ui.list
 
 import android.app.ActivityOptions
 import android.content.Context
@@ -17,9 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
 import com.unagit.douuajobsevents.RefreshManager
-import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.Tab
-import com.unagit.douuajobsevents.models.Item
+import com.unagit.douuajobsevents.model.Item
+import com.unagit.douuajobsevents.ui.BaseActivity
+import com.unagit.douuajobsevents.ui.details.DetailsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import java.util.concurrent.TimeUnit

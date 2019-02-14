@@ -1,7 +1,5 @@
-package com.unagit.douuajobsevents.models;
+package com.unagit.douuajobsevents.model;
 
-
-import android.util.Xml;
 
 import com.unagit.douuajobsevents.helpers.ItemType;
 import com.unagit.douuajobsevents.helpers.Language;
@@ -26,12 +24,12 @@ import java.util.Calendar;
  * @see Item
  */
 @Root(name = "item", strict = false)
-class XmlItem {
+public class XmlItem {
     @Element(name = "title")
     private String title;
 
     @Element(name = "guid")
-    String guid;
+    public String guid;
 
     @Element(name = "description")
     private String description;
@@ -44,7 +42,7 @@ class XmlItem {
      * @see XmlItem
      * @see Item
      */
-    Item transformJobToItem() {
+    public Item transformJobToItem() {
         return new Item(
                 this.guid,
                 getHtmlTitle(),
@@ -64,7 +62,7 @@ class XmlItem {
      * @see XmlItem
      * @see Item
      */
-    Item transformEventToItem() {
+    public Item transformEventToItem() {
         Document doc = Jsoup.parseBodyFragment(this.description);
         // Get image url from first paragraph
         String imgUrl = doc.body().selectFirst("p").selectFirst("img").attr("src");

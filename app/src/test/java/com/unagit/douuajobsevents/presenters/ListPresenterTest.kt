@@ -1,13 +1,15 @@
 package com.unagit.douuajobsevents.presenters
 
 import com.google.common.truth.Truth.assertThat
-import com.unagit.douuajobsevents.contracts.ListContract
+import com.unagit.douuajobsevents.data.DataProvider
 import com.unagit.douuajobsevents.helpers.ItemType
-import com.unagit.douuajobsevents.models.DataProvider
+import com.unagit.douuajobsevents.ui.list.ListContract
+import com.unagit.douuajobsevents.ui.list.ListPresenter
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.spy
 
 //@RunWith(MockitoJUnitRunner::class)
 class ListPresenterTest {
@@ -20,7 +22,8 @@ class ListPresenterTest {
         System.out.println("init triggered")
         val mockView = mock(ListContract.ListView::class.java)
         val mockDataProvider = mock(DataProvider::class.java)
-        presenter = spy(ListPresenter(mockView, mockDataProvider))
+        presenter = spy(ListPresenter(mockDataProvider))
+        presenter.attach(mockView)
     }
 
 

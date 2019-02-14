@@ -1,9 +1,10 @@
-package com.unagit.douuajobsevents.models
+package com.unagit.douuajobsevents.data
 
 import androidx.paging.DataSource
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
 import com.unagit.douuajobsevents.helpers.ItemType
+import com.unagit.douuajobsevents.model.Item
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single

@@ -1,6 +1,7 @@
-package com.unagit.douuajobsevents.models
+package com.unagit.douuajobsevents.data
 
 import com.unagit.douuajobsevents.helpers.RetrofitConstants
+import com.unagit.douuajobsevents.model.ItemDataWrapper
 import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory

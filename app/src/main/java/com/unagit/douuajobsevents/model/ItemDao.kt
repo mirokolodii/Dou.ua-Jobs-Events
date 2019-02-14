@@ -1,4 +1,4 @@
-package com.unagit.douuajobsevents.models
+package com.unagit.douuajobsevents.model
 
 import androidx.paging.DataSource
 import androidx.room.*

@@ -1,10 +1,10 @@
 package com.unagit.douuajobsevents.dagger
 
-import com.unagit.douuajobsevents.contracts.DetailsContract
-import com.unagit.douuajobsevents.contracts.ListContract
-import com.unagit.douuajobsevents.models.DataProvider
-import com.unagit.douuajobsevents.presenters.DetailsPresenter
-import com.unagit.douuajobsevents.presenters.ListPresenter
+import com.unagit.douuajobsevents.data.DataProvider
+import com.unagit.douuajobsevents.ui.details.DetailsContract
+import com.unagit.douuajobsevents.ui.details.DetailsPresenter
+import com.unagit.douuajobsevents.ui.list.ListContract
+import com.unagit.douuajobsevents.ui.list.ListPresenter
 import dagger.Module
 import dagger.Provides
 

@@ -18,7 +18,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".views.MainActivity"
+            android:name=".ui.list.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +28,8 @@
         </activity>
 
         <activity
-            android:name=".views.DetailsActivity"
-            android:parentActivityName=".views.MainActivity" />
+            android:name=".ui.details.DetailsActivity"
+            android:parentActivityName=".ui.list.MainActivity" />
 
     </application>
 

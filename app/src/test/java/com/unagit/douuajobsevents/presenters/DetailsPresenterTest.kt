@@ -1,10 +1,11 @@
 package com.unagit.douuajobsevents.presenters
 
-import com.unagit.douuajobsevents.contracts.DetailsContract
+import com.unagit.douuajobsevents.data.DataProvider
 import com.unagit.douuajobsevents.helpers.ItemType
 import com.unagit.douuajobsevents.helpers.SchedulerProvider
-import com.unagit.douuajobsevents.models.DataProvider
-import com.unagit.douuajobsevents.models.Item
+import com.unagit.douuajobsevents.model.Item
+import com.unagit.douuajobsevents.ui.details.DetailsContract
+import com.unagit.douuajobsevents.ui.details.DetailsPresenter
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import org.junit.Before
@@ -28,7 +29,8 @@ class DetailsPresenterTest {
         mockScheduler = mock(SchedulerProvider::class.java)
 
         // 2. Initialize presenter
-        presenter = Mockito.spy(DetailsPresenter(mockView, mockDataProvider , mockScheduler))
+        presenter = Mockito.spy(DetailsPresenter(mockDataProvider, mockScheduler))
+        presenter.attach(mockView)
 
         //
     }

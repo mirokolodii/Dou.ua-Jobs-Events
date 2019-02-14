@@ -1,4 +1,4 @@
-package com.unagit.douuajobsevents.views
+package com.unagit.douuajobsevents.ui.list
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.models.Item
+import com.unagit.douuajobsevents.model.Item
 import kotlinx.android.synthetic.main.list_item.view.*
 
 class ItemAdapter(private val listener: OnClickListener)

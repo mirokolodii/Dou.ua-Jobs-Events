@@ -13,10 +13,10 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.unagit.douuajobsevents.MyApp
 import com.unagit.douuajobsevents.R
+import com.unagit.douuajobsevents.data.DataProvider
 import com.unagit.douuajobsevents.helpers.Messages
-import com.unagit.douuajobsevents.models.DataProvider
-import com.unagit.douuajobsevents.models.Item
-import com.unagit.douuajobsevents.views.MainActivity
+import com.unagit.douuajobsevents.model.Item
+import com.unagit.douuajobsevents.ui.list.MainActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers

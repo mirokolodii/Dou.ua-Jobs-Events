@@ -1,4 +1,4 @@
-package com.unagit.douuajobsevents.models;
+package com.unagit.douuajobsevents.model;
 
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Path;
@@ -33,5 +33,5 @@ public class ItemDataWrapper {
      */
     @ElementList(name="item", inline = true)
     @Path("channel")
-    List<XmlItem> xmlItems;
+    public List<XmlItem> xmlItems;
 }

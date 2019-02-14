@@ -1,6 +1,6 @@
-package com.unagit.douuajobsevents.contracts
+package com.unagit.douuajobsevents.ui.details
 
-import com.unagit.douuajobsevents.models.Item
+import com.unagit.douuajobsevents.model.Item
 
 /**
  * Contract between DetailsView and DetailsPresenter.

@@ -1,8 +1,8 @@
 package com.unagit.douuajobsevents.dagger
 
 import android.content.Context
-import com.unagit.douuajobsevents.models.AppDatabase
-import com.unagit.douuajobsevents.models.DataProvider
+import com.unagit.douuajobsevents.data.AppDatabase
+import com.unagit.douuajobsevents.data.DataProvider
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

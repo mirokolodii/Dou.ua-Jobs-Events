@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:transitionName="@string/transition_container_name"
-    tools:context=".views.DetailsActivity">
+    tools:context=".ui.details.DetailsActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:fitsSystemWindows="true"

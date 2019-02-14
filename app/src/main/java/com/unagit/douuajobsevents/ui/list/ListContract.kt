@@ -1,8 +1,8 @@
-package com.unagit.douuajobsevents.contracts
+package com.unagit.douuajobsevents.ui.list
 
 import androidx.paging.PagedList
 import com.unagit.douuajobsevents.helpers.Tab
-import com.unagit.douuajobsevents.models.Item
+import com.unagit.douuajobsevents.model.Item
 
 interface ListContract {
     interface ListView {

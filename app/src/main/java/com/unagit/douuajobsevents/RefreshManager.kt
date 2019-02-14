@@ -1,8 +1,8 @@
 package com.unagit.douuajobsevents
 
 import androidx.work.*
-import com.unagit.douuajobsevents.contracts.ListContract
 import com.unagit.douuajobsevents.helpers.WorkerConstants
+import com.unagit.douuajobsevents.ui.list.ListContract
 import com.unagit.douuajobsevents.workers.RefreshWorker
 import java.util.concurrent.TimeUnit
 

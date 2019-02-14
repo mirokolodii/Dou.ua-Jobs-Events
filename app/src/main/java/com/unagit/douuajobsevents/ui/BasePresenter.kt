@@ -1,6 +1,6 @@
-package com.unagit.douuajobsevents.presenters
+package com.unagit.douuajobsevents.ui
 
-import com.unagit.douuajobsevents.models.DataProvider
+import com.unagit.douuajobsevents.data.DataProvider
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class BasePresenter<V>(val dataProvider: DataProvider) {

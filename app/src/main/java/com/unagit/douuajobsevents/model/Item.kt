@@ -1,10 +1,11 @@
-package com.unagit.douuajobsevents.models
+package com.unagit.douuajobsevents.model
 
 import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Calendar
+import java.util.*
+
 /**
  * Data model for an item.
  * '@Entity' annotation sets a Room Entity

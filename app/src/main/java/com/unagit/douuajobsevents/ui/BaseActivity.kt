@@ -1,4 +1,4 @@
-package com.unagit.douuajobsevents.views
+package com.unagit.douuajobsevents.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar

@@ -1,10 +1,12 @@
-package com.unagit.douuajobsevents.models
+package com.unagit.douuajobsevents.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.unagit.douuajobsevents.helpers.RoomConstants.DB_NAME
+import com.unagit.douuajobsevents.model.Item
+import com.unagit.douuajobsevents.model.ItemDao
 
 /**
  * Local Room database.

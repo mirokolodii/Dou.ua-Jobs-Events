@@ -1,9 +1,9 @@
-package com.unagit.douuajobsevents.presenters
+package com.unagit.douuajobsevents.ui.details
 
-import com.unagit.douuajobsevents.contracts.DetailsContract
+import com.unagit.douuajobsevents.data.DataProvider
 import com.unagit.douuajobsevents.helpers.SchedulerProvider
-import com.unagit.douuajobsevents.models.DataProvider
-import com.unagit.douuajobsevents.models.Item
+import com.unagit.douuajobsevents.model.Item
+import com.unagit.douuajobsevents.ui.BasePresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver

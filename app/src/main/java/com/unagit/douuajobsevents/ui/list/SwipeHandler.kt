@@ -1,13 +1,11 @@
-package com.unagit.douuajobsevents.views
+package com.unagit.douuajobsevents.ui.list
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.unagit.douuajobsevents.R
-import com.unagit.douuajobsevents.contracts.ListContract
 
 class SwipeHandler(
         val view: ListContract.ListView,
