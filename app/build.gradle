@@ -20,13 +20,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            resValue "string", "app_version", "${defaultConfig.versionName}"
+//            resValue "string", "app_version", "${defaultConfig.versionName}"
         }
 
         debug {
-            resValue "string", "app_version", "${defaultConfig.versionName}"
+//            versionNameSuffix ".debug"
+//            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
+            applicationIdSuffix ".debug"
             versionNameSuffix ".debug"
-            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
         }
     }
 }
