@@ -36,19 +36,17 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
 
         // Get Item from guid
         val guid = intent.getStringExtra(getString(R.string.extra_guid_id))
-
-//        presenter = DetailsPresenter(this, MyApp.dataProvider!!)
-//        presenter.attach(this)
         (application as MyApp).appComponent.inject(this)
         presenter.attach(this)
         presenter.requestItemWithId(guid)
 
-
         initFAB(guid)
 
-        addEnterAnim()
-
-
+        if (savedInstanceState == null) {
+            addEnterAnim()
+        } else { // just make appbar visible on config change
+            appbar.visibility = View.VISIBLE
+        }
     }
 
     private fun initFAB(guid: String) {
@@ -85,6 +83,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
                 enterReveal()
                 window.sharedElementEnterTransition.removeListener(this)
             }
+
             override fun onTransitionResume(transition: Transition?) {
             }
 
@@ -107,6 +106,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
                 window.returnTransition.removeListener(this)
 
             }
+
             override fun onTransitionEnd(transition: Transition?) {
             }
 
@@ -188,7 +188,7 @@ class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
      */
     override fun showAsFavourite(isFavourite: Boolean) {
         this.item?.isFavourite = isFavourite
-        val favMenuItem = bottom_bar.menu.findItem(R.id.menu_favourites)
+        val favMenuItem = bottom_bar.menu.findItem(menu_favourites)
         if (isFavourite) {
             favMenuItem.setIcon(R.drawable.ic_favorite)
         } else {
