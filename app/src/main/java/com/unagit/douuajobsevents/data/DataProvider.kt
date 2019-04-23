@@ -1,20 +1,58 @@
 package com.unagit.douuajobsevents.data
 
+import android.util.Log
 import androidx.paging.DataSource
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.google.gson.GsonBuilder
+import com.unagit.douuajobsevents.BuildConfig
 import com.unagit.douuajobsevents.helpers.ItemType
+import com.unagit.douuajobsevents.model.Image
 import com.unagit.douuajobsevents.model.Item
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
+
 class DataProvider(private val dbInstance: AppDatabase) {
 
     private val douApiService = DouAPIService.create()
+    private val remoteConfig = FirebaseRemoteConfig.getInstance()
+    lateinit var images: List<Image>
 
     companion object {
         private const val DATABASE_PAGE_SIZE = 30
+    }
+
+    init {
+        val configSettings = FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .setMinimumFetchIntervalInSeconds(4200)
+                .build()
+        remoteConfig.setConfigSettings(configSettings)
+
+        remoteConfig.fetchAndActivate()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val updated = task.result
+                        Log.d("firebase", "Config params updated: $updated")
+                        val obj = remoteConfig.getString("images")
+                        Log.e("firebase", "obj is: $obj")
+                        val gson = GsonBuilder().create()
+//                        val imageListType = object : TypeToken<List<Image>>() {}.type
+//                        images = gson.fromJson(obj, imageListType)
+                        val images = gson.fromJson(obj, Array<Image>::class.java).toList()
+                        images.forEach {
+                            println(it.keyword)
+                        }
+                    } else {
+                        Log.d("firebase", "fetched failed")
+                    }
+                }
+
+
     }
 
     fun getEventsObservable(): Observable<PagedList<Item>> {
@@ -47,7 +85,7 @@ class DataProvider(private val dbInstance: AppDatabase) {
         return getObservableWith(factory)
     }
 
-    private fun getObservableWith(factory: DataSource.Factory<Int, Item>): Observable<PagedList<Item>>{
+    private fun getObservableWith(factory: DataSource.Factory<Int, Item>): Observable<PagedList<Item>> {
         return RxPagedListBuilder(factory, DATABASE_PAGE_SIZE).buildObservable()
     }
 
