@@ -78,6 +78,7 @@ dependencies {
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
     // Firebase
+    implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-config:16.5.0'
 
     // Tests
