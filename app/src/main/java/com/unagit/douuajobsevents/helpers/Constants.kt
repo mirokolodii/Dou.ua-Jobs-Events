@@ -67,18 +67,18 @@ enum class Tab {
     FAVOURITES
 }
 
-enum class Language(val url: String) {
-    JAVA("https://media-market.edmodo.com/media/public/e0dd66f726194a1feb7350ae91e011d7ec811599.png"),
-    PHP("https://pbs.twimg.com/profile_images/815698345716912128/hwUcGZ41.jpg"),
-    ANDROID("https://www.android.com/static/2016/img/logo-android-green_1x.png"),
-    IOS("https://i-cdn.phonearena.com/images/article/98836-image/Apple-releases-iOS-11.0.3-its-fourth-update-in-the-last-four-weeks.jpg"),
-    NET("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/.net_logo.svg/275px-.net_logo.svg.png"),
-    PYTHON("https://cdn-images-1.medium.com/max/1200/1*PPIp7twJJUknfohZqtL8pQ.png"),
-    RUBY("https://cdn-images-1.medium.com/max/1200/1*sZSVVtdP9TE3mUoGh4GoYA.png"),
-    MANAGER("https://cdn0.iconfinder.com/data/icons/hr-recruitment-management/400/HR-28-512.png"),
-    DEVOPS("https://cdn-images-1.medium.com/max/1200/1*CSZxfOMlVsKsrMkqTxFiMQ.png"),
-    ANALYST("https://www.modernanalyst.com/Portals/0/Users/009/09/9/Business-Analyst-Role.jpg"),
-    NODE("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/330px-Node.js_logo.svg.png"),
-    HR("https://cdn2.iconfinder.com/data/icons/seo-web-optomization-ultimate-set/512/market_research-512.png"),
-    DEFAULT("https://sastudy.co.za/wp-content/uploads/2012/07/it-student-jobs-south-africa.png")
-}
+//enum class Language(val url: String) {
+//    JAVA("https://media-market.edmodo.com/media/public/e0dd66f726194a1feb7350ae91e011d7ec811599.png"),
+//    PHP("https://pbs.twimg.com/profile_images/815698345716912128/hwUcGZ41.jpg"),
+//    ANDROID("https://www.android.com/static/2016/img/logo-android-green_1x.png"),
+//    IOS("https://i-cdn.phonearena.com/images/article/98836-image/Apple-releases-iOS-11.0.3-its-fourth-update-in-the-last-four-weeks.jpg"),
+//    NET("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/.net_logo.svg/275px-.net_logo.svg.png"),
+//    PYTHON("https://cdn-images-1.medium.com/max/1200/1*PPIp7twJJUknfohZqtL8pQ.png"),
+//    RUBY("https://cdn-images-1.medium.com/max/1200/1*sZSVVtdP9TE3mUoGh4GoYA.png"),
+//    MANAGER("https://cdn0.iconfinder.com/data/icons/hr-recruitment-management/400/HR-28-512.png"),
+//    DEVOPS("https://cdn-images-1.medium.com/max/1200/1*CSZxfOMlVsKsrMkqTxFiMQ.png"),
+//    ANALYST("https://www.modernanalyst.com/Portals/0/Users/009/09/9/Business-Analyst-Role.jpg"),
+//    NODE("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/330px-Node.js_logo.svg.png"),
+//    HR("https://cdn2.iconfinder.com/data/icons/seo-web-optomization-ultimate-set/512/market_research-512.png"),
+//    DEFAULT("https://sastudy.co.za/wp-content/uploads/2012/07/it-student-jobs-south-africa.png")
+//}

@@ -2,7 +2,6 @@ package com.unagit.douuajobsevents.model;
 
 
 import com.unagit.douuajobsevents.helpers.ItemType;
-import com.unagit.douuajobsevents.helpers.Language;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,6 +9,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * This class is used to map XML 'item' element to Item object.
@@ -42,12 +42,12 @@ public class XmlItem {
      * @see XmlItem
      * @see Item
      */
-    public Item transformJobToItem() {
+    public Item transformJobToItem(List<Image> images) {
         return new Item(
                 this.guid,
                 getHtmlTitle(),
                 ItemType.JOB.getValue(),
-                getImgUrlForJob(),
+                getImgUrlForJob(images),
                 this.description,
                 Calendar.getInstance().getTimeInMillis(),
                 false
@@ -81,14 +81,25 @@ public class XmlItem {
         );
     }
 
-    private String getImgUrlForJob() {
-        for (Language l : Language.values()) {
+//    private String getImgUrlForJob() {
+//        for (Language l : Language.values()) {
+//            if (title.toLowerCase()
+//                    .contains(l.name().toLowerCase())) {
+//                return l.getUrl();
+//            }
+//        }
+//        return Language.DEFAULT.getUrl();
+//    }
+
+    private String getImgUrlForJob(List<Image> images) {
+        for (Image image : images) {
             if (title.toLowerCase()
-                    .contains(l.name().toLowerCase())) {
-                return l.getUrl();
+                    .contains(image.getKeyword().toLowerCase())) {
+                return image.getUrl();
             }
         }
-        return Language.DEFAULT.getUrl();
+        // By default return last element
+        return images.get(images.size() - 1).getUrl();
     }
 
     /**
