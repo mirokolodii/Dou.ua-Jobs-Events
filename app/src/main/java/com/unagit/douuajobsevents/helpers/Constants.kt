@@ -80,5 +80,5 @@ enum class Language(val url: String) {
     ANALYST("https://www.modernanalyst.com/Portals/0/Users/009/09/9/Business-Analyst-Role.jpg"),
     NODE("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/330px-Node.js_logo.svg.png"),
     HR("https://cdn2.iconfinder.com/data/icons/seo-web-optomization-ultimate-set/512/market_research-512.png"),
-    DEFAULT("http://www.englishspectrum.com/wp-content/uploads/2016/08/7220_photo_1451393691_temp.jpg")
+    DEFAULT("https://sastudy.co.za/wp-content/uploads/2012/07/it-student-jobs-south-africa.png")
 }
