@@ -10,10 +10,9 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 
-class DataProvider(private val dbInstance: AppDatabase) {
-
-    private val douApiService = DouAPIService.create()
-    private val appRemoteConfig = AppRemoteConfig()
+class DataProvider(private val dbInstance: AppDatabase,
+                   private val douApiService: DouAPIService,
+                   private val appRemoteConfig: AppRemoteConfig) {
 
     companion object {
         private const val DATABASE_PAGE_SIZE = 30

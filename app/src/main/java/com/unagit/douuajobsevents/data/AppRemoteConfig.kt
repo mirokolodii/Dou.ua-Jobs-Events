@@ -72,8 +72,6 @@ class AppRemoteConfig {
         val gson = GsonBuilder().create()
 //        val imageListType = object : TypeToken<List<Image>>() {}.type
 //        images = gson.fromJson(obj, imageListType)
-        val updatedImages = gson.fromJson(jsonStr, Array<Image>::class.java).toList()
-        println(updatedImages)
-        return updatedImages
+        return gson.fromJson(jsonStr, Array<Image>::class.java).toList()
     }
 }
