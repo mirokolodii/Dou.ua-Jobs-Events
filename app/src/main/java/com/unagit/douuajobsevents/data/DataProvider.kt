@@ -14,7 +14,6 @@ class DataProvider(private val dbInstance: AppDatabase) {
 
     private val douApiService = DouAPIService.create()
     private val appRemoteConfig = AppRemoteConfig()
-    private val images = appRemoteConfig.getImages()
 
     companion object {
         private const val DATABASE_PAGE_SIZE = 30
@@ -119,7 +118,7 @@ class DataProvider(private val dbInstance: AppDatabase) {
                             // Convert XmlItem object into Item object and save item into local DB,
                             // return this item
                             .map { xmlItem ->
-                                val item = xmlItem.transformJobToItem(images)
+                                val item = xmlItem.transformJobToItem(appRemoteConfig.images)
                                 dbInstance.itemDao().insert(item)
                                 item
                             }
