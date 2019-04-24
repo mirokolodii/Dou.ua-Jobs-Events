@@ -29,7 +29,9 @@ MVP
 ### Libraries:
 * Retrofit2
 * RxJava2
-* Room
+* Architecture Components (Room, Paging Library, Work Manager)
+* Firebase (Remote Config)
+* Dagger2
 * Jsoup
 * Picasso
 * JUnit with Truth
