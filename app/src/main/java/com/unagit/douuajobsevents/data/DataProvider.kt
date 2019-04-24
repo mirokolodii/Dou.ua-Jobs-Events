@@ -9,13 +9,15 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 
-class DataProvider(private val dbInstance: AppDatabase) {
 
-    private val douApiService = DouAPIService.create()
+class DataProvider(private val dbInstance: AppDatabase,
+                   private val douApiService: DouAPIService,
+                   private val appRemoteConfig: AppRemoteConfig) {
 
     companion object {
         private const val DATABASE_PAGE_SIZE = 30
     }
+
 
     fun getEventsObservable(): Observable<PagedList<Item>> {
         val factory = dbInstance.itemDao().getPagedItems(ItemType.EVENT.value)
@@ -47,7 +49,7 @@ class DataProvider(private val dbInstance: AppDatabase) {
         return getObservableWith(factory)
     }
 
-    private fun getObservableWith(factory: DataSource.Factory<Int, Item>): Observable<PagedList<Item>>{
+    private fun getObservableWith(factory: DataSource.Factory<Int, Item>): Observable<PagedList<Item>> {
         return RxPagedListBuilder(factory, DATABASE_PAGE_SIZE).buildObservable()
     }
 
@@ -115,7 +117,7 @@ class DataProvider(private val dbInstance: AppDatabase) {
                             // Convert XmlItem object into Item object and save item into local DB,
                             // return this item
                             .map { xmlItem ->
-                                val item = xmlItem.transformJobToItem()
+                                val item = xmlItem.transformJobToItem(appRemoteConfig.images)
                                 dbInstance.itemDao().insert(item)
                                 item
                             }

@@ -26,6 +26,7 @@ import javax.inject.Inject
 class DetailsActivity : BaseActivity(), DetailsContract.DetailsView {
     @Inject
     lateinit var presenter: DetailsContract.DetailsPresenter
+
     private var item: Item? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

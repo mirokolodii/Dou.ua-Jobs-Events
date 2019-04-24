@@ -32,9 +32,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
     @Inject
     lateinit var presenter: ListContract.ListPresenter
 
-//    @Inject
-//    lateinit var dataProvider: DataProvider
-
     private lateinit var mAdapter: ItemAdapter
     private var mTab = Tab.EVENTS
     private var searchMenuItem: MenuItem? = null
@@ -50,9 +47,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        presenter = ListPresenter(this, MyApp.dataProvider!!)
         (application as MyApp).appComponent.inject(this)
-//        presenter = ListPresenter(this, dataProvider)
 
         presenter.attach(this)
         initToolbar()
