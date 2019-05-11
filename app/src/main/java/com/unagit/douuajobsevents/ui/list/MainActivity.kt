@@ -21,6 +21,7 @@ import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.model.Item
 import com.unagit.douuajobsevents.ui.BaseActivity
 import com.unagit.douuajobsevents.ui.details.DetailsActivity
+import com.unagit.douuajobsevents.ui.preferences.SettingsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -183,6 +184,12 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
             R.id.menu_clear_cache -> {
                 // User's initiated local data cleanup
                 presenter.clearLocalData()
+                true
+            }
+            R.id.menu_settings -> {
+                val settingsIntent = Intent(this@MainActivity,
+                        SettingsActivity::class.java)
+                startActivity(settingsIntent)
                 true
             }
             else -> super.onOptionsItemSelected(item)

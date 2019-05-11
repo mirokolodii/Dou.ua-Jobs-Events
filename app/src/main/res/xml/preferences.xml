@@ -1,0 +1,33 @@
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreferenceCompat
+        android:key="notifications"
+        android:title="Enable message notifications" />
+
+    <Preference
+        android:key="pref_privacy_policy_key"
+        android:title="Privacy Policy" />
+
+    <PreferenceCategory
+        android:key="pref_key_about_settings"
+        android:title="pref_about">
+
+
+        <Preference
+            android:key="pref_rate_key"
+            android:summary="pref_rate_summary"
+            android:title="pref_rate_title" />
+
+        <Preference
+            android:key="pref_version_key"
+            android:summary="pref_version_summary"
+            android:title="pref_version_title" />
+
+        <Preference
+            android:key="pref_privacy_policy_key"
+            android:summary="pref_privacy_policy_summary"
+            android:title="pref_privacy_policy_title" />
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
