@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.unagit.douuajobsevents">
-
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,6 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <!-- Don't enable Firebase Analytics automatically -->
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
 
         <activity
             android:name=".ui.list.MainActivity"
@@ -31,6 +35,10 @@
             android:name=".ui.details.DetailsActivity"
             android:parentActivityName=".ui.list.MainActivity" />
 
+        <activity
+            android:name=".ui.preferences.SettingsActivity"
+            android:parentActivityName=".ui.list.MainActivity"
+            android:label="@string/title_activity_settings" />
     </application>
 
 </manifest>

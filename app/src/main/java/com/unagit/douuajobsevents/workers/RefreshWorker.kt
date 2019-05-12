@@ -30,7 +30,6 @@ class RefreshWorker(@NonNull val appContext: Context,
     private val logTag = this.javaClass.simpleName
     @Inject
     lateinit var dataProvider: DataProvider
-//    private var dataProvider: DataProvider? = null
 
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "channel_id"
@@ -43,17 +42,9 @@ class RefreshWorker(@NonNull val appContext: Context,
 
     override fun doWork(): Result {
         (applicationContext as MyApp).appComponent.inject(this)
-//        initializeFields()
         refreshData()
         return Result.success()
     }
-
-    // Get instance of DataProvider
-//    private fun initializeFields() {
-//        if (dataProvider == null) {
-//            dataProvider = MyApp.dataProvider
-//        }
-//    }
 
     /**
      * Asks DataProvider to refresh data from web and shows notification,
@@ -135,7 +126,5 @@ class RefreshWorker(@NonNull val appContext: Context,
                     this@RefreshWorker.javaClass.simpleName,
                     e.message)
         }
-
     }
-
 }

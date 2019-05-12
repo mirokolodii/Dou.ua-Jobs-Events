@@ -6,44 +6,45 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'io.fabric'
+
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.unagit.douuajobsevents"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 19043001
-        versionName "1.4"
+        versionCode 5
+        versionName "1.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            resValue "string", "app_version", "${defaultConfig.versionName}"
+            resValue "string", "app_version", "${defaultConfig.versionName}"
         }
 
         debug {
-//            versionNameSuffix ".debug"
-//            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
-            applicationIdSuffix ".debug"
             versionNameSuffix ".debug"
+            resValue "string", "app_version", "${defaultConfig.versionName}${versionNameSuffix}"
         }
     }
 }
 
 dependencies {
     def retrofit_ver = '2.5.0'
-    def room_ver = '2.1.0-alpha06'
+    def room_ver = '2.1.0-beta01'
     def work_ver = '1.0.1'
-    def paging_ver="2.1.0"
-    def dagger_ver="2.21"
+    def paging_ver = "2.1.0"
+    def dagger_ver = "2.21"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
     // Paging
     implementation "androidx.paging:paging-runtime:$paging_ver"
@@ -64,6 +65,8 @@ dependencies {
 
     // Room
     implementation "androidx.room:room-runtime:$room_ver"
+    implementation 'androidx.preference:preference:1.1.0-alpha05'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt "androidx.room:room-compiler:$room_ver" // !use kapt for Kotlin
     // optional - RxJava support for Room
     implementation "androidx.room:room-rxjava2:$room_ver"
@@ -77,17 +80,25 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_ver"
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
+    // Firebase
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-config:17.0.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
+
     // Tests
     testImplementation 'junit:junit:4.13-beta-2'
     testImplementation 'com.google.truth:truth:0.44' /* addon to JUnit4 */
     testImplementation 'org.mockito:mockito-core:2.23.4'
-    testImplementation 'org.mockito:mockito-inline:2.23.4' /* required to mock final Kotlin classes */
+    testImplementation 'org.mockito:mockito-inline:2.23.4'
+    /* required to mock final Kotlin classes */
     testImplementation "androidx.room:room-testing:$room_ver"
 
     // androidTests
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1-alpha04'
-    androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1-beta01'
+    androidTestImplementation 'androidx.test:runner:1.2.0-beta01'
     androidTestImplementation 'org.mockito:mockito-android:2.23.4'
-    androidTestImplementation 'androidx.test:rules:1.2.0-alpha04'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
+    androidTestImplementation 'androidx.test:rules:1.2.0-beta01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-beta01'
 }
+
+apply plugin: 'com.google.gms.google-services'

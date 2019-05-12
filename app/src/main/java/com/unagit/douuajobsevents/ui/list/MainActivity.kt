@@ -21,6 +21,7 @@ import com.unagit.douuajobsevents.helpers.Tab
 import com.unagit.douuajobsevents.model.Item
 import com.unagit.douuajobsevents.ui.BaseActivity
 import com.unagit.douuajobsevents.ui.details.DetailsActivity
+import com.unagit.douuajobsevents.ui.preferences.SettingsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -31,9 +32,6 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
 
     @Inject
     lateinit var presenter: ListContract.ListPresenter
-
-//    @Inject
-//    lateinit var dataProvider: DataProvider
 
     private lateinit var mAdapter: ItemAdapter
     private var mTab = Tab.EVENTS
@@ -50,9 +48,7 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        presenter = ListPresenter(this, MyApp.dataProvider!!)
         (application as MyApp).appComponent.inject(this)
-//        presenter = ListPresenter(this, dataProvider)
 
         presenter.attach(this)
         initToolbar()
@@ -188,6 +184,12 @@ class MainActivity : BaseActivity(), ListContract.ListView, ItemAdapter.OnClickL
             R.id.menu_clear_cache -> {
                 // User's initiated local data cleanup
                 presenter.clearLocalData()
+                true
+            }
+            R.id.menu_settings -> {
+                val settingsIntent = Intent(this@MainActivity,
+                        SettingsActivity::class.java)
+                startActivity(settingsIntent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
