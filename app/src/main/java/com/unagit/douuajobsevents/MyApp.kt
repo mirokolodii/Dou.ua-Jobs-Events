@@ -1,6 +1,7 @@
 package com.unagit.douuajobsevents
 
 import android.app.Application
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.unagit.douuajobsevents.dagger.AppComponent
 import com.unagit.douuajobsevents.dagger.AppModule
 import com.unagit.douuajobsevents.dagger.DaggerAppComponent
@@ -18,9 +19,13 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-//        val appDBInstance = AppDatabase.getInstance(this)
-//        dataProvider = DataProvider(appDBInstance)
         appComponent = initDagger(this)
+
+        // Enable Firebase Analytics if not debug build
+        if (!BuildConfig.DEBUG) {
+            FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(true)
+        }
+
     }
 
     private fun initDagger(app: MyApp): AppComponent =
