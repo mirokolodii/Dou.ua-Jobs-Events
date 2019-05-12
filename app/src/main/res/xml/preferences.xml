@@ -1,33 +1,41 @@
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<!--
+  ~ Copyright 2018 The app Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 
-    <SwitchPreferenceCompat
-        android:key="notifications"
-        android:title="Enable message notifications" />
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--<PreferenceCategory app:title="@string/general_header">-->
+    <!--<ListPreference-->
+    <!--app:defaultValue="reply"-->
+    <!--app:entries="@array/reply_entries"-->
+    <!--app:entryValues="@array/reply_values"-->
+    <!--app:key="reply"-->
+    <!--app:title="@string/reply_title"-->
+    <!--app:useSimpleSummaryProvider="true" />-->
+    <!--</PreferenceCategory>-->
 
-    <Preference
-        android:key="pref_privacy_policy_key"
-        android:title="Privacy Policy" />
-
-    <PreferenceCategory
-        android:key="pref_key_about_settings"
-        android:title="pref_about">
-
-
+    <PreferenceCategory app:title="@string/about_header">
         <Preference
-            android:key="pref_rate_key"
-            android:summary="pref_rate_summary"
-            android:title="pref_rate_title" />
-
+            app:key="@string/rate_key"
+            app:summary="@string/rate_summary"
+            app:title="@string/rate_title" />
         <Preference
-            android:key="pref_version_key"
-            android:summary="pref_version_summary"
-            android:title="pref_version_title" />
-
+            app:key="@string/privacy_key"
+            app:title="@string/privacy_title" />
         <Preference
-            android:key="pref_privacy_policy_key"
-            android:summary="pref_privacy_policy_summary"
-            android:title="pref_privacy_policy_title" />
-
+            app:key="@string/version_key"
+            app:summary="@string/app_version"
+            app:title="@string/version_title" />
     </PreferenceCategory>
-
 </androidx.preference.PreferenceScreen>

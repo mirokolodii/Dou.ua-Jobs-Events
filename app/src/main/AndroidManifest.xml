@@ -37,6 +37,7 @@
 
         <activity
             android:name=".ui.preferences.SettingsActivity"
+            android:parentActivityName=".ui.list.MainActivity"
             android:label="@string/title_activity_settings" />
     </application>
 

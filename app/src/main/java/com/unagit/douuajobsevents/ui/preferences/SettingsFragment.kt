@@ -12,7 +12,7 @@ import com.unagit.douuajobsevents.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        setPreferencesFromResource(R.xml.preferences, rootKey)
         setOnClickListeners()
     }
 
@@ -32,15 +32,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 }
     }
 
-    private fun showPrivacyPolicy() {
-        fragmentManager!!
-                .beginTransaction()
-                .replace(R.id.settings, PrivacyFragment())
-                .addToBackStack("PrivacyFragment")
-                .commit()
-    }
-
-
     private fun launchMarket() {
         try {
             startActivity(Intent(Intent.ACTION_VIEW,
@@ -56,8 +47,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     context,
                     getString(R.string.rate_not_in_market_error),
                     Toast.LENGTH_LONG).show()
-
         }
 
+    }
+
+    private fun showPrivacyPolicy() {
+        val intent = Intent(Intent.ACTION_VIEW)
+        val uri = Uri.parse(getString(R.string.privacy_policy_url))
+        intent.data = uri
+        startActivity(intent)
     }
 }
