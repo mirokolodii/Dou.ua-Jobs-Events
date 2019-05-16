@@ -48,15 +48,15 @@ class ItemAdapter(private val listener: OnClickListener)
         val item = getItem(position)
         holder.bind(item)
 
-        // Set bottom margin on last item
-        val margin = holder.itemView.resources.getDimension(R.dimen.list_item_margin).toInt()
-        val params = holder.itemView.layoutParams as ViewGroup.MarginLayoutParams
-        if (position == itemCount - 1) {
-            params.setMargins(margin, margin, margin, margin)
-        } else {
-            params.setMargins(margin, margin, margin, 0)
-        }
-        holder.itemView.requestLayout()
+//        // Set bottom margin on last item
+//        val margin = holder.itemView.resources.getDimension(R.dimen.list_item_margin).toInt()
+//        val params = holder.itemView.layoutParams as ViewGroup.MarginLayoutParams
+//        if (position == itemCount - 1) {
+//            params.setMargins(margin, margin, margin, margin)
+//        } else {
+//            params.setMargins(margin, margin, margin, 0)
+//        }
+//        holder.itemView.requestLayout()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
