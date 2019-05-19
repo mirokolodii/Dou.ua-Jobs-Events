@@ -30,7 +30,7 @@ MVP
 * Retrofit2
 * RxJava2
 * Architecture Components (Room, Paging Library, Work Manager)
-* Firebase (Remote Config)
+* Firebase (Remote Config, Crashlytincs)
 * Dagger2
 * Jsoup
 * Picasso
